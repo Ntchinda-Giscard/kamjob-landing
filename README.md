@@ -1,7 +1,7 @@
 # KamJob — Landing page
 
 Site vitrine autonome de KamJob. Tous les boutons d'action redirigent vers
-l'application candidat (`NEXT_PUBLIC_APP_URL`, par défaut https://kamjob.vercel.app).
+l'application candidat (`NEXT_PUBLIC_APP_URL`, par défaut https://app.kamjob.com).
 
 ## Développement
 

@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+:root {
+  /* KamJob Google-style palette — same tokens as the candidate app */
+  --background: #FFFFFF;
+  --foreground: #202124;
+  --card: #FFFFFF;
+  --card-foreground: #202124;
+  --secondary: #F1F3F4;
+  --secondary-foreground: #202124;
+  --muted: #F1F3F4;
+  --muted-foreground: #5F6368;
+  --border: #DADCE0;
+  --radius: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #202124;
+    --foreground: #E8EAED;
+    --card: #303134;
+    --card-foreground: #E8EAED;
+    --secondary: #303134;
+    --secondary-foreground: #E8EAED;
+    --muted: #303134;
+    --muted-foreground: #9AA0A6;
+    --border: #5F6368;
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --radius-lg: var(--radius);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Infinite offers ticker — the track holds the list twice and slides by half. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}

@@ -18,10 +18,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (saved === 'fr' || saved === 'en') setLangState(saved)
   }, [])
 
+  // Kept in sync here rather than in setLang, so a restored preference also
+  // updates <html lang> — screen readers pick their voice from that attribute.
+  useEffect(() => {
+    document.documentElement.lang = lang
+  }, [lang])
+
   const setLang = (l: Lang) => {
     setLangState(l)
     localStorage.setItem('kamjob-lang', l)
-    document.documentElement.lang = l
   }
 
   return (

@@ -8,6 +8,11 @@ const fr = {
     login: "Se connecter",
     signup: "S'inscrire",
     country: "Cameroun",
+    howItWorks: "Comment ça marche",
+    openMenu: "Ouvrir le menu",
+    closeMenu: "Fermer le menu",
+    skipToContent: "Aller au contenu principal",
+    langLabel: "Changer de langue",
   },
   hero: {
     badge: "L'emploi au Cameroun, réinventé",
@@ -30,6 +35,26 @@ const fr = {
     hiringTop: "NOUS",
     hiringMain: "RECRUTONS",
     hiringSub: "Postulez avant le 31 juillet",
+    toast: "Candidature envoyée",
+    toastSub: "CV + lettre reçus par ST Digital",
+    alt: "Aperçu de l'application KamJob : une offre d'emploi à swiper",
+  },
+  trust: {
+    title: "Pourquoi tu peux y aller les yeux fermés",
+    items: [
+      {
+        title: "Postuler ne coûte rien",
+        text: "Créer un compte, swiper et envoyer ta candidature est gratuit et illimité. Pour toujours.",
+      },
+      {
+        title: "Tes documents restent à toi",
+        text: "CV et lettre stockés de façon sécurisée, transmis uniquement aux offres que tu choisis.",
+      },
+      {
+        title: "Paiement local, sans surprise",
+        text: "MTN MoMo et Orange Money, en paiement unique. Aucun renouvellement automatique.",
+      },
+    ],
   },
   ticker: {
     label: "Des offres dans tous les domaines, dans tout le Cameroun",
@@ -69,9 +94,14 @@ const fr = {
       "Badge entreprise vérifiée",
     ],
     employerCta: "Publier mes offres",
+    eyebrow: "DEUX ESPACES",
+    title: "Tu cherches, ou tu recrutes ?",
   },
   how: {
+    eyebrow: "EN 3 ÉTAPES",
     title: "Comment ça marche ?",
+    subtitle:
+      "De l'inscription à ta première candidature, il te faut moins de cinq minutes.",
     steps: [
       {
         title: "Crée ton profil",
@@ -88,6 +118,7 @@ const fr = {
     ],
   },
   features: {
+    eyebrow: "FONCTIONNALITÉS",
     title: "Tout ce qu'il faut pour décrocher ton poste",
     subtitle:
       "Pensé pour le marché camerounais : les offres avec leurs affiches, la candidature en un geste, et l'IA qui travaille pour toi.",
@@ -119,6 +150,7 @@ const fr = {
     ],
   },
   pricing: {
+    eyebrow: "TARIFS",
     title: "Des prix pensés pour toi",
     subtitle:
       "Postuler est 100 % gratuit, pour toujours. Les pass Premium ajoutent l'IA quand tu veux passer à la vitesse supérieure.",
@@ -161,6 +193,7 @@ const fr = {
     freeNote: "Paiement unique par MTN MoMo ou Orange Money — aucun renouvellement automatique.",
   },
   testimonials: {
+    eyebrow: "TÉMOIGNAGES",
     title: "Ils ont trouvé avec KamJob",
     items: [
       {
@@ -181,6 +214,7 @@ const fr = {
     ],
   },
   faq: {
+    eyebrow: "FAQ",
     title: "Questions fréquentes",
     subtitle: "Tout ce que tu dois savoir avant de commencer.",
     items: [
@@ -224,9 +258,17 @@ const fr = {
   },
   finalCta: {
     title: "Ton prochain poste est à un swipe.",
+    subtitle:
+      "Crée ton profil aujourd'hui et envoie ta première candidature en moins de cinq minutes.",
     button: "Commencer maintenant",
   },
+  stickyCta: {
+    label: "Postuler est gratuit",
+    button: "Créer mon compte",
+  },
   footer: {
+    company: "Ressources",
+    employerLink: "Espace employeur",
     tagline: "Ton emploi au Cameroun",
     disclaimer:
       "Candidature 100 % gratuite — aucun employeur sérieux ne vous demandera de payer pour postuler.",
@@ -243,6 +285,11 @@ const en: typeof fr = {
     login: "Log in",
     signup: "Sign up",
     country: "Cameroon",
+    howItWorks: "How it works",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    skipToContent: "Skip to main content",
+    langLabel: "Change language",
   },
   hero: {
     badge: "Job hunting in Cameroon, reinvented",
@@ -265,6 +312,26 @@ const en: typeof fr = {
     hiringTop: "WE ARE",
     hiringMain: "HIRING",
     hiringSub: "Apply before July 31",
+    toast: "Application sent",
+    toastSub: "CV + letter received by ST Digital",
+    alt: "Preview of the KamJob app: a job offer ready to swipe",
+  },
+  trust: {
+    title: "Why you can go in with your eyes closed",
+    items: [
+      {
+        title: "Applying costs nothing",
+        text: "Creating an account, swiping and sending your application is free and unlimited. Forever.",
+      },
+      {
+        title: "Your documents stay yours",
+        text: "CV and cover letter stored securely, shared only with the offers you choose.",
+      },
+      {
+        title: "Local payment, no surprises",
+        text: "MTN MoMo and Orange Money, as a one-time payment. No automatic renewal.",
+      },
+    ],
   },
   ticker: {
     label: "Offers across every industry, all over Cameroon",
@@ -304,9 +371,14 @@ const en: typeof fr = {
       "Verified company badge",
     ],
     employerCta: "Post my offers",
+    eyebrow: "TWO SPACES",
+    title: "Looking for work, or hiring?",
   },
   how: {
+    eyebrow: "IN 3 STEPS",
     title: "How does it work?",
+    subtitle:
+      "From sign-up to your first application takes less than five minutes.",
     steps: [
       {
         title: "Create your profile",
@@ -323,6 +395,7 @@ const en: typeof fr = {
     ],
   },
   features: {
+    eyebrow: "FEATURES",
     title: "Everything you need to land the job",
     subtitle:
       "Built for the Cameroonian market: job posters as you know them, one-gesture applications, and AI working for you.",
@@ -354,6 +427,7 @@ const en: typeof fr = {
     ],
   },
   pricing: {
+    eyebrow: "PRICING",
     title: "Prices designed for you",
     subtitle:
       "Applying is 100% free, forever. Premium passes add AI power whenever you want to go faster.",
@@ -396,6 +470,7 @@ const en: typeof fr = {
     freeNote: "One-time payment via MTN MoMo or Orange Money — no automatic renewal.",
   },
   testimonials: {
+    eyebrow: "TESTIMONIALS",
     title: "They found their job with KamJob",
     items: [
       {
@@ -416,6 +491,7 @@ const en: typeof fr = {
     ],
   },
   faq: {
+    eyebrow: "FAQ",
     title: "Frequently asked questions",
     subtitle: "Everything you need to know before getting started.",
     items: [
@@ -459,9 +535,17 @@ const en: typeof fr = {
   },
   finalCta: {
     title: "Your next job is one swipe away.",
+    subtitle:
+      "Create your profile today and send your first application in under five minutes.",
     button: "Start now",
   },
+  stickyCta: {
+    label: "Applying is free",
+    button: "Create my account",
+  },
   footer: {
+    company: "Resources",
+    employerLink: "Employer space",
     tagline: "Your job in Cameroon",
     disclaimer:
       "Applying is 100% free — no serious employer will ever ask you to pay to apply.",

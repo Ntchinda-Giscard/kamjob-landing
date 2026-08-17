@@ -22,116 +22,114 @@ export default function OpengraphImage() {
   ];
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        background: "#FFFFFF",
+        padding: 72,
+        position: "relative",
+      }}
+    >
+      {/* Brand wash in the corner, mirroring the hero glow. */}
       <div
         style={{
-          width: "100%",
-          height: "100%",
+          position: "absolute",
+          top: -180,
+          right: -120,
+          width: 620,
+          height: 620,
+          borderRadius: 999,
+          background: "rgba(52,168,83,0.13)",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: "#FFFFFF",
-          padding: 72,
-          position: "relative",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 12,
+          display: "flex",
         }}
       >
-        {/* Brand wash in the corner, mirroring the hero glow. */}
+        <div style={{ flex: 1, background: GREEN }} />
+        <div style={{ flex: 1, background: YELLOW }} />
+        <div style={{ flex: 1, background: RED }} />
+      </div>
+
+      <div style={{ display: "flex", fontSize: 44, fontWeight: 800 }}>
+        {wordmark.map(({ c, color }, i) => (
+          <span key={i} style={{ color }}>
+            {c}
+          </span>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            position: "absolute",
-            top: -180,
-            right: -120,
-            width: 620,
-            height: 620,
-            borderRadius: 999,
-            background: "rgba(52,168,83,0.13)",
             display: "flex",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 12,
-            display: "flex",
+            fontSize: 74,
+            fontWeight: 800,
+            color: "#202124",
+            lineHeight: 1.08,
+            letterSpacing: -2,
           }}
         >
-          <div style={{ flex: 1, background: GREEN }} />
-          <div style={{ flex: 1, background: YELLOW }} />
-          <div style={{ flex: 1, background: RED }} />
+          Ton emploi au Cameroun,
         </div>
-
-        <div style={{ display: "flex", fontSize: 44, fontWeight: 800 }}>
-          {wordmark.map(({ c, color }, i) => (
-            <span key={i} style={{ color }}>
-              {c}
-            </span>
-          ))}
+        <div
+          style={{
+            display: "flex",
+            fontSize: 74,
+            fontWeight: 800,
+            color: GREEN,
+            lineHeight: 1.08,
+            letterSpacing: -2,
+          }}
+        >
+          en un swipe.
         </div>
-
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 74,
-              fontWeight: 800,
-              color: "#202124",
-              lineHeight: 1.08,
-              letterSpacing: -2,
-            }}
-          >
-            Ton emploi au Cameroun,
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 74,
-              fontWeight: 800,
-              color: GREEN,
-              lineHeight: 1.08,
-              letterSpacing: -2,
-            }}
-          >
-            en un swipe.
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginTop: 28,
-              fontSize: 30,
-              color: "#5F6368",
-            }}
-          >
-            Swipe à droite — ton CV et ta lettre partent chez le recruteur.
-          </div>
-        </div>
-
-        <div style={{ display: "flex", gap: 14, marginBottom: 8 }}>
-          {[
-            "Gratuit pour postuler",
-            "Sans engagement",
-            "MTN MoMo & Orange Money",
-          ].map((label) => (
-            <div
-              key={label}
-              style={{
-                display: "flex",
-                padding: "12px 22px",
-                borderRadius: 999,
-                background: "#E6F4EA",
-                color: "#12693A",
-                fontSize: 24,
-                fontWeight: 600,
-              }}
-            >
-              {label}
-            </div>
-          ))}
+        <div
+          style={{
+            display: "flex",
+            marginTop: 28,
+            fontSize: 30,
+            color: "#5F6368",
+          }}
+        >
+          Swipe à droite — ton CV et ta lettre partent chez le recruteur.
         </div>
       </div>
-    ),
+
+      <div style={{ display: "flex", gap: 14, marginBottom: 8 }}>
+        {[
+          "Gratuit pour postuler",
+          "Sans engagement",
+          "MTN MoMo & Orange Money",
+        ].map((label) => (
+          <div
+            key={label}
+            style={{
+              display: "flex",
+              padding: "12px 22px",
+              borderRadius: 999,
+              background: "#E6F4EA",
+              color: "#12693A",
+              fontSize: 24,
+              fontWeight: 600,
+            }}
+          >
+            {label}
+          </div>
+        ))}
+      </div>
+    </div>,
     size,
   );
 }

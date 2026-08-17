@@ -273,6 +273,9 @@ const fr = {
     disclaimer:
       "Candidature 100 % gratuite — aucun employeur sérieux ne vous demandera de payer pour postuler.",
     product: "Produit",
+    legal: "Légal",
+    terms: "Conditions générales",
+    privacy: "Confidentialité",
     copyright: "© 2026 KamJob · Fait au Cameroun 🇨🇲",
   },
 }
@@ -550,6 +553,9 @@ const en: typeof fr = {
     disclaimer:
       "Applying is 100% free — no serious employer will ever ask you to pay to apply.",
     product: "Product",
+    legal: "Legal",
+    terms: "Terms & Conditions",
+    privacy: "Privacy",
     copyright: "© 2026 KamJob · Made in Cameroon 🇨🇲",
   },
 }

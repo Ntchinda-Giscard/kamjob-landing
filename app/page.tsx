@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { KamJobLogo } from "@/components/logo";
+import { LangSwitcher } from "@/components/lang-switcher";
 import { Reveal } from "@/components/reveal";
+import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/lib/i18n";
-import type { Lang } from "@/lib/translations";
+import {
+  EMPLOYER_URL,
+  LOGIN_URL,
+  NAV_LINKS,
+  SIGNUP_URL,
+} from "@/lib/site";
 import {
   ArrowRight,
   Zap,
-  Shield,
   ShieldCheck,
   Sparkles,
   Target,
@@ -27,14 +33,6 @@ import {
   Smartphone,
   Send,
 } from "lucide-react";
-
-// The landing site is standalone: every CTA routes to the actual candidate app.
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.kamjob.com";
-const SIGNUP_URL = `${APP_URL}/signup`;
-const LOGIN_URL = `${APP_URL}/login`;
-// Employer portal — set NEXT_PUBLIC_EMPLOYER_URL once that app is deployed;
-// meanwhile the card points to the FAQ entry explaining employer access.
-const EMPLOYER_URL = process.env.NEXT_PUBLIC_EMPLOYER_URL || "#faq";
 
 const FEATURE_ICONS = [
   MousePointerClick,
@@ -57,13 +55,6 @@ const FEATURE_TONES = [
 ];
 
 const TRUST_ICONS = [Wallet, ShieldCheck, Smartphone];
-
-const NAV_LINKS = [
-  { href: "#how", key: "howItWorks" },
-  { href: "#features", key: "features" },
-  { href: "#pricing", key: "pricing" },
-  { href: "#faq", key: "faq" },
-] as const;
 
 // ── Small building blocks ─────────────────────────────────────────────────────
 
@@ -107,34 +98,6 @@ function SectionHeading({
         </p>
       )}
     </Reveal>
-  );
-}
-
-function LangSwitcher() {
-  const { lang, setLang, t } = useLanguage();
-  const btn = (l: Lang, label: string) => (
-    <button
-      onClick={() => setLang(l)}
-      className="px-2.5 py-1 text-xs font-bold rounded-full btn-press"
-      style={
-        lang === l
-          ? { backgroundColor: "var(--brand-solid)", color: "white" }
-          : { color: "var(--muted-foreground)" }
-      }
-      aria-pressed={lang === l}
-    >
-      {label}
-    </button>
-  );
-  return (
-    <div
-      className="flex items-center gap-0.5 rounded-full border border-border p-0.5"
-      role="group"
-      aria-label={t.nav.langLabel}
-    >
-      {btn("fr", "FR")}
-      {btn("en", "EN")}
-    </div>
   );
 }
 
@@ -1078,76 +1041,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-card/50">
-        <div className="max-w-6xl mx-auto px-5 py-14">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="lg:col-span-2">
-              <KamJobLogo size="default" tagline={t.footer.tagline} />
-              <p className="mt-5 max-w-xs text-sm text-muted-foreground flex items-start gap-2">
-                <Shield className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
-                {t.footer.disclaimer}
-              </p>
-            </div>
-
-            <nav aria-label={t.footer.product}>
-              <p className="text-sm font-semibold text-foreground mb-3">
-                {t.footer.product}
-              </p>
-              <ul className="space-y-2.5 text-sm text-muted-foreground">
-                {NAV_LINKS.map((l) => (
-                  <li key={l.href}>
-                    <a
-                      href={l.href}
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t.nav[l.key]}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <nav aria-label={t.footer.company}>
-              <p className="text-sm font-semibold text-foreground mb-3">
-                {t.footer.company}
-              </p>
-              <ul className="space-y-2.5 text-sm text-muted-foreground">
-                <li>
-                  <a
-                    href={SIGNUP_URL}
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {t.nav.signup}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={LOGIN_URL}
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {t.nav.login}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={EMPLOYER_URL}
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {t.footer.employerLink}
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-
-          <p className="text-xs text-muted-foreground text-center mt-12 pt-8 border-t border-border">
-            {t.footer.copyright}
-          </p>
-        </div>
-        {/* Clears the sticky mobile CTA bar. */}
-        <div className="md:hidden h-20" aria-hidden />
-      </footer>
+      <SiteFooter stickyCtaSpacer />
 
       <StickyMobileCta />
     </div>

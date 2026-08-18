@@ -821,9 +821,10 @@ export default function LandingPage() {
               title={t.pricing.title}
               subtitle={t.pricing.subtitle}
             />
-            <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto items-start">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
               {t.pricing.plans.map((p, i) => {
-                const highlight = i === 2;
+                // Badge "le plus complet" : toujours sur la formule la plus haute.
+                const highlight = i === t.pricing.plans.length - 1;
                 return (
                   <Reveal key={p.name} delay={i * 90}>
                     <div

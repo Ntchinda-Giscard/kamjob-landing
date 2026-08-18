@@ -160,7 +160,7 @@ const fr = {
     plans: [
       {
         name: "Pass 72h",
-        price: "500",
+        price: "1100",
         period: "3 jours",
         features: [
           "Optimisation intelligente : CV et lettre réécrits pour chaque offre",
@@ -170,7 +170,7 @@ const fr = {
       },
       {
         name: "Premium Hebdo — Le Sprint",
-        price: "950",
+        price: "2500",
         period: "7 jours",
         features: [
           "Tout le Pass 72h, pendant une semaine complète",
@@ -204,24 +204,28 @@ const fr = {
         ],
       },
     ],
-    freeNote: "Paiement unique par MTN MoMo ou Orange Money — aucun renouvellement automatique.",
+    freeNote:
+      "Paiement unique par MTN MoMo ou Orange Money — aucun renouvellement automatique.",
   },
   testimonials: {
     eyebrow: "TÉMOIGNAGES",
     title: "Ils ont trouvé avec KamJob",
     items: [
       {
-        quote: "J'ai postulé à 15 offres pendant ma pause déjeuner. Deux entretiens décrochés la même semaine.",
+        quote:
+          "J'ai postulé à 15 offres pendant ma pause déjeuner. Deux entretiens décrochés la même semaine.",
         name: "Aïcha N.",
         role: "Développeuse web · Douala",
       },
       {
-        quote: "Le CV adapté par l'IA a fait la différence : le recruteur m'a dit que mon profil collait parfaitement à l'offre.",
+        quote:
+          "Le CV adapté par l'IA a fait la différence : le recruteur m'a dit que mon profil collait parfaitement à l'offre.",
         name: "Steve M.",
         role: "Comptable · Yaoundé",
       },
       {
-        quote: "Le Bilan intelligent postule pendant que je suis en cours. Je reçois le rapport et je prépare mes entretiens.",
+        quote:
+          "Le Bilan intelligent postule pendant que je suis en cours. Je reçois le rapport et je prépare mes entretiens.",
         name: "Vanessa T.",
         role: "Étudiante en marketing · Bafoussam",
       },
@@ -292,7 +296,7 @@ const fr = {
     privacy: "Confidentialité",
     copyright: "© 2026 KamJob · Fait au Cameroun 🇨🇲",
   },
-}
+};
 
 const en: typeof fr = {
   nav: {
@@ -454,7 +458,7 @@ const en: typeof fr = {
     plans: [
       {
         name: "72h Pass",
-        price: "500",
+        price: "1100",
         period: "3 days",
         features: [
           "Smart optimisation: CV and cover letter rewritten for every offer",
@@ -464,7 +468,7 @@ const en: typeof fr = {
       },
       {
         name: "Weekly Premium — The Sprint",
-        price: "950",
+        price: "2500",
         period: "7 days",
         features: [
           "Everything in the 72h Pass, for a full week",
@@ -498,24 +502,28 @@ const en: typeof fr = {
         ],
       },
     ],
-    freeNote: "One-time payment via MTN MoMo or Orange Money — no automatic renewal.",
+    freeNote:
+      "One-time payment via MTN MoMo or Orange Money — no automatic renewal.",
   },
   testimonials: {
     eyebrow: "TESTIMONIALS",
     title: "They found their job with KamJob",
     items: [
       {
-        quote: "I applied to 15 offers during my lunch break. Two interviews landed the same week.",
+        quote:
+          "I applied to 15 offers during my lunch break. Two interviews landed the same week.",
         name: "Aïcha N.",
         role: "Web developer · Douala",
       },
       {
-        quote: "The AI-tailored CV made the difference: the recruiter told me my profile matched the offer perfectly.",
+        quote:
+          "The AI-tailored CV made the difference: the recruiter told me my profile matched the offer perfectly.",
         name: "Steve M.",
         role: "Accountant · Yaoundé",
       },
       {
-        quote: "The Smart Report applies while I'm in class. I get the report and prepare for my interviews.",
+        quote:
+          "The Smart Report applies while I'm in class. I get the report and prepare for my interviews.",
         name: "Vanessa T.",
         role: "Marketing student · Bafoussam",
       },
@@ -586,8 +594,8 @@ const en: typeof fr = {
     privacy: "Privacy",
     copyright: "© 2026 KamJob · Made in Cameroon 🇨🇲",
   },
-}
+};
 
-export type Lang = "fr" | "en"
-export type Dictionary = typeof fr
-export const translations: Record<Lang, Dictionary> = { fr, en }
+export type Lang = "fr" | "en";
+export type Dictionary = typeof fr;
+export const translations: Record<Lang, Dictionary> = { fr, en };

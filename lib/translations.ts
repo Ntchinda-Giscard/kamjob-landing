@@ -160,7 +160,7 @@ const fr = {
     plans: [
       {
         name: "Pass 72h",
-        price: "1100",
+        price: "1550",
         period: "3 jours",
         features: [
           "Optimisation intelligente : CV et lettre réécrits pour chaque offre",
@@ -181,7 +181,7 @@ const fr = {
       },
       {
         name: "Premium Mensuel — Recherche complète",
-        price: "4 999",
+        price: "7 699",
         period: "30 jours",
         features: [
           "Tout le Sprint : candidatures optimisées pendant 30 jours",
@@ -193,7 +193,7 @@ const fr = {
       },
       {
         name: "Premium Pro — Recherche intensive",
-        price: "9 999",
+        price: "16 999",
         period: "30 jours",
         features: [
           "Tout le Premium Mensuel, en volume étendu",
@@ -458,7 +458,7 @@ const en: typeof fr = {
     plans: [
       {
         name: "72h Pass",
-        price: "1100",
+        price: "1550",
         period: "3 days",
         features: [
           "Smart optimisation: CV and cover letter rewritten for every offer",
@@ -479,7 +479,7 @@ const en: typeof fr = {
       },
       {
         name: "Monthly Premium — Full search",
-        price: "4,999",
+        price: "7699",
         period: "30 days",
         features: [
           "Everything in the Sprint: optimised applications for 30 days",
@@ -491,7 +491,7 @@ const en: typeof fr = {
       },
       {
         name: "Pro Premium — Intensive search",
-        price: "9,999",
+        price: "16999",
         period: "30 days",
         features: [
           "Everything in Monthly Premium, at extended volume",

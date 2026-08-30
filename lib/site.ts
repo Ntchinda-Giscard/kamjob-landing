@@ -18,6 +18,17 @@ export const LOGIN_URL = `${APP_URL}/login`
 // meanwhile the card points to the FAQ entry explaining employer access.
 export const EMPLOYER_URL = process.env.NEXT_PUBLIC_EMPLOYER_URL || '/#faq'
 
+/**
+ * The only address exposed to the browser. The contact form delivers to two
+ * mailboxes, but the second one is a private inbox and stays server-side in
+ * `app/api/contact/route.ts` — this is what the mailto: fallback uses when the
+ * form itself cannot send.
+ */
+export const CONTACT_EMAIL = 'support@kamjob.com'
+
+/** Anchor of the contact section, absolute so the shared footer works off-home. */
+export const CONTACT_ANCHOR = '/#contact'
+
 /** Legal pages. French slugs: French is the default locale of the site. */
 export const LEGAL_ROUTES = {
   terms: '/conditions-generales',

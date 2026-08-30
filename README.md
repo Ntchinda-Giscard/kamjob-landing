@@ -48,6 +48,33 @@ chaque modification du français.
 Modifier la date et la version en une seule fois : `UPDATED_FR`, `UPDATED_EN`
 et `VERSION` en haut de `lib/legal.ts`.
 
+## Formulaire de contact
+
+La section `#contact` de la landing (`components/contact-section.tsx`) poste sur
+`/api/contact`, qui envoie **un seul message aux deux boîtes de l'équipe** via
+l'API HTTP de Resend (appelée avec `fetch` — aucune dépendance ajoutée).
+
+| Variable         | Rôle                                                      | Défaut |
+| ---------------- | --------------------------------------------------------- | ------ |
+| `RESEND_API_KEY` | **Obligatoire.** Sans elle, l'envoi direct est désactivé.  | —      |
+| `CONTACT_FROM`   | Expéditeur — doit être sur un domaine vérifié dans Resend  | `KamJob <contact@kamjob.com>` |
+| `CONTACT_TO`     | Destinataires, séparés par des virgules                    | `support@kamjob.com,willyzogoakouma@gmail.com` |
+
+Les destinataires ne vivent que côté serveur (`app/api/contact/route.ts`) : ils
+ne partent jamais dans le bundle navigateur, où les moissonneurs d'adresses les
+trouveraient. Seule `CONTACT_EMAIL` (`lib/site.ts`, `support@kamjob.com`) est
+publique — c'est elle qu'affiche le lien `mailto:` de secours.
+
+> **Sans `RESEND_API_KEY`, le formulaire n'est pas cassé** : la route répond 503
+> et le formulaire propose un lien `mailto:` pré-rempli vers `support@kamjob.com`,
+> message compris. Définir la clé dans Vercel, puis vérifier le domaine
+> d'expédition, suffit à basculer sur l'envoi direct.
+
+Protections en place : champ appât (honeypot) invisible, limite de 3 messages par
+IP et par 10 minutes (en mémoire, donc par instance — c'est un ralentisseur, pas
+un pare-feu), longueurs bornées, et retours à la ligne retirés du nom pour écarter
+toute injection d'en-tête mail.
+
 ## Routes générées
 
 Aucun asset statique à fournir — tout est généré au build :

@@ -274,6 +274,46 @@ const fr = {
     title: "Vous recrutez ?",
     text: "Publiez vos offres avec leur affiche, fixez une date d'expiration et recevez les candidatures — CV et lettre — directement par email. Les meilleurs profils du Cameroun sont déjà sur KamJob.",
   },
+  contact: {
+    eyebrow: "CONTACT",
+    title: "Une suggestion ? Écris-nous.",
+    subtitle:
+      "Une idée pour améliorer KamJob, un bug à signaler, une question sur ton compte ? Ton message part directement dans la boîte de l'équipe.",
+    nameLabel: "Ton nom",
+    namePlaceholder: "Comment on t'appelle",
+    emailLabel: "Ton email",
+    emailPlaceholder: "ton@email.com",
+    topicLabel: "Sujet",
+    topics: {
+      suggestion: "Une suggestion",
+      bug: "Un problème technique",
+      account: "Mon compte ou ma candidature",
+      employer: "Je recrute",
+      other: "Autre",
+    },
+    messageLabel: "Ton message",
+    messagePlaceholder:
+      "Dis-nous tout — plus c'est précis, plus on peut t'aider vite.",
+    send: "Envoyer le message",
+    sending: "Envoi en cours…",
+    successTitle: "Message envoyé, merci !",
+    successText:
+      "On te répond à l'adresse que tu viens de donner, généralement sous 48 heures ouvrées.",
+    again: "Écrire un autre message",
+    directLabel: "Ou écris directement à",
+    privacyNote:
+      "Ton nom, ton email et ton message servent uniquement à te répondre.",
+    privacyLink: "Politique de confidentialité",
+    honeypotLabel: "Laisse ce champ vide",
+    errors: {
+      invalid:
+        "Vérifie tes informations : un nom, un email valide et un message d'au moins 10 caractères sont nécessaires.",
+      rateLimited:
+        "Tu as déjà envoyé plusieurs messages. Réessaie dans quelques minutes — on a bien reçu les précédents.",
+      unavailable:
+        "L'envoi automatique ne fonctionne pas pour le moment. Écris-nous directement :",
+    },
+  },
   finalCta: {
     title: "Ton prochain poste est à un swipe.",
     subtitle:
@@ -287,6 +327,7 @@ const fr = {
   footer: {
     company: "Ressources",
     employerLink: "Espace employeur",
+    contact: "Nous contacter",
     tagline: "Ton emploi au Cameroun",
     disclaimer:
       "Candidature 100 % gratuite — aucun employeur sérieux ne vous demandera de payer pour postuler.",
@@ -572,6 +613,46 @@ const en: typeof fr = {
     title: "Hiring?",
     text: "Post your offers with their poster, set an expiry date and receive applications — CV and cover letter — directly by email. Cameroon's best profiles are already on KamJob.",
   },
+  contact: {
+    eyebrow: "CONTACT",
+    title: "Got a suggestion? Write to us.",
+    subtitle:
+      "An idea to make KamJob better, a bug to report, a question about your account? Your message goes straight to the team's inbox.",
+    nameLabel: "Your name",
+    namePlaceholder: "What should we call you",
+    emailLabel: "Your email",
+    emailPlaceholder: "you@email.com",
+    topicLabel: "Subject",
+    topics: {
+      suggestion: "A suggestion",
+      bug: "A technical problem",
+      account: "My account or my application",
+      employer: "I'm hiring",
+      other: "Something else",
+    },
+    messageLabel: "Your message",
+    messagePlaceholder:
+      "Tell us everything — the more specific you are, the faster we can help.",
+    send: "Send message",
+    sending: "Sending…",
+    successTitle: "Message sent, thank you!",
+    successText:
+      "We'll reply to the address you just gave us, usually within 48 working hours.",
+    again: "Write another message",
+    directLabel: "Or write directly to",
+    privacyNote:
+      "Your name, email and message are used only to reply to you.",
+    privacyLink: "Privacy Policy",
+    honeypotLabel: "Leave this field empty",
+    errors: {
+      invalid:
+        "Check your details: a name, a valid email and a message of at least 10 characters are required.",
+      rateLimited:
+        "You've already sent several messages. Try again in a few minutes — we did receive the earlier ones.",
+      unavailable:
+        "Automatic sending isn't working right now. Write to us directly:",
+    },
+  },
   finalCta: {
     title: "Your next job is one swipe away.",
     subtitle:
@@ -585,6 +666,7 @@ const en: typeof fr = {
   footer: {
     company: "Resources",
     employerLink: "Employer space",
+    contact: "Contact us",
     tagline: "Your job in Cameroon",
     disclaimer:
       "Applying is 100% free — no serious employer will ever ask you to pay to apply.",

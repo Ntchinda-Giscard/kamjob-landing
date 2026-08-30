@@ -4,6 +4,7 @@ import { Shield } from 'lucide-react'
 import { KamJobLogo } from '@/components/logo'
 import { useLanguage } from '@/lib/i18n'
 import {
+  CONTACT_ANCHOR,
   EMPLOYER_URL,
   LEGAL_ROUTES,
   LOGIN_URL,
@@ -80,6 +81,14 @@ export function SiteFooter({
                   className="hover:text-foreground transition-colors"
                 >
                   {t.footer.employerLink}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={CONTACT_ANCHOR}
+                  className="hover:text-foreground transition-colors"
+                >
+                  {t.footer.contact}
                 </a>
               </li>
             </ul>

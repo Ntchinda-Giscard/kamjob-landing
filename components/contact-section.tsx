@@ -7,10 +7,8 @@ import { SectionHeading } from "@/components/section-heading";
 import { useLanguage } from "@/lib/i18n";
 import { CONTACT_EMAIL, LEGAL_ROUTES } from "@/lib/site";
 
-const TOPICS = ["suggestion", "bug", "account", "employer", "other"] as const;
-type Topic = (typeof TOPICS)[number];
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+const MIN_SUBJECT = 3;
 const MIN_MESSAGE = 10;
 
 /** `unavailable` also covers a failed send: either way the visitor should be
@@ -27,7 +25,7 @@ export function ContactSection() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    topic: "suggestion" as Topic,
+    subject: "",
     message: "",
     company: "", // honeypot
   });
@@ -39,7 +37,7 @@ export function ContactSection() {
 
   // Pre-filled so a visitor hitting the fallback does not retype their message.
   const mailtoHref = () => {
-    const subject = `[KamJob] ${c.topics[form.topic]}`;
+    const subject = `[KamJob] ${form.subject}`;
     const body = `${form.name}\n${form.email}\n\n${form.message}`;
     return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
       subject,
@@ -54,6 +52,7 @@ export function ContactSection() {
     if (
       !form.name.trim() ||
       !EMAIL_RE.test(form.email.trim()) ||
+      form.subject.trim().length < MIN_SUBJECT ||
       form.message.trim().length < MIN_MESSAGE
     ) {
       setError("invalid");
@@ -129,7 +128,7 @@ export function ContactSection() {
                     setForm({
                       name: "",
                       email: "",
-                      topic: "suggestion",
+                      subject: "",
                       message: "",
                       company: "",
                     });
@@ -193,24 +192,22 @@ export function ContactSection() {
 
                 <div>
                   <label
-                    htmlFor="contact-topic"
+                    htmlFor="contact-subject"
                     className="block text-sm font-semibold text-foreground mb-2"
                   >
-                    {c.topicLabel}
+                    {c.subjectLabel}
                   </label>
-                  <select
-                    id="contact-topic"
-                    name="topic"
-                    value={form.topic}
-                    onChange={(e) => set({ topic: e.target.value as Topic })}
+                  <input
+                    id="contact-subject"
+                    name="subject"
+                    type="text"
+                    maxLength={120}
+                    required
+                    value={form.subject}
+                    onChange={(e) => set({ subject: e.target.value })}
+                    placeholder={c.subjectPlaceholder}
                     className={FIELD_CLASS}
-                  >
-                    {TOPICS.map((key) => (
-                      <option key={key} value={key}>
-                        {c.topics[key]}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 <div>

@@ -43,4 +43,5 @@ export const NAV_LINKS = [
   { href: '/#features', key: 'features' },
   { href: '/#pricing', key: 'pricing' },
   { href: '/#faq', key: 'faq' },
+  { href: CONTACT_ANCHOR, key: 'contact' },
 ] as const

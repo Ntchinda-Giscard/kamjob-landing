@@ -341,7 +341,7 @@ export default function LandingPage() {
           </a>
 
           <nav
-            className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground"
+            className="hidden md:flex items-center gap-5 lg:gap-6 text-sm font-medium text-muted-foreground"
             aria-label="Principal"
           >
             {NAV_LINKS.map((l) => (

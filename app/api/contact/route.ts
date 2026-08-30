@@ -24,18 +24,8 @@ const RECIPIENTS = (
 /** Must be on a domain verified in Resend, otherwise the send is rejected. */
 const FROM = process.env.CONTACT_FROM ?? "KamJob <contact@kamjob.com>";
 
-const TOPICS = ["suggestion", "bug", "account", "employer", "other"] as const;
-type Topic = (typeof TOPICS)[number];
-
-const TOPIC_LABELS: Record<Topic, string> = {
-  suggestion: "Suggestion",
-  bug: "Problème technique",
-  account: "Compte / candidature",
-  employer: "Employeur",
-  other: "Autre",
-};
-
-const LIMITS = { name: 80, email: 160, message: 4000 } as const;
+const LIMITS = { name: 80, email: 160, subject: 120, message: 4000 } as const;
+const MIN_SUBJECT = 3;
 const MIN_MESSAGE = 10;
 
 // Deliberately loose: the point is to catch typos, not to police the RFC.
@@ -62,13 +52,12 @@ function rateLimited(ip: string) {
 function clientIp(req: Request) {
   const forwarded = req.headers.get("x-forwarded-for");
   return (
-    forwarded?.split(",")[0].trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
+    forwarded?.split(",")[0].trim() || req.headers.get("x-real-ip") || "unknown"
   );
 }
 
-/** Strips CR/LF so an attacker cannot inject extra mail headers via the name. */
+/** Strips CR/LF so a visitor-supplied name or subject cannot inject extra mail
+ *  headers — both of them land in the header block of the outgoing message. */
 const oneLine = (value: string) => value.replace(/[\r\n]+/g, " ").trim();
 
 const escapeHtml = (value: string) =>
@@ -77,10 +66,6 @@ const escapeHtml = (value: string) =>
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
-
-function isTopic(value: unknown): value is Topic {
-  return typeof value === "string" && (TOPICS as readonly string[]).includes(value);
-}
 
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
@@ -98,13 +83,18 @@ export async function POST(req: Request) {
 
   const name = oneLine(String(body.name ?? "")).slice(0, LIMITS.name);
   const email = oneLine(String(body.email ?? "")).slice(0, LIMITS.email);
+  const subject = oneLine(String(body.subject ?? "")).slice(0, LIMITS.subject);
   const message = String(body.message ?? "")
     .trim()
     .slice(0, LIMITS.message);
-  const topic: Topic = isTopic(body.topic) ? body.topic : "other";
   const lang = body.lang === "en" ? "en" : "fr";
 
-  if (!name || !EMAIL_RE.test(email) || message.length < MIN_MESSAGE) {
+  if (
+    !name ||
+    !EMAIL_RE.test(email) ||
+    subject.length < MIN_SUBJECT ||
+    message.length < MIN_MESSAGE
+  ) {
     return NextResponse.json({ error: "invalid" }, { status: 400 });
   }
 
@@ -118,12 +108,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
   }
 
-  const subject = `[KamJob · ${TOPIC_LABELS[topic]}] ${name}`;
+  // The `[KamJob]` prefix is ours, so the subject stays filterable in the inbox
+  // however the visitor phrased theirs.
+  const mailSubject = `[KamJob] ${subject}`;
   const text = [
-    `Sujet    : ${TOPIC_LABELS[topic]}`,
-    `Nom      : ${name}`,
-    `Email    : ${email}`,
-    `Langue   : ${lang}`,
+    `Sujet  : ${subject}`,
+    `Nom    : ${name}`,
+    `Email  : ${email}`,
+    `Langue : ${lang}`,
     "",
     message,
   ].join("\n");
@@ -140,16 +132,20 @@ export async function POST(req: Request) {
         to: RECIPIENTS,
         // Replying in the mail client answers the visitor directly.
         reply_to: email,
-        subject,
+        subject: mailSubject,
         text,
-        html: `<p><strong>${escapeHtml(TOPIC_LABELS[topic])}</strong> — ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt; (${lang})</p><hr /><p style="white-space:pre-wrap">${escapeHtml(message)}</p>`,
+        html: `<p><strong>${escapeHtml(subject)}</strong> — ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt; (${lang})</p><hr /><p style="white-space:pre-wrap">${escapeHtml(message)}</p>`,
       }),
     });
 
     if (!res.ok) {
       // Body may name a misconfigured sender domain — useful in the logs, never
       // in the response.
-      console.error("[contact] Resend rejected the send", res.status, await res.text());
+      console.error(
+        "[contact] Resend rejected the send",
+        res.status,
+        await res.text(),
+      );
       return NextResponse.json({ error: "send_failed" }, { status: 502 });
     }
   } catch (err) {

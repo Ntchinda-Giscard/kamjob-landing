@@ -9,6 +9,7 @@ const fr = {
     signup: "S'inscrire",
     country: "Cameroun",
     howItWorks: "Comment ça marche",
+    contact: "Contact",
     openMenu: "Ouvrir le menu",
     closeMenu: "Fermer le menu",
     skipToContent: "Aller au contenu principal",
@@ -283,14 +284,8 @@ const fr = {
     namePlaceholder: "Comment on t'appelle",
     emailLabel: "Ton email",
     emailPlaceholder: "ton@email.com",
-    topicLabel: "Sujet",
-    topics: {
-      suggestion: "Une suggestion",
-      bug: "Un problème technique",
-      account: "Mon compte ou ma candidature",
-      employer: "Je recrute",
-      other: "Autre",
-    },
+    subjectLabel: "Sujet",
+    subjectPlaceholder: "Une suggestion, un bug, une question…",
     messageLabel: "Ton message",
     messagePlaceholder:
       "Dis-nous tout — plus c'est précis, plus on peut t'aider vite.",
@@ -307,7 +302,7 @@ const fr = {
     honeypotLabel: "Laisse ce champ vide",
     errors: {
       invalid:
-        "Vérifie tes informations : un nom, un email valide et un message d'au moins 10 caractères sont nécessaires.",
+        "Vérifie tes informations : un nom, un email valide, un sujet et un message d'au moins 10 caractères sont nécessaires.",
       rateLimited:
         "Tu as déjà envoyé plusieurs messages. Réessaie dans quelques minutes — on a bien reçu les précédents.",
       unavailable:
@@ -327,7 +322,6 @@ const fr = {
   footer: {
     company: "Ressources",
     employerLink: "Espace employeur",
-    contact: "Nous contacter",
     tagline: "Ton emploi au Cameroun",
     disclaimer:
       "Candidature 100 % gratuite — aucun employeur sérieux ne vous demandera de payer pour postuler.",
@@ -348,6 +342,7 @@ const en: typeof fr = {
     signup: "Sign up",
     country: "Cameroon",
     howItWorks: "How it works",
+    contact: "Contact",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     skipToContent: "Skip to main content",
@@ -622,14 +617,8 @@ const en: typeof fr = {
     namePlaceholder: "What should we call you",
     emailLabel: "Your email",
     emailPlaceholder: "you@email.com",
-    topicLabel: "Subject",
-    topics: {
-      suggestion: "A suggestion",
-      bug: "A technical problem",
-      account: "My account or my application",
-      employer: "I'm hiring",
-      other: "Something else",
-    },
+    subjectLabel: "Subject",
+    subjectPlaceholder: "A suggestion, a bug, a question…",
     messageLabel: "Your message",
     messagePlaceholder:
       "Tell us everything — the more specific you are, the faster we can help.",
@@ -646,7 +635,7 @@ const en: typeof fr = {
     honeypotLabel: "Leave this field empty",
     errors: {
       invalid:
-        "Check your details: a name, a valid email and a message of at least 10 characters are required.",
+        "Check your details: a name, a valid email, a subject and a message of at least 10 characters are required.",
       rateLimited:
         "You've already sent several messages. Try again in a few minutes — we did receive the earlier ones.",
       unavailable:
@@ -666,7 +655,6 @@ const en: typeof fr = {
   footer: {
     company: "Resources",
     employerLink: "Employer space",
-    contact: "Contact us",
     tagline: "Your job in Cameroon",
     disclaimer:
       "Applying is 100% free — no serious employer will ever ask you to pay to apply.",

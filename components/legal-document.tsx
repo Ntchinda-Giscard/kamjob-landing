@@ -170,7 +170,14 @@ export function LegalDocument({ doc }: { doc: LegalDocKey }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Reduced header: the legal pages are a reading context, not a funnel. */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+      <header className="sticky top-0 z-50 backdrop-blur-md">
+        <span aria-hidden className="tricolor block h-[3px] w-full" />
+        <div
+          className="border-b border-border"
+          style={{
+            backgroundColor: "color-mix(in srgb, var(--paper) 88%, transparent)",
+          }}
+        >
         <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
           <a href="/" aria-label="KamJob">
             <KamJobLogo size="small" />
@@ -186,15 +193,17 @@ export function LegalDocument({ doc }: { doc: LegalDocKey }) {
             <LangSwitcher />
           </div>
         </div>
+        </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-5 py-12 sm:py-16">
         <div className="max-w-3xl">
           <p
-            className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em]"
-            style={{ color: "var(--brand-text)" }}
+            className="eyebrow inline-flex items-center gap-2.5"
+            style={{ color: "var(--muted-foreground)" }}
           >
-            <Scale className="w-4 h-4" aria-hidden />
+            <span aria-hidden className="tricolor h-[3px] w-7 shrink-0 rounded-full" />
+            <Scale className="w-3.5 h-3.5" strokeWidth={1.5} aria-hidden />
             {document.label.toUpperCase()}
           </p>
           <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight text-balance">

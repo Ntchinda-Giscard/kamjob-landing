@@ -1,85 +1,149 @@
 @import 'tailwindcss';
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   KamJob — "Ink & Paper" design system
+   ───────────────────────────────────────────────────────────────────────────
+   Art direction: editorial poster. A warm paper ground carries the reading
+   copy; full-bleed ink slabs punctuate it. The Cameroon tricolour (green ·
+   red · gold) is used *structurally* — as rules, spines and markers — rather
+   than as decorative pastel tinting, because the product is Cameroon-only and
+   that is the one thing no template can borrow.
+
+   Typography is three-voiced on purpose:
+     display  Bricolage Grotesque — headlines, wordmark, numerals
+     body     Public Sans         — every paragraph
+     mono     JetBrains Mono      — eyebrows, data, labels, tickers
+
+   Token naming is deliberately backwards-compatible: the legal pages and the
+   contact form address --brand-*, --amber-*, --red-* and the neutral ramp, so
+   re-valuing those names re-skins them for free. Everything genuinely new
+   (slabs, paper, rules) is additive.
+   ═════════════════════════════════════════════════════════════════════════ */
+
 :root {
   color-scheme: light;
 
-  /* KamJob Google-style palette — same tokens as the candidate app */
-  --background: #FFFFFF;
-  --foreground: #202124;
-  --card: #FFFFFF;
-  --card-foreground: #202124;
-  --secondary: #F1F3F4;
-  --secondary-foreground: #202124;
-  --muted: #F1F3F4;
-  --muted-foreground: #5F6368;
-  --border: #DADCE0;
-  --radius: 1rem;
+  /* ── Ground ──────────────────────────────────────────────────────────────
+     Warm paper, never #FFFFFF. A pure-white page is the single loudest tell
+     of a generated layout; six points of warmth cost nothing and read as a
+     printed object. */
+  --paper: #F7F4EC;
+  --paper-sunk: #EFEBE0;
+  --paper-raised: #FDFBF6;
 
-  /* Brand ramps.
-     `-solid` fills shapes, `-text` is the only variant safe on `-pale`
-     (both clear 4.5:1 — the raw brand hues do not). */
-  --brand-solid: #34A853;
-  --brand-hover: #1E8E3E;
-  --brand-text: #12693A;
-  --brand-pale: #E6F4EA;
-  --brand-glow: rgba(52, 168, 83, 0.14);
+  --background: var(--paper);
+  --foreground: #101A14;
+  --card: var(--paper-raised);
+  --card-foreground: #101A14;
+  --secondary: var(--paper-sunk);
+  --secondary-foreground: #101A14;
+  --muted: var(--paper-sunk);
+  --muted-foreground: #5C6459;
+  --border: #DED8C8;
+  --border-strong: #C6BFAC;
+  --radius: 0.75rem;
 
-  --amber-solid: #FBBC05;
-  --amber-text: #8A5A00;
-  --amber-pale: #FEF7E0;
-  --amber-glow: rgba(251, 188, 5, 0.12);
-  --on-amber: #2B1F00;
+  /* ── Ink slab ────────────────────────────────────────────────────────────
+     The inverted surface. In light mode it is a near-black green; in dark
+     mode it flips to a *lifted* panel, so the light/dark rhythm of the page
+     survives the scheme change instead of collapsing to one flat tone. */
+  --slab: #0D1712;
+  --slab-raised: #16241C;
+  --slab-fg: #F1EEE4;
+  --slab-muted: #9BA79D;
+  --slab-border: #24352B;
 
-  --red-solid: #EA4335;
-  --red-text: #B3261E;
-  --red-pale: #FCE8E6;
+  /* ── Tricolour ───────────────────────────────────────────────────────────
+     Flag hues, deepened out of the Google-primary register they were in.
+     `-solid` fills shapes, `-text` is the AA-safe variant on paper,
+     `-on-ink` is the AA-safe variant on the slab. */
+  --brand-solid: #167A3E;
+  --brand-hover: #0F642F;
+  --brand-text: #0E5A2C;
+  --brand-on-ink: #6FD494;
+  --brand-pale: #E4EFE4;
+  --brand-glow: rgba(22, 122, 62, 0.16);
 
-  /* Elevation — tinted rather than neutral black, so cards feel lifted
-     off the page instead of dirty. */
-  --shadow-card: 0 1px 2px rgba(32, 33, 36, 0.05), 0 4px 12px -4px rgba(32, 33, 36, 0.08);
-  --shadow-lift: 0 2px 4px rgba(32, 33, 36, 0.06), 0 16px 32px -12px rgba(32, 33, 36, 0.16);
-  --shadow-brand: 0 4px 14px -2px rgba(52, 168, 83, 0.35);
+  --gold-solid: #E9A81C;
+  --gold-text: #7A4E00;
+  --gold-on-ink: #F6C85C;
+  --gold-pale: #F7EED6;
+  --on-gold: #241700;
+
+  --red-solid: #CB3A2A;
+  --red-text: #A32418;
+  --red-on-ink: #FF9482;
+  --red-pale: #F7E4DF;
+
+  /* Aliases kept so legal-document.tsx and the contact form keep resolving. */
+  --amber-solid: var(--gold-solid);
+  --amber-text: var(--gold-text);
+  --amber-pale: var(--gold-pale);
+  --amber-glow: rgba(233, 168, 28, 0.14);
+  --on-amber: var(--on-gold);
+
+  /* ── Elevation ───────────────────────────────────────────────────────────
+     Warm-tinted rather than neutral black: a grey shadow on a cream page
+     reads as dirt. Kept shallow — this design leans on rules and contrast
+     for hierarchy, not on floating cards. */
+  --shadow-card: 0 1px 2px rgba(28, 34, 24, 0.05), 0 3px 10px -4px rgba(28, 34, 24, 0.07);
+  --shadow-lift: 0 2px 4px rgba(28, 34, 24, 0.07), 0 18px 34px -14px rgba(28, 34, 24, 0.2);
+  --shadow-brand: 0 3px 0 0 var(--brand-hover);
+  --shadow-ink: 0 3px 0 0 #000000;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
 
-    --background: #202124;
-    --foreground: #E8EAED;
-    --card: #303134;
-    --card-foreground: #E8EAED;
-    --secondary: #303134;
-    --secondary-foreground: #E8EAED;
-    --muted: #303134;
-    --muted-foreground: #9AA0A6;
-    --border: #45474A;
+    --paper: #0A110D;
+    --paper-sunk: #0F1813;
+    --paper-raised: #121C16;
 
-    /* Pale tints invert to translucent washes; text variants lighten so
-       they stay readable on those washes. */
-    --brand-solid: #34A853;
-    --brand-hover: #46BC66;
-    --brand-text: #81D89A;
-    --brand-pale: rgba(52, 168, 83, 0.16);
-    --brand-glow: rgba(52, 168, 83, 0.16);
+    --foreground: #EDEAE0;
+    --card-foreground: #EDEAE0;
+    --secondary-foreground: #EDEAE0;
+    --muted-foreground: #99A398;
+    --border: #26332B;
+    --border-strong: #3A4A40;
 
-    --amber-solid: #FBBC05;
-    --amber-text: #F3C864;
-    --amber-pale: rgba(251, 188, 5, 0.14);
-    --amber-glow: rgba(251, 188, 5, 0.10);
+    /* The slab inverts direction: on a dark page the punctuating surface is
+       the one that lifts, not the one that sinks. */
+    --slab: #121C16;
+    --slab-raised: #1B2921;
+    --slab-fg: #EDEAE0;
+    --slab-muted: #99A398;
+    --slab-border: #2C3B33;
 
-    --red-solid: #EA4335;
-    --red-text: #F28B82;
-    --red-pale: rgba(234, 67, 53, 0.16);
+    --brand-solid: #229950;
+    --brand-hover: #2CB160;
+    --brand-text: #6FD494;
+    --brand-pale: rgba(34, 153, 80, 0.16);
+    --brand-glow: rgba(34, 153, 80, 0.18);
 
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px -4px rgba(0, 0, 0, 0.5);
-    --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.4), 0 16px 32px -12px rgba(0, 0, 0, 0.6);
-    --shadow-brand: 0 4px 14px -2px rgba(52, 168, 83, 0.4);
+    --gold-solid: #E9A81C;
+    --gold-text: #F6C85C;
+    --gold-pale: rgba(233, 168, 28, 0.14);
+    --amber-glow: rgba(233, 168, 28, 0.1);
+
+    --red-solid: #D9503F;
+    --red-text: #FF9482;
+    --red-pale: rgba(203, 58, 42, 0.18);
+
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.45), 0 3px 10px -4px rgba(0, 0, 0, 0.55);
+    --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.45), 0 18px 34px -14px rgba(0, 0, 0, 0.65);
+    --shadow-brand: 0 3px 0 0 #0B4B25;
+    --shadow-ink: 0 3px 0 0 #000000;
   }
 }
 
 @theme inline {
-  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-display: var(--font-bricolage), 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-public-sans), 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -89,14 +153,28 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-paper: var(--paper);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-paper-raised: var(--paper-raised);
+  --color-slab: var(--slab);
+  --color-slab-raised: var(--slab-raised);
+  --color-slab-fg: var(--slab-fg);
+  --color-slab-muted: var(--slab-muted);
+  --color-slab-border: var(--slab-border);
 
   --color-brand: var(--brand-solid);
   --color-brand-hover: var(--brand-hover);
   --color-brand-text: var(--brand-text);
   --color-brand-pale: var(--brand-pale);
-  --color-amber: var(--amber-solid);
-  --color-amber-text: var(--amber-text);
-  --color-amber-pale: var(--amber-pale);
+  --color-brand-on-ink: var(--brand-on-ink);
+  --color-gold: var(--gold-solid);
+  --color-gold-text: var(--gold-text);
+  --color-gold-pale: var(--gold-pale);
+  --color-amber: var(--gold-solid);
+  --color-amber-text: var(--gold-text);
+  --color-amber-pale: var(--gold-pale);
   --color-red: var(--red-solid);
   --color-red-text: var(--red-text);
   --color-red-pale: var(--red-pale);
@@ -104,30 +182,42 @@
   --radius-lg: var(--radius);
   --shadow-card: var(--shadow-card);
   --shadow-lift: var(--shadow-lift);
-  --shadow-brand: var(--shadow-brand);
 }
 
 @layer base {
   * {
     border-color: var(--border);
   }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
-  /* Every interactive element gets the same visible ring. Inline-styled
-     brand buttons had no focus affordance at all before. */
+  /* The display face owns every heading, so the voice never has to be
+     re-declared per component. Optical sizing is why Bricolage was chosen:
+     one file is a tight poster face at 5rem and a legible one at 1.25rem. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.03em;
+  }
+
   :focus-visible {
     outline: 2px solid var(--brand-solid);
-    outline-offset: 2px;
-    border-radius: 0.35rem;
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 
   ::selection {
-    background-color: var(--brand-pale);
-    color: var(--brand-text);
+    background-color: var(--brand-solid);
+    color: #ffffff;
   }
 }
 
@@ -135,50 +225,183 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ── Texture ───────────────────────────────────────────────────────────────
+   A single fixed grain plate over the whole document. At 5% it is invisible
+   as a pattern and unmistakable as a surface — it is what stops large flat
+   colour fields from reading as unrendered CSS. One element, no repaint. */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  .grain::after {
+    mix-blend-mode: screen;
+    opacity: 0.06;
+  }
+}
+
+/* ── The tricolour rule ────────────────────────────────────────────────────
+   Green · red · gold, in flag order. Used as a section marker, a card spine
+   and a slab edge. It is the page's signature and appears nowhere else, so
+   it never degrades into decoration. */
+.tricolor {
+  background-image: linear-gradient(
+    90deg,
+    var(--brand-solid) 0 33.34%,
+    var(--red-solid) 33.34% 66.67%,
+    var(--gold-solid) 66.67% 100%
+  );
+}
+
+.tricolor-y {
+  background-image: linear-gradient(
+    180deg,
+    var(--brand-solid) 0 33.34%,
+    var(--red-solid) 33.34% 66.67%,
+    var(--gold-solid) 66.67% 100%
+  );
+}
+
+/* ── Surfaces ───────────────────────────────────────────────────────────── */
+
+.slab {
+  background-color: var(--slab);
+  color: var(--slab-fg);
+}
+
+/* Bleeds a centred section to both viewport edges without an extra wrapper. */
+.bleed {
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
+}
+
+/* ── Type utilities ─────────────────────────────────────────────────────── */
+
+.display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Headline swash: a skewed wash under the accent phrase, so the emphasis is
+   a drawn mark rather than yet another coloured span. */
+.marker {
+  position: relative;
+  display: inline-block;
+  color: var(--brand-text);
+  isolation: isolate;
+}
+
+.marker::after {
+  content: '';
+  position: absolute;
+  left: -0.05em;
+  right: -0.05em;
+  bottom: 0.06em;
+  height: 0.2em;
+  background-color: var(--brand-solid);
+  opacity: 0.24;
+  transform: skewX(-14deg);
+  z-index: -1;
+}
+
 /* ── Motion ────────────────────────────────────────────────────────────────
-   Reveal-on-scroll: elements start shifted and are un-hidden by the
-   IntersectionObserver in <Reveal>. The `.reveal` base state is only applied
-   once JS marks the document ready, so no-JS visitors see everything. */
+   Reveal-on-scroll. The hidden start state lives behind `.js-reveal`, added
+   by <Reveal> at runtime, so no-JS visitors and crawlers see everything. */
 
 .js-reveal .reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(20px);
 }
 
 .js-reveal .reveal.is-visible {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.7s var(--ease),
+    transform 0.7s var(--ease);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-/* Hero mockup drifts so the fold is never completely static. */
+/* Hero headline: each line wipes up from behind its own clip box, which is
+   what makes an entrance read as typeset rather than merely faded in. */
+@keyframes line-up {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.line-clip {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.line-clip > span {
+  display: block;
+  animation: line-up 0.9s var(--ease) backwards;
+  animation-delay: var(--line-delay, 0ms);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise-in {
+  animation: rise-in 0.7s var(--ease) backwards;
+}
+
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translateY(-12px) rotate(var(--tilt, 0deg));
+  }
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 7s ease-in-out infinite;
 }
 
-@keyframes pop-in {
-  from { opacity: 0; transform: scale(0.92) translateY(6px); }
-  to { opacity: 1; transform: none; }
-}
-
-.animate-pop-in {
-  animation: pop-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-
-/* FAQ answers grow from 0fr → 1fr so the height animates without JS
-   measurement. */
+/* FAQ answers grow 0fr → 1fr so height animates without JS measurement. */
 .collapse-grid {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 0.35s var(--ease);
 }
 
 .collapse-grid[data-open='true'] {
@@ -189,95 +412,168 @@ html {
   overflow: hidden;
 }
 
-/* Infinite offers ticker — the track holds the list twice and slides by half. */
+/* Infinite ticker — the track holds the list twice and slides by half. */
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 35s linear infinite;
+  animation: marquee var(--marquee-duration, 42s) linear infinite;
+}
+
+.marquee-track.reverse {
+  animation-direction: reverse;
 }
 
 .marquee-viewport:hover .marquee-track {
   animation-play-state: paused;
 }
 
-/* Fade the ends so the loop reads as continuous instead of clipped. */
 .marquee-viewport {
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
 }
 
-/* ── Interaction ──────────────────────────────────────────────────────────── */
+/* ── Interaction ───────────────────────────────────────────────────────────
+   Buttons sit on a hard 3px offset shadow rather than a blur, and travel down
+   into it on press. A physical, printed-object affordance — and the opposite
+   of the soft glowing pill every generated page ships with. */
 
-.card-lift {
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border-radius: 999px;
   transition:
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.25s ease;
-}
-
-@media (hover: hover) {
-  .card-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lift);
-    border-color: color-mix(in srgb, var(--brand-solid) 40%, var(--border));
-  }
-}
-
-.btn-press {
-  transition:
-    transform 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
     background-color 0.2s ease,
-    box-shadow 0.2s ease,
     border-color 0.2s ease,
     color 0.2s ease;
 }
 
-.btn-press:active {
-  transform: scale(0.97);
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: none !important;
 }
 
 .btn-brand {
   background-color: var(--brand-solid);
-  color: #fff;
+  color: #ffffff;
   box-shadow: var(--shadow-brand);
+}
+
+.btn-ink {
+  background-color: var(--slab);
+  color: var(--slab-fg);
+  box-shadow: var(--shadow-ink);
+}
+
+.btn-paper {
+  background-color: var(--paper-raised);
+  color: var(--foreground);
+  border: 1px solid var(--border-strong);
 }
 
 @media (hover: hover) {
   .btn-brand:hover {
     background-color: var(--brand-hover);
-    box-shadow: var(--shadow-lift);
+  }
+  .btn-paper:hover {
+    border-color: var(--foreground);
+  }
+  .btn-ink:hover {
+    background-color: var(--slab-raised);
   }
 }
 
-/* Hero backdrop: a faint dot grid, masked to fade out before it reaches
-   the copy. Cheaper and steadier than a large blurred gradient. */
-.dot-grid {
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    color-mix(in srgb, var(--muted-foreground) 28%, transparent) 1px,
-    transparent 0
-  );
-  background-size: 28px 28px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000, transparent 75%);
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000, transparent 75%);
+/* Kept for legacy call sites; the press behaviour now lives in `.btn`. */
+.btn-press {
+  transition:
+    transform 0.12s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn-press:active {
+  transform: translateY(2px);
+}
+
+/* Cards move a hair and sharpen their border — no lift-and-glow. */
+.card-lift {
+  transition:
+    transform 0.28s var(--ease),
+    border-color 0.28s ease,
+    background-color 0.28s ease;
+}
+
+@media (hover: hover) {
+  .card-lift:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+  }
+}
+
+/* Nav and footer links: the rule grows from the left on hover. */
+.link-rule {
+  position: relative;
+}
+
+.link-rule::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1.5px;
+  width: 100%;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--ease);
+}
+
+@media (hover: hover) {
+  .link-rule:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ── Backdrops ─────────────────────────────────────────────────────────── */
+
+/* Engineering-drawing graph paper. Two hairline gradients, masked so the grid
+   never crosses the reading column. */
+.grid-paper {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--foreground) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--foreground) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 60% 0%, #000, transparent 78%);
+  mask-image: radial-gradient(ellipse 80% 70% at 60% 0%, #000, transparent 78%);
+}
+
+.grid-paper-ink {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -286,7 +582,8 @@ html {
   }
   .marquee-track,
   .animate-float,
-  .animate-pop-in {
+  .rise-in,
+  .line-clip > span {
     animation: none;
   }
   .js-reveal .reveal {
@@ -295,7 +592,9 @@ html {
   }
   .collapse-grid,
   .card-lift,
-  .btn-press {
+  .btn,
+  .btn-press,
+  .link-rule::after {
     transition: none;
   }
 }

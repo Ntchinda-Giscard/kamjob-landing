@@ -3,18 +3,25 @@
 import { useLanguage } from '@/lib/i18n'
 import type { Lang } from '@/lib/translations'
 
-/** FR/EN toggle. Shared by the landing header and the legal pages' header. */
-export function LangSwitcher() {
+/**
+ * FR/EN toggle. Shared by the landing header and the legal pages' header.
+ * Squared off and set in the mono face so it reads as a system control rather
+ * than a third pill competing with the two CTAs beside it.
+ */
+export function LangSwitcher({ onDark = false }: { onDark?: boolean }) {
   const { lang, setLang, t } = useLanguage()
 
   const btn = (l: Lang, label: string) => (
     <button
       onClick={() => setLang(l)}
-      className="px-2.5 py-1 text-xs font-bold rounded-full btn-press"
+      className="mono btn-press rounded-[4px] px-2 py-1 text-[11px] font-bold tracking-widest"
       style={
         lang === l
-          ? { backgroundColor: 'var(--brand-solid)', color: 'white' }
-          : { color: 'var(--muted-foreground)' }
+          ? {
+              backgroundColor: onDark ? 'var(--slab-fg)' : 'var(--foreground)',
+              color: onDark ? 'var(--slab)' : 'var(--paper)',
+            }
+          : { color: onDark ? 'var(--slab-muted)' : 'var(--muted-foreground)' }
       }
       aria-pressed={lang === l}
     >
@@ -24,7 +31,8 @@ export function LangSwitcher() {
 
   return (
     <div
-      className="flex items-center gap-0.5 rounded-full border border-border p-0.5"
+      className="flex items-center gap-0.5 rounded-md border p-0.5"
+      style={{ borderColor: onDark ? 'var(--slab-border)' : 'var(--border)' }}
       role="group"
       aria-label={t.nav.langLabel}
     >

@@ -16,7 +16,9 @@ const MIN_MESSAGE = 10;
 type ErrorCode = "invalid" | "rateLimited" | "unavailable";
 
 const FIELD_CLASS =
-  "w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--brand-solid)] focus:border-transparent transition-shadow";
+  "w-full rounded-lg border bg-[var(--paper)] px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground border-[var(--border)] focus:outline-none focus:border-[var(--brand-solid)] focus:ring-1 focus:ring-[var(--brand-solid)] transition-colors";
+
+const LABEL_CLASS = "eyebrow mb-2.5 block text-[var(--muted-foreground)]";
 
 export function ContactSection() {
   const { t, lang } = useLanguage();
@@ -93,30 +95,41 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="border-t border-border bg-card/50 scroll-mt-20"
+      className="scroll-mt-24 border-t"
+      style={{
+        borderColor: "var(--border)",
+        backgroundColor: "var(--paper-sunk)",
+      }}
     >
-      <div className="max-w-3xl mx-auto px-5 py-20">
+      <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
+        {/* One of only two centred axes on the page: a single form column has
+            no second element to be asymmetric against. */}
         <SectionHeading
+          index="07"
+          align="center"
           eyebrow={c.eyebrow}
           title={c.title}
           subtitle={c.subtitle}
         />
 
         <Reveal>
-          <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-[var(--shadow-card)]">
+          <div
+            className="relative overflow-hidden rounded-2xl border p-6 sm:p-9"
+            style={{
+              borderColor: "var(--border)",
+              backgroundColor: "var(--paper-raised)",
+            }}
+          >
+            <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
             {status === "sent" ? (
               <div className="text-center py-6" role="status">
                 <div
-                  className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-5"
-                  style={{ backgroundColor: "var(--brand-pale)" }}
+                  className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full"
+                  style={{ backgroundColor: "var(--brand-solid)" }}
                 >
-                  <CheckCircle2
-                    className="w-7 h-7"
-                    style={{ color: "var(--brand-text)" }}
-                    aria-hidden
-                  />
+                  <CheckCircle2 className="h-7 w-7 text-white" aria-hidden />
                 </div>
-                <p className="text-lg font-bold text-foreground mb-2">
+                <p className="display mb-3 text-2xl font-extrabold">
                   {c.successTitle}
                 </p>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
@@ -134,7 +147,7 @@ export function ContactSection() {
                     });
                     setStatus("idle");
                   }}
-                  className="btn-press mt-6 text-sm font-semibold"
+                  className="link-rule mt-7 text-sm font-semibold"
                   style={{ color: "var(--brand-text)" }}
                 >
                   {c.again}
@@ -150,7 +163,7 @@ export function ContactSection() {
                   <div>
                     <label
                       htmlFor="contact-name"
-                      className="block text-sm font-semibold text-foreground mb-2"
+                      className={LABEL_CLASS}
                     >
                       {c.nameLabel}
                     </label>
@@ -171,7 +184,7 @@ export function ContactSection() {
                   <div>
                     <label
                       htmlFor="contact-email"
-                      className="block text-sm font-semibold text-foreground mb-2"
+                      className={LABEL_CLASS}
                     >
                       {c.emailLabel}
                     </label>
@@ -193,7 +206,7 @@ export function ContactSection() {
                 <div>
                   <label
                     htmlFor="contact-subject"
-                    className="block text-sm font-semibold text-foreground mb-2"
+                    className={LABEL_CLASS}
                   >
                     {c.subjectLabel}
                   </label>
@@ -213,7 +226,7 @@ export function ContactSection() {
                 <div>
                   <label
                     htmlFor="contact-message"
-                    className="block text-sm font-semibold text-foreground mb-2"
+                    className={LABEL_CLASS}
                   >
                     {c.messageLabel}
                   </label>
@@ -248,9 +261,10 @@ export function ContactSection() {
                 {error && (
                   <div
                     role="alert"
-                    className="rounded-2xl px-4 py-3 text-sm leading-relaxed"
+                    className="rounded-lg border-l-[3px] px-4 py-3 text-sm leading-relaxed"
                     style={{
                       backgroundColor: "var(--red-pale)",
+                      borderColor: "var(--red-solid)",
                       color: "var(--red-text)",
                     }}
                   >
@@ -273,7 +287,7 @@ export function ContactSection() {
                   type="submit"
                   disabled={status === "sending"}
                   aria-busy={status === "sending"}
-                  className="btn-brand btn-press w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-semibold disabled:opacity-70"
+                  className="btn btn-brand w-full px-8 py-3.5 disabled:opacity-70 sm:w-auto"
                 >
                   {status === "sending" ? (
                     c.sending
@@ -285,7 +299,7 @@ export function ContactSection() {
                   )}
                 </button>
 
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-xs leading-relaxed text-muted-foreground">
                   {c.privacyNote}{" "}
                   <a
                     href={LEGAL_ROUTES.privacy}
@@ -299,12 +313,12 @@ export function ContactSection() {
           </div>
         </Reveal>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground flex flex-wrap items-center justify-center gap-1.5">
-          <Mail className="w-4 h-4" aria-hidden />
+        <p className="mono mt-7 flex flex-wrap items-center justify-center gap-2 text-center text-xs uppercase tracking-wider text-muted-foreground">
+          <Mail className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
           {c.directLabel}{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="font-semibold hover:text-foreground transition-colors"
+            className="link-rule font-bold normal-case tracking-normal"
             style={{ color: "var(--brand-text)" }}
           >
             {CONTACT_EMAIL}

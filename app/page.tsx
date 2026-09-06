@@ -1,5 +1,27 @@
 "use client";
 
+/**
+ * KamJob landing page — "Ink & Paper".
+ *
+ * Design decisions this file assumes (tokens and utilities live in
+ * `app/globals.css`):
+ *
+ *   Direction   Editorial poster. Warm paper carries the reading copy;
+ *               full-bleed ink slabs punctuate it. Every section changes
+ *               shape — indexed rule, ink data bar, ticker, outlined
+ *               numerals, split feature bento, hairline row, tickets,
+ *               staggered quotes, two-column FAQ — so no two read as the
+ *               same template stamped twice.
+ *   Type        Bricolage Grotesque (display) / Public Sans (body) /
+ *               JetBrains Mono (eyebrows, data, tickers).
+ *   Colour      Cameroon tricolour used structurally — rules, spines,
+ *               markers, outlined numerals — never as pastel icon tiles.
+ *   Motion      One orchestrated hero entrance (headline lines wipe up from
+ *               their own clip boxes), then scroll-reveals with a stagger.
+ *   Layout      Asymmetric by default. Centred axes are reserved for the
+ *               two moments that earn them: the contact panel and the close.
+ */
+
 import { useEffect, useState } from "react";
 import { KamJobLogo } from "@/components/logo";
 import { LangSwitcher } from "@/components/lang-switcher";
@@ -8,14 +30,10 @@ import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/lib/i18n";
-import {
-  EMPLOYER_URL,
-  LOGIN_URL,
-  NAV_LINKS,
-  SIGNUP_URL,
-} from "@/lib/site";
+import { EMPLOYER_URL, LOGIN_URL, NAV_LINKS, SIGNUP_URL } from "@/lib/site";
 import {
   ArrowRight,
+  ArrowUpRight,
   Zap,
   ShieldCheck,
   Sparkles,
@@ -27,8 +45,7 @@ import {
   BadgeCheck,
   Briefcase,
   MousePointerClick,
-  ChevronDown,
-  Quote,
+  Plus,
   User,
   Menu,
   Wallet,
@@ -45,161 +62,201 @@ const FEATURE_ICONS = [
   Bell,
 ];
 
-// Tints rotate green → amber → red so the grid reads as one brand system
-// rather than six unrelated cards. `*-text` variants are the AA-safe ones.
-const FEATURE_TONES = [
-  { bg: "var(--brand-pale)", fg: "var(--brand-text)" },
-  { bg: "var(--amber-pale)", fg: "var(--amber-text)" },
-  { bg: "var(--red-pale)", fg: "var(--red-text)" },
-  { bg: "var(--brand-pale)", fg: "var(--brand-text)" },
-  { bg: "var(--amber-pale)", fg: "var(--amber-text)" },
-  { bg: "var(--red-pale)", fg: "var(--red-text)" },
-];
-
 const TRUST_ICONS = [Wallet, ShieldCheck, Smartphone];
+
+/** Flag order. Cycled for card spines and outlined numerals so the palette
+ *  reads as one rotating system instead of six unrelated accent colours. */
+const FLAG = ["var(--brand-solid)", "var(--red-solid)", "var(--gold-solid)"];
+const flagAt = (i: number) => FLAG[i % 3];
+
+const cssVars = (vars: Record<string, string>) => vars as React.CSSProperties;
 
 // ── Small building blocks ─────────────────────────────────────────────────────
 
-function Chip({ label, tone }: { label: string; tone: 0 | 1 | 2 }) {
-  const t = FEATURE_TONES[tone];
+/** Squared-off mono tag. The old pill-shaped pastel chip was the single most
+ *  template-looking element in the mockup. */
+function MetaTag({ label, color }: { label: string; color: string }) {
   return (
     <span
-      className="px-2 py-0.5 text-[10px] font-semibold rounded-full"
-      style={{ backgroundColor: t.bg, color: t.fg }}
+      className="mono rounded-[3px] border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+      style={{ borderColor: color, color }}
     >
       {label}
     </span>
   );
 }
 
-// A miniature of the real swipe card, drawn in pure CSS for the hero mockup.
-function PhoneMockup() {
+/**
+ * The hero visual: a fanned deck of job cards rather than a phone chrome.
+ * The product *is* a deck you swipe, so showing the deck says more than a
+ * bezel and a notch — and it sidesteps the stock device mockup entirely.
+ */
+function CardDeck() {
   const { t } = useLanguage();
+
   return (
-    <div className="relative mx-auto w-[280px] animate-float">
-      {/* Glow puddle so the phone sits on the page instead of floating flat. */}
+    <div className="relative mx-auto w-[19rem] max-w-full sm:w-[21rem]">
+      {/* Two cards fanned behind the front one: the queue of offers waiting. */}
       <div
         aria-hidden
-        className="absolute -inset-8 -z-10 rounded-full blur-3xl"
-        style={{ backgroundColor: "var(--brand-glow)" }}
+        className="absolute inset-x-6 top-6 h-full rounded-2xl border"
+        style={{
+          backgroundColor: "var(--paper-sunk)",
+          borderColor: "var(--border)",
+          transform: "rotate(6deg)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-3 top-3 h-full rounded-2xl border"
+        style={{
+          backgroundColor: "var(--paper-raised)",
+          borderColor: "var(--border)",
+          transform: "rotate(3deg)",
+        }}
       />
 
       <div
-        className="relative rounded-[2.5rem] border-8 border-foreground/90 bg-background shadow-2xl overflow-hidden"
-        role="img"
-        aria-label={t.mockup.alt}
+        className="animate-float relative"
+        style={cssVars({ "--tilt": "-1.5deg" })}
       >
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-5 bg-foreground/90 rounded-full z-20" />
-        <div className="pt-10 pb-6 px-4">
-          <div className="relative bg-card rounded-2xl shadow-xl overflow-hidden border border-border">
-            <div
-              className="h-1"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--brand-solid) 0%, var(--amber-solid) 50%, var(--red-solid) 100%)",
-              }}
-            />
+        <div
+          className="relative overflow-hidden rounded-2xl border shadow-[var(--shadow-lift)]"
+          style={{
+            backgroundColor: "var(--paper-raised)",
+            borderColor: "var(--border-strong)",
+          }}
+          role="img"
+          aria-label={t.mockup.alt}
+        >
+          {/* Tricolour spine — the card's edge is where the flag lives. */}
+          <span
+            aria-hidden
+            className="tricolor-y absolute inset-y-0 left-0 w-[5px]"
+          />
 
-            <div
-              className="absolute top-6 right-3 px-2.5 py-1 rounded-lg rotate-12 z-10"
-              style={{ backgroundColor: "var(--brand-solid)" }}
-            >
-              <span className="text-white font-bold text-xs tracking-wide">
-                {t.mockup.stamp}
-              </span>
-            </div>
+          {/* Rotated approval stamp, ink on gold, like a wet office stamp. */}
+          <span
+            className="mono absolute right-3 top-3 z-10 rounded-[3px] px-2 py-1 text-[10px] font-bold uppercase tracking-widest"
+            style={{
+              backgroundColor: "var(--gold-solid)",
+              color: "var(--on-gold)",
+              transform: "rotate(8deg)",
+            }}
+          >
+            {t.mockup.stamp}
+          </span>
 
-            <div className="p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[10px]"
-                  style={{
-                    backgroundColor: "var(--brand-pale)",
-                    color: "var(--brand-text)",
-                  }}
-                >
-                  ST
-                </div>
-                <span className="font-semibold text-foreground text-sm">
-                  ST Digital
-                </span>
-                <BadgeCheck
-                  className="w-4 h-4"
-                  style={{ color: "var(--brand-solid)" }}
-                />
-              </div>
-              <p className="text-sm font-bold text-foreground mb-2">
-                Head of Business Desk
-              </p>
-              <div className="flex gap-1 mb-2">
-                <Chip label="CDI" tone={0} />
-                <Chip label="Douala" tone={1} />
-                <Chip label="Bac+5" tone={2} />
-              </div>
-              <div
-                className="rounded-lg h-28 mb-2 flex flex-col items-center justify-center text-white"
+          <div className="py-5 pl-6 pr-4">
+            <div className="mb-3 flex items-center gap-2">
+              <span
+                className="mono flex h-8 w-8 items-center justify-center rounded-[5px] text-[11px] font-bold"
                 style={{
-                  background:
-                    "linear-gradient(160deg, #1a3e72 0%, #10294e 100%)",
+                  backgroundColor: "var(--slab)",
+                  color: "var(--slab-fg)",
                 }}
               >
-                <p className="text-[10px] tracking-[0.2em] opacity-80">
-                  {t.mockup.hiringTop}
-                </p>
-                <p className="font-extrabold text-lg leading-tight">
-                  {t.mockup.hiringMain}
-                </p>
-                <p className="text-[9px] mt-1 opacity-70">
-                  {t.mockup.hiringSub}
-                </p>
-              </div>
-              <div className="space-y-1.5">
-                <div className="h-1.5 rounded bg-secondary w-full" />
-                <div className="h-1.5 rounded bg-secondary w-4/5" />
-                <div className="h-1.5 rounded bg-secondary w-3/5" />
-              </div>
+                ST
+              </span>
+              <span className="text-sm font-semibold">ST Digital</span>
+              <BadgeCheck
+                className="h-4 w-4"
+                strokeWidth={2}
+                style={{ color: "var(--brand-solid)" }}
+              />
             </div>
-          </div>
 
-          <div className="flex items-center justify-center gap-6 mt-4">
-            <span
-              className="w-11 h-11 rounded-full bg-card border border-border shadow-md flex items-center justify-center"
-              style={{ color: "var(--red-solid)" }}
+            <p className="display mb-3 text-xl font-bold leading-tight">
+              Head of Business Desk
+            </p>
+
+            <div className="mb-4 flex flex-wrap gap-1.5">
+              <MetaTag label="CDI" color="var(--brand-text)" />
+              <MetaTag label="Douala" color="var(--red-text)" />
+              <MetaTag label="Bac+5" color="var(--gold-text)" />
+            </div>
+
+            {/* The employer's poster — the artefact this market actually
+                circulates on WhatsApp, reproduced rather than abstracted. */}
+            <div
+              className="slab relative mb-4 flex h-32 flex-col items-center justify-center overflow-hidden rounded-lg"
+              aria-hidden
             >
-              <X className="w-5 h-5" strokeWidth={3} />
-            </span>
-            <span
-              className="w-11 h-11 rounded-full shadow-md flex items-center justify-center text-white"
-              style={{ backgroundColor: "var(--brand-solid)" }}
-            >
-              <Check className="w-5 h-5" strokeWidth={3} />
-            </span>
+              <span className="grid-paper-ink absolute inset-0 opacity-70" />
+              <p
+                className="mono relative text-[9px] tracking-[0.3em]"
+                style={{ color: "var(--brand-on-ink)" }}
+              >
+                {t.mockup.hiringTop}
+              </p>
+              <p className="display relative text-2xl font-extrabold leading-none">
+                {t.mockup.hiringMain}
+              </p>
+              <span
+                aria-hidden
+                className="tricolor relative my-2 h-[3px] w-10 rounded-full"
+              />
+              <p
+                className="relative text-[9px]"
+                style={{ color: "var(--slab-muted)" }}
+              >
+                {t.mockup.hiringSub}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-5">
+              <span
+                className="flex h-11 w-11 items-center justify-center rounded-full border-2"
+                style={{
+                  borderColor: "var(--red-solid)",
+                  color: "var(--red-solid)",
+                }}
+                aria-hidden
+              >
+                <X className="h-5 w-5" strokeWidth={3} />
+              </span>
+              <span
+                aria-hidden
+                className="h-px flex-1"
+                style={{ backgroundColor: "var(--border)" }}
+              />
+              <span
+                className="flex h-14 w-14 items-center justify-center rounded-full text-white"
+                style={{
+                  backgroundColor: "var(--brand-solid)",
+                  boxShadow: "var(--shadow-brand)",
+                }}
+                aria-hidden
+              >
+                <Check className="h-6 w-6" strokeWidth={3} />
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Outcome card — shows what a swipe actually produces, which is the
-          part the headline can only claim. */}
+      {/* What the swipe actually produced. The headline can only claim it. */}
       <div
         aria-hidden
-        className="absolute -right-6 sm:-right-12 bottom-24 w-[190px] rounded-2xl bg-card border border-border p-3 shadow-lift animate-pop-in"
-        style={{ animationDelay: "700ms" }}
+        className="rise-in slab absolute -right-3 bottom-16 w-[13rem] rounded-xl p-3 shadow-[var(--shadow-lift)] sm:-right-10"
+        style={{ animationDelay: "1100ms" }}
       >
         <div className="flex items-start gap-2.5">
           <span
-            className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
             style={{
-              backgroundColor: "var(--brand-pale)",
-              color: "var(--brand-text)",
+              backgroundColor: "var(--brand-solid)",
+              color: "#fff",
             }}
           >
-            <Send className="w-4 h-4" />
+            <Send className="h-3.5 w-3.5" />
           </span>
           <div className="min-w-0">
-            <p className="text-xs font-bold text-foreground leading-tight">
-              {t.mockup.toast}
-            </p>
-            <p className="text-[10px] text-muted-foreground leading-snug mt-0.5">
+            <p className="text-xs font-bold leading-tight">{t.mockup.toast}</p>
+            <p
+              className="mt-0.5 text-[10px] leading-snug"
+              style={{ color: "var(--slab-muted)" }}
+            >
               {t.mockup.toastSub}
             </p>
           </div>
@@ -209,6 +266,8 @@ function PhoneMockup() {
   );
 }
 
+/** FAQ row. Hairline-separated rather than boxed, with a rotating plus — the
+ *  stack of bordered accordion cards was another repeated-card moment. */
 function FaqItem({
   q,
   a,
@@ -223,27 +282,32 @@ function FaqItem({
   id: string;
 }) {
   return (
-    <div
-      className="bg-card border border-border rounded-2xl overflow-hidden transition-colors"
-      style={open ? { borderColor: "var(--brand-solid)" } : undefined}
-    >
+    <div className="border-b" style={{ borderColor: "var(--border)" }}>
       <h3>
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-between gap-4 p-5 text-left font-semibold text-foreground hover:bg-secondary/50 transition-colors"
+          className="flex w-full items-start justify-between gap-6 py-5 text-left"
           aria-expanded={open}
           aria-controls={`${id}-panel`}
           id={`${id}-button`}
         >
-          {q}
-          <ChevronDown
-            className="w-5 h-5 shrink-0 transition-transform duration-300 text-muted-foreground"
-            style={{
-              transform: open ? "rotate(180deg)" : undefined,
-              color: open ? "var(--brand-text)" : undefined,
-            }}
+          <span
+            className="display text-lg font-bold leading-snug transition-colors"
+            style={open ? { color: "var(--brand-text)" } : undefined}
+          >
+            {q}
+          </span>
+          <span
             aria-hidden
-          />
+            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-transform duration-300"
+            style={{
+              borderColor: open ? "var(--brand-solid)" : "var(--border-strong)",
+              color: open ? "var(--brand-text)" : "var(--muted-foreground)",
+              transform: open ? "rotate(135deg)" : undefined,
+            }}
+          >
+            <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+          </span>
         </button>
       </h3>
       {/* 0fr → 1fr grid trick: animates height without measuring it. */}
@@ -255,7 +319,10 @@ function FaqItem({
         aria-labelledby={`${id}-button`}
       >
         <div>
-          <p className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+          <p
+            className="max-w-2xl pb-6 pr-10 text-sm leading-relaxed"
+            style={{ color: "var(--muted-foreground)" }}
+          >
             {a}
           </p>
         </div>
@@ -264,8 +331,8 @@ function FaqItem({
   );
 }
 
-/** Bottom bar that appears once the hero CTA has scrolled away. Mobile is the
- *  dominant surface here, and a CTA off-screen is a CTA that does not convert. */
+/** Bottom bar once the hero CTA has scrolled away. Mobile is the dominant
+ *  surface here, and a CTA off-screen is a CTA that does not convert. */
 function StickyMobileCta() {
   const { t } = useLanguage();
   const [shown, setShown] = useState(false);
@@ -279,20 +346,21 @@ function StickyMobileCta() {
 
   return (
     <div
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t border-border bg-background/95 backdrop-blur-md px-4 py-3 flex items-center justify-between gap-3 transition-transform duration-300"
+      className="slab fixed inset-x-0 bottom-0 z-50 flex items-center justify-between gap-3 px-4 py-3 transition-transform duration-300 md:hidden"
       style={{
         transform: shown ? "none" : "translateY(110%)",
         paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))",
       }}
       aria-hidden={!shown}
     >
-      <p className="text-sm font-semibold text-foreground">
+      <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-[3px]" />
+      <p className="mono text-[11px] uppercase tracking-widest">
         {t.stickyCta.label}
       </p>
       <a
         href={SIGNUP_URL}
         tabIndex={shown ? undefined : -1}
-        className="btn-brand btn-press px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap"
+        className="btn btn-brand whitespace-nowrap px-5 py-2.5 text-sm"
       >
         {t.stickyCta.button}
       </a>
@@ -325,216 +393,276 @@ export default function LandingPage() {
   }, [menuOpen]);
 
   return (
-    <div className="min-h-screen bg-background overflow-x-clip">
+    <div className="min-h-screen overflow-x-clip bg-background">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-full focus:bg-card focus:border focus:border-border focus:shadow-lift focus:text-sm focus:font-semibold"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-full focus:border focus:border-border focus:bg-card focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:shadow-[var(--shadow-lift)]"
       >
         {t.nav.skipToContent}
       </a>
 
-      {/* Sticky header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
-          <a href="#main" aria-label="KamJob">
-            <KamJobLogo size="small" />
-          </a>
-
-          <nav
-            className="hidden md:flex items-center gap-5 lg:gap-6 text-sm font-medium text-muted-foreground"
-            aria-label="Principal"
-          >
-            {NAV_LINKS.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="hover:text-foreground transition-colors"
-              >
-                {t.nav[l.key]}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <span className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium border border-border text-muted-foreground">
-              <span aria-hidden>🇨🇲</span> {t.nav.country}
-            </span>
-            <LangSwitcher />
-            <a
-              href={LOGIN_URL}
-              className="hidden sm:block px-4 py-2 text-sm font-medium text-foreground rounded-full hover:bg-secondary btn-press"
-            >
-              {t.nav.login}
-            </a>
-            <a
-              href={SIGNUP_URL}
-              className="btn-brand btn-press px-4 py-2 text-sm font-semibold rounded-full"
-            >
-              {t.nav.signup}
-            </a>
-            <button
-              className="md:hidden p-2 -mr-1 rounded-full hover:bg-secondary btn-press text-foreground"
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-expanded={menuOpen}
-              aria-controls="mobile-nav"
-              aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
-            >
-              {menuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile nav — before this, section links were simply unreachable
-            below the md breakpoint. */}
-        <nav
-          id="mobile-nav"
-          className="md:hidden collapse-grid border-t border-border"
-          data-open={menuOpen}
-          aria-label="Principal (mobile)"
+      {/* Sticky header. The tricolour caps the page like a masthead rule. */}
+      <header className="sticky top-0 z-50 backdrop-blur-md">
+        <span aria-hidden className="tricolor block h-[3px] w-full" />
+        <div
+          className="border-b"
+          style={{
+            borderColor: "var(--border)",
+            backgroundColor: "color-mix(in srgb, var(--paper) 88%, transparent)",
+          }}
         >
-          <div>
-            <ul className="px-5 py-3 space-y-1">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
+            <a href="#main" aria-label="KamJob">
+              <KamJobLogo size="small" />
+            </a>
+
+            <nav
+              className="eyebrow hidden items-center gap-6 md:flex lg:gap-7"
+              style={{ color: "var(--muted-foreground)" }}
+              aria-label="Principal"
+            >
               {NAV_LINKS.map((l) => (
-                <li key={l.href}>
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="link-rule transition-colors hover:text-foreground"
+                >
+                  {t.nav[l.key]}
+                </a>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <span
+                className="mono hidden items-center gap-1.5 text-[11px] uppercase tracking-widest lg:inline-flex"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                <span
+                  aria-hidden
+                  className="tricolor h-2.5 w-2.5 rounded-[2px]"
+                />
+                {t.nav.country}
+              </span>
+              <LangSwitcher />
+              <a
+                href={LOGIN_URL}
+                className="link-rule hidden text-sm font-medium sm:block"
+              >
+                {t.nav.login}
+              </a>
+              <a
+                href={SIGNUP_URL}
+                className="btn btn-brand px-4 py-2 text-sm"
+              >
+                {t.nav.signup}
+              </a>
+              <button
+                className="btn-press -mr-1 rounded-md p-2 hover:bg-secondary md:hidden"
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-nav"
+                aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
+              >
+                {menuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile nav — section links are otherwise unreachable below md. */}
+          <nav
+            id="mobile-nav"
+            className="collapse-grid border-t md:hidden"
+            style={{ borderColor: "var(--border)" }}
+            data-open={menuOpen}
+            aria-label="Principal (mobile)"
+          >
+            <div>
+              <ul className="px-5 py-3">
+                {NAV_LINKS.map((l, i) => (
+                  <li key={l.href} className="flex items-center gap-3 py-2.5">
+                    <span
+                      aria-hidden
+                      className="mono text-[10px]"
+                      style={{ color: flagAt(i) }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <a
+                      href={l.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="display text-lg font-bold"
+                    >
+                      {t.nav[l.key]}
+                    </a>
+                  </li>
+                ))}
+                <li className="sm:hidden">
                   <a
-                    href={l.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="block py-2.5 text-sm font-medium text-foreground"
+                    href={LOGIN_URL}
+                    className="block py-2.5 text-sm font-medium"
+                    style={{ color: "var(--muted-foreground)" }}
                   >
-                    {t.nav[l.key]}
+                    {t.nav.login}
                   </a>
                 </li>
-              ))}
-              <li className="sm:hidden">
-                <a
-                  href={LOGIN_URL}
-                  className="block py-2.5 text-sm font-medium text-muted-foreground"
-                >
-                  {t.nav.login}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
+              </ul>
+            </div>
+          </nav>
+        </div>
       </header>
 
       <main id="main">
-        {/* Hero */}
+        {/* ── Hero ────────────────────────────────────────────────────────── */}
         <section className="relative">
           <div
             aria-hidden
-            className="dot-grid pointer-events-none absolute inset-0 -z-10"
+            className="grid-paper pointer-events-none absolute inset-0 -z-10"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-20 right-0 w-[28rem] h-[28rem] rounded-full blur-3xl -z-10"
+            className="pointer-events-none absolute -top-24 right-[-6rem] -z-10 h-[30rem] w-[30rem] rounded-full blur-3xl"
             style={{ backgroundColor: "var(--brand-glow)" }}
           />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute top-40 -left-24 w-80 h-80 rounded-full blur-3xl -z-10"
-            style={{ backgroundColor: "var(--amber-glow)" }}
-          />
 
-          <div className="max-w-6xl mx-auto px-5 pt-16 pb-12 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
-            <Reveal className="text-center lg:text-left">
-              <span
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 border"
-                style={{
-                  backgroundColor: "var(--brand-pale)",
-                  color: "var(--brand-text)",
-                  borderColor: "var(--brand-pale)",
-                }}
+          <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-16 pt-14 lg:grid-cols-[1.08fr_minmax(0,0.92fr)] lg:pb-24 lg:pt-20">
+            <div>
+              <div
+                className="rise-in flex items-center gap-3"
+                style={{ animationDelay: "0ms" }}
               >
-                <Sparkles className="w-3.5 h-3.5" aria-hidden />
-                {t.hero.badge}
-              </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.05] tracking-tight text-balance mb-6">
-                {t.hero.title}{" "}
-                <span style={{ color: "var(--brand-solid)" }}>
-                  {t.hero.titleAccent}
+                <span
+                  aria-hidden
+                  className="tricolor h-[3px] w-9 shrink-0 rounded-full"
+                />
+                <span
+                  className="eyebrow"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  {t.hero.badge}
+                </span>
+              </div>
+
+              {/* Each line wipes up from its own clip box. Both halves are
+                  whole translation strings, so the effect is language-safe. */}
+              <h1 className="display mt-6 text-[clamp(2.75rem,7.6vw,5rem)] font-extrabold">
+                <span
+                  className="line-clip"
+                  style={cssVars({ "--line-delay": "120ms" })}
+                >
+                  <span>{t.hero.title}</span>
+                </span>
+                <span
+                  className="line-clip"
+                  style={cssVars({ "--line-delay": "280ms" })}
+                >
+                  <span>
+                    <span className="marker">{t.hero.titleAccent}</span>
+                  </span>
                 </span>
               </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-8 text-pretty max-w-xl mx-auto lg:mx-0">
+
+              <p
+                className="rise-in mt-7 max-w-xl text-pretty text-[1.0625rem] leading-relaxed"
+                style={{
+                  color: "var(--muted-foreground)",
+                  animationDelay: "520ms",
+                }}
+              >
                 {t.hero.subtitle}
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+
+              <div
+                className="rise-in mt-9 flex flex-col gap-3 sm:flex-row"
+                style={{ animationDelay: "660ms" }}
+              >
                 <a
                   href={SIGNUP_URL}
-                  className="btn-brand btn-press inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full font-semibold group"
+                  className="btn btn-brand group px-7 py-4"
                 >
                   {t.hero.ctaPrimary}
                   <ArrowRight
-                    className="w-5 h-5 transition-transform group-hover:translate-x-1"
+                    className="h-5 w-5 transition-transform group-hover:translate-x-1"
                     aria-hidden
                   />
                 </a>
-                <a
-                  href={LOGIN_URL}
-                  className="btn-press inline-flex items-center justify-center px-7 py-4 rounded-full font-semibold border border-border text-foreground bg-card hover:border-foreground/30 hover:bg-secondary"
-                >
+                <a href={LOGIN_URL} className="btn btn-paper px-7 py-4">
                   {t.hero.ctaSecondary}
                 </a>
               </div>
 
-              {/* Reassurance line, split into ticked chips — the same promises
-                  the copy already made, just harder to skim past. */}
-              <ul className="flex flex-wrap gap-x-5 gap-y-2 justify-center lg:justify-start mt-7">
-                {t.hero.note.split("·").map((claim) => (
+              {/* The reassurance line, split so it cannot be skimmed past. */}
+              <ul
+                className="rise-in mono mt-8 flex flex-wrap gap-x-6 gap-y-2.5"
+                style={{ animationDelay: "780ms" }}
+              >
+                {t.hero.note.split("·").map((claim, i) => (
                   <li
                     key={claim}
-                    className="flex items-center gap-1.5 text-xs text-muted-foreground"
+                    className="flex items-center gap-2 text-[11px] uppercase tracking-wider"
+                    style={{ color: "var(--muted-foreground)" }}
                   >
-                    <Check
-                      className="w-3.5 h-3.5 shrink-0"
-                      strokeWidth={3}
-                      style={{ color: "var(--brand-solid)" }}
+                    <span
                       aria-hidden
+                      className="h-1.5 w-1.5 rounded-full"
+                      style={{ backgroundColor: flagAt(i) }}
                     />
                     {claim.trim()}
                   </li>
                 ))}
               </ul>
-            </Reveal>
+            </div>
 
-            <Reveal delay={120}>
-              <PhoneMockup />
+            <Reveal delay={140}>
+              <CardDeck />
             </Reveal>
           </div>
         </section>
 
-        {/* Stats */}
-        <section className="max-w-6xl mx-auto px-5 pb-14">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {t.hero.stats.map((s, i) => (
-              <Reveal key={s.label} delay={i * 70}>
-                <div className="bg-card border border-border rounded-2xl p-5 text-center h-full card-lift">
-                  <p
-                    className="text-3xl font-extrabold tracking-tight"
-                    style={{ color: "var(--brand-solid)" }}
-                  >
-                    {s.value}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1.5 leading-snug">
-                    {s.label}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
+        {/* ── Stats · full-bleed ink data bar ─────────────────────────────── */}
+        <section className="slab bleed relative">
+          <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
+          <div className="mx-auto max-w-6xl">
+            <div
+              className="grid grid-cols-2 gap-px sm:grid-cols-4"
+              style={{ backgroundColor: "var(--slab-border)" }}
+            >
+              {t.hero.stats.map((s, i) => (
+                <Reveal key={s.label} delay={i * 80}>
+                  <div className="slab h-full px-5 py-9 sm:px-6 sm:py-12">
+                    <p className="display text-[clamp(2.25rem,5.5vw,3.5rem)] font-extrabold leading-none">
+                      {s.value}
+                    </p>
+                    <p
+                      className="mono mt-3 text-[10px] uppercase leading-snug tracking-[0.14em]"
+                      style={{ color: "var(--slab-muted)" }}
+                    >
+                      {s.label}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Offers ticker */}
+        {/* ── Offers ticker ──────────────────────────────────────────────── */}
         <section
-          className="border-y border-border bg-card/50"
+          className="border-b"
+          style={{
+            borderColor: "var(--border)",
+            backgroundColor: "var(--paper-sunk)",
+          }}
           aria-label={t.ticker.label}
         >
-          <div className="py-7">
-            <p className="text-sm font-medium text-muted-foreground text-center mb-5 px-5">
+          <div className="py-5">
+            <p
+              className="eyebrow mb-4 px-5 text-center"
+              style={{ color: "var(--muted-foreground)" }}
+            >
               {t.ticker.label}
             </p>
             <div className="marquee-viewport">
@@ -545,14 +673,15 @@ export default function LandingPage() {
                     className="flex shrink-0"
                     aria-hidden={copy === 1}
                   >
-                    {t.ticker.items.map((item) => (
+                    {t.ticker.items.map((item, i) => (
                       <span
                         key={`${copy}-${item}`}
-                        className="flex items-center gap-2 mx-4 px-4 py-2 rounded-full border border-border bg-card text-sm font-medium text-foreground whitespace-nowrap"
+                        className="mono flex items-center gap-3 whitespace-nowrap px-6 text-[13px] font-medium"
                       >
                         <span
-                          className="w-1.5 h-1.5 rounded-full shrink-0"
-                          style={{ backgroundColor: "var(--brand-solid)" }}
+                          aria-hidden
+                          className="h-1.5 w-1.5 rotate-45"
+                          style={{ backgroundColor: flagAt(i) }}
                         />
                         {item}
                       </span>
@@ -564,36 +693,36 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* How it works */}
-        <section id="how" className="max-w-6xl mx-auto px-5 py-20 scroll-mt-20">
+        {/* ── How it works · outlined numerals ────────────────────────────── */}
+        <section id="how" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-20 sm:py-24">
           <SectionHeading
+            index="01"
             eyebrow={t.how.eyebrow}
             title={t.how.title}
             subtitle={t.how.subtitle}
           />
-          <ol className="relative grid sm:grid-cols-3 gap-10 sm:gap-6">
-            {/* Rail connecting the three numbered steps on wide screens. */}
-            <div
-              aria-hidden
-              className="hidden sm:block absolute top-7 left-[16.6%] right-[16.6%] h-px"
-              style={{
-                background:
-                  "linear-gradient(to right, transparent, var(--border) 15%, var(--border) 85%, transparent)",
-              }}
-            />
+          <ol
+            className="grid gap-px sm:grid-cols-3"
+            style={{ backgroundColor: "var(--border)" }}
+          >
             {t.how.steps.map((s, i) => (
-              <Reveal as="li" key={s.title} delay={i * 110}>
-                <div className="text-center px-2">
-                  <div
-                    className="relative w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center text-white font-extrabold text-xl shadow-brand"
-                    style={{ backgroundColor: "var(--brand-solid)" }}
+              <Reveal as="li" key={s.title} delay={i * 120}>
+                <div className="h-full bg-background pb-2 pt-8 sm:px-7 sm:pt-9">
+                  <span
+                    aria-hidden
+                    className="display block text-[4.5rem] font-extrabold leading-[0.8]"
+                    style={{
+                      color: "transparent",
+                      WebkitTextStroke: `1.5px ${flagAt(i)}`,
+                    }}
                   >
-                    {i + 1}
-                  </div>
-                  <h3 className="font-bold text-foreground mb-2 text-lg">
-                    {s.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="display mt-6 text-xl font-bold">{s.title}</h3>
+                  <p
+                    className="mt-3 max-w-sm text-sm leading-relaxed"
+                    style={{ color: "var(--muted-foreground)" }}
+                  >
                     {s.text}
                   </p>
                 </div>
@@ -602,95 +731,125 @@ export default function LandingPage() {
           </ol>
         </section>
 
-        {/* Candidate / Employer spaces */}
-        <section className="max-w-6xl mx-auto px-5 pb-20">
-          <SectionHeading eyebrow={t.spaces.eyebrow} title={t.spaces.title} />
-          <div className="grid md:grid-cols-2 gap-5">
+        {/* ── Two spaces ─────────────────────────────────────────────────────
+            Deliberately unequal. Candidates are the primary audience, so their
+            panel is the ink one and the wider one; employers get a quieter
+            paper card. A 50/50 split would have said they matter equally. */}
+        <section className="mx-auto max-w-6xl px-5 pb-20 sm:pb-24">
+          <SectionHeading
+            index="02"
+            eyebrow={t.spaces.eyebrow}
+            title={t.spaces.title}
+          />
+          <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
             <Reveal>
-              <div className="bg-card border border-border rounded-3xl p-8 shadow-card card-lift flex flex-col h-full">
-                <p
-                  className="text-xs font-bold tracking-[0.15em] mb-4"
-                  style={{ color: "var(--brand-text)" }}
-                >
-                  {t.spaces.candidateLabel}
-                </p>
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                  style={{
-                    backgroundColor: "var(--brand-pale)",
-                    color: "var(--brand-text)",
-                  }}
-                >
-                  <User className="w-6 h-6" aria-hidden />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2 tracking-tight">
-                  {t.spaces.candidateTitle}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                  {t.spaces.candidateText}
-                </p>
-                <ul className="space-y-3 mb-8 flex-1">
-                  {t.spaces.candidateChecks.map((c) => (
-                    <li
-                      key={c}
-                      className="flex gap-2.5 text-sm text-muted-foreground"
+              <div className="slab relative flex h-full flex-col overflow-hidden rounded-2xl p-8 sm:p-10">
+                <span
+                  aria-hidden
+                  className="grid-paper-ink absolute inset-0 opacity-60"
+                />
+                <span
+                  aria-hidden
+                  className="tricolor-y absolute inset-y-0 left-0 w-1.5"
+                />
+                <div className="relative flex flex-1 flex-col">
+                  <div className="flex items-center gap-3">
+                    <User
+                      className="h-4 w-4"
+                      strokeWidth={2}
+                      style={{ color: "var(--brand-on-ink)" }}
+                      aria-hidden
+                    />
+                    <span
+                      className="eyebrow"
+                      style={{ color: "var(--brand-on-ink)" }}
                     >
-                      <Check
-                        className="w-4 h-4 shrink-0 mt-0.5"
-                        strokeWidth={3}
-                        style={{ color: "var(--brand-solid)" }}
-                        aria-hidden
-                      />
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href={SIGNUP_URL}
-                  className="btn-brand btn-press inline-flex items-center justify-center gap-2 py-3.5 rounded-full font-semibold group"
-                >
-                  {t.spaces.candidateCta}
-                  <ArrowRight
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                    aria-hidden
-                  />
-                </a>
+                      {t.spaces.candidateLabel}
+                    </span>
+                  </div>
+                  <h3 className="display mt-5 text-[clamp(1.75rem,3.5vw,2.5rem)] font-extrabold">
+                    {t.spaces.candidateTitle}
+                  </h3>
+                  <p
+                    className="mt-4 max-w-md leading-relaxed"
+                    style={{ color: "var(--slab-muted)" }}
+                  >
+                    {t.spaces.candidateText}
+                  </p>
+                  <ul className="mt-8 flex-1 space-y-0">
+                    {t.spaces.candidateChecks.map((c, i) => (
+                      <li
+                        key={c}
+                        className="flex gap-4 border-t py-3.5 text-sm"
+                        style={{ borderColor: "var(--slab-border)" }}
+                      >
+                        <span
+                          className="mono shrink-0 text-[10px]"
+                          style={{ color: "var(--brand-on-ink)" }}
+                          aria-hidden
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span style={{ color: "var(--slab-fg)" }}>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href={SIGNUP_URL}
+                    className="btn btn-brand group mt-8 w-full py-4 sm:w-auto sm:self-start sm:px-8"
+                  >
+                    {t.spaces.candidateCta}
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                      aria-hidden
+                    />
+                  </a>
+                </div>
               </div>
             </Reveal>
 
-            <Reveal delay={100}>
-              <div className="bg-card border border-border rounded-3xl p-8 shadow-card card-lift flex flex-col h-full">
-                <p
-                  className="text-xs font-bold tracking-[0.15em] mb-4"
-                  style={{ color: "var(--amber-text)" }}
-                >
-                  {t.spaces.employerLabel}
-                </p>
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                  style={{
-                    backgroundColor: "var(--amber-pale)",
-                    color: "var(--amber-text)",
-                  }}
-                >
-                  <Briefcase className="w-6 h-6" aria-hidden />
+            <Reveal delay={120}>
+              <div
+                className="card-lift flex h-full flex-col rounded-2xl border p-8"
+                style={{
+                  borderColor: "var(--border)",
+                  backgroundColor: "var(--paper-raised)",
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <Briefcase
+                    className="h-4 w-4"
+                    strokeWidth={2}
+                    style={{ color: "var(--gold-text)" }}
+                    aria-hidden
+                  />
+                  <span className="eyebrow" style={{ color: "var(--gold-text)" }}>
+                    {t.spaces.employerLabel}
+                  </span>
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2 tracking-tight">
+                <h3 className="display mt-5 text-2xl font-extrabold">
                   {t.spaces.employerTitle}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                <p
+                  className="mt-4 text-sm leading-relaxed"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
                   {t.spaces.employerText}
                 </p>
-                <ul className="space-y-3 mb-8 flex-1">
+                <ul className="mt-7 flex-1 space-y-0">
                   {t.spaces.employerChecks.map((c) => (
                     <li
                       key={c}
-                      className="flex gap-2.5 text-sm text-muted-foreground"
+                      className="flex gap-3 border-t py-3 text-sm"
+                      style={{
+                        borderColor: "var(--border)",
+                        color: "var(--muted-foreground)",
+                      }}
                     >
                       <Check
-                        className="w-4 h-4 shrink-0 mt-0.5"
+                        className="mt-0.5 h-4 w-4 shrink-0"
                         strokeWidth={3}
-                        style={{ color: "var(--brand-solid)" }}
+                        style={{ color: "var(--gold-solid)" }}
                         aria-hidden
                       />
                       {c}
@@ -699,15 +858,11 @@ export default function LandingPage() {
                 </ul>
                 <a
                   href={EMPLOYER_URL}
-                  className="btn-press inline-flex items-center justify-center gap-2 py-3.5 rounded-full font-semibold border-2 hover:bg-brand-pale group"
-                  style={{
-                    borderColor: "var(--brand-solid)",
-                    color: "var(--brand-text)",
-                  }}
+                  className="btn btn-paper group mt-8 py-3.5"
                 >
                   {t.spaces.employerCta}
-                  <ArrowRight
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  <ArrowUpRight
+                    className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                     aria-hidden
                   />
                 </a>
@@ -716,34 +871,104 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Features */}
+        {/* ── Features · asymmetric bento ─────────────────────────────────────
+            Six equal cards in a 3-column grid was the most template-like block
+            on the page. The lead feature — applying in one swipe, the whole
+            product — now takes an ink tile twice the height of the rest. */}
         <section
           id="features"
-          className="border-y border-border bg-card/50 scroll-mt-20"
+          className="scroll-mt-24 border-y"
+          style={{
+            borderColor: "var(--border)",
+            backgroundColor: "var(--paper-sunk)",
+          }}
         >
-          <div className="max-w-6xl mx-auto px-5 py-20">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
             <SectionHeading
+              index="03"
               eyebrow={t.features.eyebrow}
               title={t.features.title}
               subtitle={t.features.subtitle}
             />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
               {t.features.items.map((f, i) => {
                 const Icon = FEATURE_ICONS[i];
-                const tone = FEATURE_TONES[i];
+                const lead = i === 0;
+                // Row 1–2: lead tile (3 cols, 2 rows) + two 3-col tiles.
+                // Row 3: three 2-col tiles.
+                const span = lead
+                  ? "lg:col-span-3 lg:row-span-2"
+                  : i <= 2
+                    ? "lg:col-span-3"
+                    : "lg:col-span-2";
+
                 return (
-                  <Reveal key={f.title} delay={(i % 3) * 90}>
-                    <div className="bg-card rounded-2xl p-6 border border-border shadow-card card-lift h-full">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                        style={{ backgroundColor: tone.bg, color: tone.fg }}
-                      >
-                        <Icon className="w-5 h-5" aria-hidden />
+                  <Reveal key={f.title} delay={(i % 3) * 90} className={span}>
+                    <div
+                      className={`card-lift relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 sm:p-7 ${
+                        lead ? "slab justify-end" : ""
+                      }`}
+                      style={
+                        lead
+                          ? { borderColor: "var(--slab-border)" }
+                          : {
+                              borderColor: "var(--border)",
+                              backgroundColor: "var(--paper-raised)",
+                            }
+                      }
+                    >
+                      {lead && (
+                        <span
+                          aria-hidden
+                          className="grid-paper-ink absolute inset-0 opacity-60"
+                        />
+                      )}
+                      <span
+                        aria-hidden
+                        className="absolute inset-x-0 top-0 h-[3px]"
+                        style={{ backgroundColor: flagAt(i) }}
+                      />
+
+                      <div className="relative flex items-start justify-between gap-4">
+                        <span
+                          className="mono text-[10px] font-bold tracking-widest"
+                          style={{
+                            color: lead
+                              ? "var(--brand-on-ink)"
+                              : "var(--muted-foreground)",
+                          }}
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <Icon
+                          className={lead ? "h-7 w-7" : "h-5 w-5"}
+                          strokeWidth={1.5}
+                          style={{
+                            color: lead ? "var(--brand-on-ink)" : flagAt(i),
+                          }}
+                          aria-hidden
+                        />
                       </div>
-                      <h3 className="font-bold text-foreground mb-2">
+
+                      {lead && <div className="relative flex-1 min-h-24" />}
+
+                      <h3
+                        className={`display relative mt-5 font-bold ${
+                          lead ? "text-2xl sm:text-3xl" : "text-lg"
+                        }`}
+                      >
                         {f.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p
+                        className={`relative mt-2.5 leading-relaxed ${
+                          lead ? "max-w-sm text-[15px]" : "text-sm"
+                        }`}
+                        style={{
+                          color: lead
+                            ? "var(--slab-muted)"
+                            : "var(--muted-foreground)",
+                        }}
+                      >
                         {f.text}
                       </p>
                     </div>
@@ -754,24 +979,39 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Trust */}
-        <section className="max-w-6xl mx-auto px-5 py-20">
-          <SectionHeading eyebrow="" title={t.trust.title} />
-          <div className="grid sm:grid-cols-3 gap-4">
+        {/* ── Trust · hairline row, no cards ──────────────────────────────── */}
+        <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+          <Reveal className="mb-12 flex items-center gap-3">
+            <span
+              aria-hidden
+              className="tricolor h-[3px] w-9 shrink-0 rounded-full"
+            />
+            <h2 className="display text-balance text-[clamp(1.75rem,4vw,2.75rem)] font-extrabold">
+              {t.trust.title}
+            </h2>
+          </Reveal>
+          <div
+            className="grid gap-px sm:grid-cols-3"
+            style={{ backgroundColor: "var(--border)" }}
+          >
             {t.trust.items.map((item, i) => {
               const Icon = TRUST_ICONS[i];
               return (
-                <Reveal key={item.title} delay={i * 90}>
-                  <div className="h-full rounded-2xl border border-border bg-card p-6 shadow-card card-lift">
+                <Reveal key={item.title} delay={i * 100}>
+                  <div className="h-full bg-background pb-6 pt-7 sm:px-7">
                     <Icon
-                      className="w-6 h-6 mb-4"
-                      style={{ color: "var(--brand-solid)" }}
+                      className="h-6 w-6"
+                      strokeWidth={1.5}
+                      style={{ color: flagAt(i) }}
                       aria-hidden
                     />
-                    <h3 className="font-bold text-foreground mb-2">
+                    <h3 className="display mt-5 text-lg font-bold">
                       {item.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p
+                      className="mt-2.5 text-sm leading-relaxed"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
                       {item.text}
                     </p>
                   </div>
@@ -781,87 +1021,125 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Pricing */}
+        {/* ── Pricing · tickets ──────────────────────────────────────────── */}
         <section
           id="pricing"
-          className="border-y border-border bg-card/50 scroll-mt-20"
+          className="scroll-mt-24 border-y"
+          style={{
+            borderColor: "var(--border)",
+            backgroundColor: "var(--paper-sunk)",
+          }}
         >
-          <div className="max-w-6xl mx-auto px-5 py-20">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
             <SectionHeading
+              index="04"
               eyebrow={t.pricing.eyebrow}
               title={t.pricing.title}
               subtitle={t.pricing.subtitle}
             />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+            <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {t.pricing.plans.map((p, i) => {
-                // Badge "le plus complet" : toujours sur la formule la plus haute.
+                // "Le plus complet" always rides the highest tier.
                 const highlight = i === t.pricing.plans.length - 1;
                 return (
                   <Reveal key={p.name} delay={i * 90}>
                     <div
-                      className={`relative bg-card rounded-3xl p-6 border shadow-card flex flex-col h-full ${
-                        highlight
-                          ? "sm:-mt-3 sm:pb-8 shadow-lift"
-                          : "border-border card-lift"
+                      className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 ${
+                        highlight ? "slab lg:-mt-4 lg:pb-9" : "card-lift"
                       }`}
                       style={
                         highlight
-                          ? {
-                              borderColor: "var(--amber-solid)",
-                              borderWidth: 2,
+                          ? { borderColor: "var(--slab-border)" }
+                          : {
+                              borderColor: "var(--border)",
+                              backgroundColor: "var(--paper-raised)",
                             }
-                          : undefined
                       }
                     >
+                      <span
+                        aria-hidden
+                        className={
+                          highlight
+                            ? "tricolor absolute inset-x-0 top-0 h-1"
+                            : "absolute inset-x-0 top-0 h-[3px]"
+                        }
+                        style={
+                          highlight
+                            ? undefined
+                            : { backgroundColor: "var(--border-strong)" }
+                        }
+                      />
+
                       {highlight && (
                         <span
-                          className="self-start text-[10px] font-bold px-2.5 py-1 rounded-full mb-3 tracking-wide"
+                          className="mono mb-4 self-start rounded-[3px] px-2 py-1 text-[9px] font-bold uppercase tracking-widest"
                           style={{
-                            backgroundColor: "var(--amber-solid)",
-                            color: "var(--on-amber)",
+                            backgroundColor: "var(--gold-solid)",
+                            color: "var(--on-gold)",
                           }}
                         >
                           {t.pricing.highlight}
                         </span>
                       )}
-                      <h3 className="font-bold text-foreground">{p.name}</h3>
-                      <p className="mt-3 mb-5 flex items-baseline gap-1.5 flex-wrap">
-                        <span className="text-4xl font-extrabold text-foreground tracking-tight">
+
+                      <h3
+                        className="eyebrow"
+                        style={{
+                          color: highlight
+                            ? "var(--slab-muted)"
+                            : "var(--muted-foreground)",
+                        }}
+                      >
+                        {p.name}
+                      </h3>
+
+                      <p className="mb-6 mt-3 flex flex-wrap items-baseline gap-x-1.5">
+                        <span className="display text-[2.75rem] font-extrabold leading-none tracking-tight">
                           {p.price}
                         </span>
-                        <span className="text-sm text-muted-foreground">
+                        <span
+                          className="mono text-[11px] uppercase tracking-wider"
+                          style={{
+                            color: highlight
+                              ? "var(--slab-muted)"
+                              : "var(--muted-foreground)",
+                          }}
+                        >
                           {t.pricing.perPeriod} · {p.period}
                         </span>
                       </p>
-                      <ul className="space-y-2.5 mb-7 flex-1">
+
+                      <ul className="mb-8 flex-1 space-y-2.5">
                         {p.features.map((f) => (
                           <li
                             key={f}
-                            className="flex gap-2.5 text-sm text-muted-foreground"
+                            className="flex gap-2.5 text-sm leading-snug"
+                            style={{
+                              color: highlight
+                                ? "var(--slab-muted)"
+                                : "var(--muted-foreground)",
+                            }}
                           >
                             <Check
-                              className="w-4 h-4 shrink-0 mt-0.5"
+                              className="mt-0.5 h-3.5 w-3.5 shrink-0"
                               strokeWidth={3}
-                              style={{ color: "var(--brand-solid)" }}
+                              style={{
+                                color: highlight
+                                  ? "var(--brand-on-ink)"
+                                  : "var(--brand-solid)",
+                              }}
                               aria-hidden
                             />
                             {f}
                           </li>
                         ))}
                       </ul>
+
                       <a
                         href={SIGNUP_URL}
-                        className={`btn-press text-center py-3 rounded-full font-semibold text-sm ${
-                          highlight ? "btn-brand" : ""
+                        className={`btn py-3 text-sm ${
+                          highlight ? "btn-brand" : "btn-paper"
                         }`}
-                        style={
-                          highlight
-                            ? undefined
-                            : {
-                                backgroundColor: "var(--brand-pale)",
-                                color: "var(--brand-text)",
-                              }
-                        }
                         aria-label={`${t.pricing.cta} — ${p.name}`}
                       >
                         {t.pricing.cta}
@@ -871,48 +1149,73 @@ export default function LandingPage() {
                 );
               })}
             </div>
-            <p className="text-center text-xs text-muted-foreground mt-8">
+            <p
+              className="mono mt-10 text-center text-[11px] uppercase tracking-wider"
+              style={{ color: "var(--muted-foreground)" }}
+            >
               {t.pricing.freeNote}
             </p>
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="max-w-6xl mx-auto px-5 py-20">
+        {/* ── Testimonials · staggered quotes ─────────────────────────────── */}
+        <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
           <SectionHeading
+            index="05"
             eyebrow={t.testimonials.eyebrow}
             title={t.testimonials.title}
           />
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid gap-5 sm:grid-cols-3">
             {t.testimonials.items.map((tm, i) => (
-              <Reveal as="figure" key={tm.name} delay={i * 90}>
-                <div className="bg-card rounded-2xl p-6 border border-border shadow-card card-lift h-full flex flex-col">
-                  <Quote
-                    className="w-7 h-7 mb-4 shrink-0"
-                    style={{ color: "var(--brand-solid)" }}
+              <Reveal
+                as="figure"
+                key={tm.name}
+                delay={i * 110}
+                // Vertical offsets break the row into a composition rather
+                // than three identical boxes sitting on one baseline.
+                className={i === 1 ? "sm:mt-10" : i === 2 ? "sm:mt-4" : ""}
+              >
+                <div
+                  className="card-lift relative flex h-full flex-col rounded-2xl border p-7"
+                  style={{
+                    borderColor: "var(--border)",
+                    backgroundColor: "var(--paper-raised)",
+                  }}
+                >
+                  <span
                     aria-hidden
-                  />
-                  <blockquote className="text-sm text-foreground leading-relaxed mb-6 flex-1">
-                    « {tm.quote} »
+                    className="display absolute right-5 top-1 select-none text-6xl font-extrabold leading-none"
+                    style={{ color: flagAt(i), opacity: 0.16 }}
+                  >
+                    &rdquo;
+                  </span>
+                  <blockquote className="relative flex-1 text-[15px] leading-relaxed">
+                    {tm.quote}
                   </blockquote>
-                  <figcaption className="flex items-center gap-3">
-                    {/* Initials avatar — a face-shaped anchor for the quote
-                        without inventing a stock photo of a real person. */}
+                  <figcaption
+                    className="mt-7 flex items-center gap-3 border-t pt-5"
+                    style={{ borderColor: "var(--border)" }}
+                  >
+                    {/* Initials, not a stock headshot of a person who does
+                        not exist. Squared to match the mono voice. */}
                     <span
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                      className="mono flex h-9 w-9 shrink-0 items-center justify-center rounded-[5px] text-[11px] font-bold"
                       style={{
-                        backgroundColor: "var(--brand-pale)",
-                        color: "var(--brand-text)",
+                        backgroundColor: "var(--slab)",
+                        color: "var(--slab-fg)",
                       }}
                       aria-hidden
                     >
                       {initialsOf(tm.name)}
                     </span>
                     <span>
-                      <span className="block text-sm font-semibold text-foreground">
+                      <span className="block text-sm font-semibold">
                         {tm.name}
                       </span>
-                      <span className="block text-xs text-muted-foreground">
+                      <span
+                        className="mono block text-[10px] uppercase tracking-wider"
+                        style={{ color: "var(--muted-foreground)" }}
+                      >
                         {tm.role}
                       </span>
                     </span>
@@ -923,18 +1226,50 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* FAQ */}
+        {/* ── FAQ · two-column, heading sticky ────────────────────────────── */}
         <section
           id="faq"
-          className="border-t border-border bg-card/50 scroll-mt-20"
+          className="scroll-mt-24 border-t"
+          style={{
+            borderColor: "var(--border)",
+            backgroundColor: "var(--paper-sunk)",
+          }}
         >
-          <div className="max-w-3xl mx-auto px-5 py-20">
-            <SectionHeading
-              eyebrow={t.faq.eyebrow}
-              title={t.faq.title}
-              subtitle={t.faq.subtitle}
-            />
-            <div className="space-y-3">
+          <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 sm:py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+            <Reveal className="lg:sticky lg:top-28 lg:self-start">
+              <div className="flex items-center gap-3">
+                <span
+                  className="mono text-xs font-bold"
+                  style={{ color: "var(--brand-text)" }}
+                >
+                  06
+                </span>
+                <span
+                  aria-hidden
+                  className="tricolor h-[3px] w-9 shrink-0 rounded-full"
+                />
+                <span
+                  className="eyebrow"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  {t.faq.eyebrow}
+                </span>
+              </div>
+              <h2 className="display mt-5 text-balance text-[clamp(2rem,4.5vw,3rem)] font-extrabold">
+                {t.faq.title}
+              </h2>
+              <p
+                className="mt-4 max-w-sm leading-relaxed"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                {t.faq.subtitle}
+              </p>
+            </Reveal>
+
+            <div
+              className="border-t"
+              style={{ borderColor: "var(--border)" }}
+            >
               {t.faq.items.map((item, i) => (
                 <FaqItem
                   key={item.q}
@@ -949,71 +1284,103 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Employers */}
-        <section className="max-w-6xl mx-auto px-5 pt-20">
-          <Reveal>
-            <div
-              className="relative overflow-hidden rounded-3xl p-8 sm:p-12 text-white flex flex-col sm:flex-row items-center gap-8"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--brand-solid), #1E8E3E)",
-              }}
-            >
-              <div
-                aria-hidden
-                className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-white/10 blur-2xl"
-              />
-              <div className="relative flex-1 text-center sm:text-left">
-                <h2 className="text-2xl sm:text-3xl font-bold mb-3 tracking-tight">
+        {/* ── Employers · full-bleed ink ──────────────────────────────────── */}
+        <section className="slab bleed relative overflow-hidden py-20 sm:py-24">
+          <span aria-hidden className="grid-paper-ink absolute inset-0" />
+          <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full blur-3xl"
+            style={{ backgroundColor: "var(--brand-glow)" }}
+          />
+          <Reveal className="relative mx-auto max-w-6xl px-5">
+            <div className="grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+              <div>
+                <span
+                  className="eyebrow"
+                  style={{ color: "var(--gold-on-ink)" }}
+                >
+                  {t.spaces.employerLabel}
+                </span>
+                <h2 className="display mt-5 text-balance text-[clamp(2.25rem,6vw,4rem)] font-extrabold">
                   {t.employers.title}
                 </h2>
-                <p className="text-white/90 leading-relaxed max-w-2xl">
+                <p
+                  className="mt-5 max-w-2xl text-pretty leading-relaxed"
+                  style={{ color: "var(--slab-muted)" }}
+                >
                   {t.employers.text}
                 </p>
+              </div>
+              <div className="lg:pb-2">
                 <a
                   href={EMPLOYER_URL}
-                  className="btn-press inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-full bg-white font-semibold text-sm group"
-                  style={{ color: "var(--brand-hover)" }}
+                  className="btn group w-full px-7 py-4 sm:w-auto"
+                  style={{
+                    backgroundColor: "var(--slab-fg)",
+                    color: "var(--slab)",
+                  }}
                 >
                   {t.spaces.employerCta}
-                  <ArrowRight
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  <ArrowUpRight
+                    className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                     aria-hidden
                   />
                 </a>
-              </div>
-              <div className="relative w-20 h-20 rounded-3xl bg-white/15 flex items-center justify-center shrink-0">
-                <Briefcase className="w-9 h-9" aria-hidden />
               </div>
             </div>
           </Reveal>
         </section>
 
-        {/* Contact */}
-        <div className="pt-20">
-          <ContactSection />
-        </div>
+        {/* ── Contact ────────────────────────────────────────────────────── */}
+        <ContactSection />
 
-        {/* Final CTA */}
-        <section className="max-w-3xl mx-auto px-5 py-20 text-center">
-          <Reveal>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4 tracking-tight text-balance">
+        {/* ── Final CTA · the close ───────────────────────────────────────── */}
+        <section className="relative overflow-hidden">
+          <span
+            aria-hidden
+            className="grid-paper pointer-events-none absolute inset-0"
+          />
+          <Reveal className="relative mx-auto max-w-3xl px-5 py-24 text-center sm:py-28">
+            <span
+              aria-hidden
+              className="tricolor mx-auto mb-8 block h-1 w-16 rounded-full"
+            />
+            <h2 className="display text-balance text-[clamp(2.25rem,7vw,4.25rem)] font-extrabold">
               {t.finalCta.title}
             </h2>
-            <p className="text-muted-foreground mb-8 leading-relaxed text-pretty">
+            <p
+              className="mx-auto mt-6 max-w-xl text-pretty leading-relaxed"
+              style={{ color: "var(--muted-foreground)" }}
+            >
               {t.finalCta.subtitle}
             </p>
             <a
               href={SIGNUP_URL}
-              className="btn-brand btn-press inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold group"
+              className="btn btn-brand group mt-10 px-10 py-5 text-lg"
             >
               {t.finalCta.button}
               <ArrowRight
-                className="w-5 h-5 transition-transform group-hover:translate-x-1"
+                className="h-5 w-5 transition-transform group-hover:translate-x-1"
                 aria-hidden
               />
             </a>
-            <p className="text-xs text-muted-foreground mt-5">{t.hero.note}</p>
+            <ul className="mono mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2">
+              {t.hero.note.split("·").map((claim, i) => (
+                <li
+                  key={claim}
+                  className="flex items-center gap-2 text-[11px] uppercase tracking-wider"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: flagAt(i) }}
+                  />
+                  {claim.trim()}
+                </li>
+              ))}
+            </ul>
           </Reveal>
         </section>
       </main>

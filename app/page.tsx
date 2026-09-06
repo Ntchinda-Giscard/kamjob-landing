@@ -182,7 +182,7 @@ function CardDeck() {
               className="slab relative mb-4 flex h-32 flex-col items-center justify-center overflow-hidden rounded-lg"
               aria-hidden
             >
-              <span className="grid-paper-ink absolute inset-0 opacity-70" />
+              <span className="grid-paper-ink absolute inset-0 opacity-40" />
               <p
                 className="mono relative text-[9px] tracking-[0.3em]"
                 style={{ color: "var(--brand-on-ink)" }}
@@ -238,7 +238,7 @@ function CardDeck() {
       {/* What the swipe actually produced. The headline can only claim it. */}
       <div
         aria-hidden
-        className="rise-in slab absolute -right-3 bottom-16 w-[13rem] rounded-xl p-3 shadow-[var(--shadow-lift)] sm:-right-10"
+        className="rise-in slab absolute -bottom-6 -right-2 w-[13rem] rounded-xl p-3 shadow-[var(--shadow-lift)] sm:-right-8"
         style={{ animationDelay: "1100ms" }}
       >
         <div className="flex items-start gap-2.5">
@@ -1082,8 +1082,11 @@ export default function LandingPage() {
                         </span>
                       )}
 
+                      {/* Two lines reserved: plan names wrap unevenly across
+                          both locales, and a ragged price baseline across the
+                          row is the first thing the eye catches. */}
                       <h3
-                        className="eyebrow"
+                        className="eyebrow leading-relaxed sm:min-h-[2.6em]"
                         style={{
                           color: highlight
                             ? "var(--slab-muted)"

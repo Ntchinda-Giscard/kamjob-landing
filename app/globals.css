@@ -99,8 +99,8 @@
     color-scheme: dark;
 
     --paper: #0A110D;
-    --paper-sunk: #0F1813;
-    --paper-raised: #121C16;
+    --paper-sunk: #0D150F;
+    --paper-raised: #111A14;
 
     --foreground: #EDEAE0;
     --card-foreground: #EDEAE0;
@@ -110,12 +110,15 @@
     --border-strong: #3A4A40;
 
     /* The slab inverts direction: on a dark page the punctuating surface is
-       the one that lifts, not the one that sinks. */
-    --slab: #121C16;
-    --slab-raised: #1B2921;
+       the one that *lifts*, not the one that sinks. It has to clear
+       --paper-raised by a visible margin or the whole light/dark rhythm of
+       the page — the stats bar, the lead feature tile, the highlighted plan,
+       the footer — collapses into one flat tone. */
+    --slab: #1C2C23;
+    --slab-raised: #24362B;
     --slab-fg: #EDEAE0;
-    --slab-muted: #99A398;
-    --slab-border: #2C3B33;
+    --slab-muted: #9EA99D;
+    --slab-border: #33473A;
 
     --brand-solid: #229950;
     --brand-hover: #2CB160;

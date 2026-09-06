@@ -1,14 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Bricolage_Grotesque, JetBrains_Mono, Public_Sans } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n";
 import { translations } from "@/lib/translations";
 import { APP_URL, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+/**
+ * Three voices, three jobs — see the header of `globals.css`. All three are
+ * variable fonts served as a single latin+latin-ext file each, which is what
+ * keeps a three-family page affordable on the mobile connections most of this
+ * audience is on. `latin-ext` is not optional: French needs it.
+ */
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-bricolage",
   display: "swap",
+  weight: ["500", "600", "700", "800"],
+});
+
+const publicSans = Public_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-public-sans",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-jetbrains",
+  display: "swap",
+  weight: ["500", "700"],
 });
 
 const TITLE = "KamJob — Ton emploi au Cameroun, en un swipe";
@@ -77,8 +97,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Paints the browser chrome to match the page in both schemes.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#202124" },
+    { media: "(prefers-color-scheme: light)", color: "#F7F4EC" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A110D" },
   ],
   colorScheme: "light dark",
 };
@@ -154,7 +174,9 @@ export default function RootLayout({
   return (
     // `lang` starts at fr and is updated client-side by the language switcher.
     <html lang="fr" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body
+        className={`${bricolage.variable} ${publicSans.variable} ${jetbrains.variable} font-sans antialiased grain`}
+      >
         <LanguageProvider>{children}</LanguageProvider>
         <script
           type="application/ld+json"

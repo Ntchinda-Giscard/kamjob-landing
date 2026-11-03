@@ -1,8 +1,14 @@
 // All landing copy, French first (default) — English mirrors the same shape.
+//
+// Voice: « vous », to match the app itself and the legal pages. The section
+// order follows the conversion arc the page is built on — hero (result +
+// without the fear) → proof → problem → solution → how it works → FAQ →
+// final CTA.
 
 const fr = {
   nav: {
     features: "Fonctionnalités",
+    coach: "Coach d'entretien",
     pricing: "Tarifs",
     faq: "FAQ",
     login: "Se connecter",
@@ -16,46 +22,28 @@ const fr = {
     langLabel: "Changer de langue",
   },
   hero: {
-    badge: "L'emploi au Cameroun, réinventé",
-    title: "Trouve ton emploi idéal",
-    titleAccent: "en un swipe",
+    badge: "Offres d'emploi au Cameroun",
+    title: "Glissez pour postuler.",
+    titleAccent: "Décrochez l'entretien.",
     subtitle:
-      "Swipe les offres de ton domaine comme sur une app de rencontre : un geste à droite et ta candidature — CV et lettre de motivation — part directement chez le recruteur.",
-    ctaPrimary: "Créer mon compte gratuit",
+      "Des offres triées pour votre profil, partout au Cameroun. Glissez à droite et votre CV part chez le recruteur — sans mail à rédiger, sans CV à refaire. Et si l'entreprise appelle, le coach d'entretien vous entraîne sur les questions qu'elle posera.",
+    ctaPrimary: "Créer mon profil gratuit",
     ctaSecondary: "J'ai déjà un compte",
     note: "Gratuit pour postuler · Sans engagement · Paiement Mobile Money",
     stats: [
       { value: "12", label: "domaines d'activité" },
       { value: "10", label: "villes couvertes" },
-      { value: "1", label: "swipe pour postuler" },
+      { value: "1", label: "geste pour postuler" },
       { value: "0 FCFA", label: "pour postuler" },
     ],
   },
   mockup: {
-    stamp: "POSTULER",
-    hiringTop: "NOUS",
-    hiringMain: "RECRUTONS",
-    hiringSub: "Postulez avant le 31 juillet",
+    feedAlt:
+      "Le fil d'offres KamJob : une offre de Responsable des Ressources Humaines à Douala, avec son affiche, son score de match et les boutons Ignorer et Postuler",
+    trackAlt:
+      "Le suivi d'une candidature dans KamJob : envoyée, puis vue, présélectionnée, entretien et décision",
     toast: "Candidature envoyée",
-    toastSub: "CV + lettre reçus par ST Digital",
-    alt: "Aperçu de l'application KamJob : une offre d'emploi à swiper",
-  },
-  trust: {
-    title: "Pourquoi tu peux y aller les yeux fermés",
-    items: [
-      {
-        title: "Postuler ne coûte rien",
-        text: "Créer un compte, swiper et envoyer ta candidature est gratuit et illimité. Pour toujours.",
-      },
-      {
-        title: "Tes documents restent à toi",
-        text: "CV et lettre stockés de façon sécurisée, transmis uniquement aux offres que tu choisis.",
-      },
-      {
-        title: "Paiement local, sans surprise",
-        text: "MTN MoMo et Orange Money, en paiement unique. Aucun renouvellement automatique.",
-      },
-    ],
+    toastSub: "CV + lettre chez le recruteur",
   },
   ticker: {
     label: "Des offres dans tous les domaines, dans tout le Cameroun",
@@ -71,142 +59,6 @@ const fr = {
       "Professeur de Maths — Maroua · CDD",
       "Chef d'Atelier — Limbé · CDI",
     ],
-  },
-  spaces: {
-    candidateLabel: "JE CHERCHE DU TRAVAIL",
-    candidateTitle: "Espace Candidat",
-    candidateText:
-      "Crée ton profil, ajoute ton CV et ta lettre une seule fois. Swipe à droite et ta candidature part automatiquement.",
-    candidateChecks: [
-      "Profil complet : infos, CV et lettre de motivation",
-      "Swipe à droite → CV + lettre envoyés automatiquement",
-      "Candidature instantanée directement à l'entreprise",
-      "Notifications et suivi de chaque candidature",
-    ],
-    candidateCta: "Créer mon profil gratuit",
-    employerLabel: "JE RECRUTE",
-    employerTitle: "Espace Employeur",
-    employerText:
-      "Publiez vos offres avec leur affiche et l'email de votre boîte. Les candidats postulent et leurs CV arrivent directement dans votre messagerie.",
-    employerChecks: [
-      "Offres publiées avec affiche et date d'expiration",
-      "Candidatures reçues par email : CV + lettre",
-      "Tableau de bord pour gérer et modifier vos offres",
-      "Badge entreprise vérifiée",
-    ],
-    employerCta: "Publier mes offres",
-    eyebrow: "DEUX ESPACES",
-    title: "Tu cherches, ou tu recrutes ?",
-  },
-  how: {
-    eyebrow: "EN 3 ÉTAPES",
-    title: "Comment ça marche ?",
-    subtitle:
-      "De l'inscription à ta première candidature, il te faut moins de cinq minutes.",
-    steps: [
-      {
-        title: "Crée ton profil",
-        text: "Ajoute ton CV et ta lettre de motivation une seule fois — ils accompagnent chaque candidature.",
-      },
-      {
-        title: "Swipe les offres",
-        text: "Un feed d'offres filtré selon ton domaine, ta ville et ton niveau — avec l'affiche complète de chaque poste.",
-      },
-      {
-        title: "On postule pour toi",
-        text: "Un swipe à droite et ta candidature est envoyée par email au recruteur. Tu suis tout depuis l'app.",
-      },
-    ],
-  },
-  features: {
-    eyebrow: "FONCTIONNALITÉS",
-    title: "Tout ce qu'il faut pour décrocher ton poste",
-    subtitle:
-      "Pensé pour le marché camerounais : les offres avec leurs affiches, la candidature en un geste, et l'IA qui travaille pour toi.",
-    items: [
-      {
-        title: "Postule en un swipe",
-        text: "CV + lettre envoyés automatiquement au recruteur, avec confirmation par email.",
-      },
-      {
-        title: "Les offres comme tu les connais",
-        text: "Chaque offre s'affiche avec son affiche complète, comme sur les groupes WhatsApp — mais filtrée pour ton profil.",
-      },
-      {
-        title: "Candidature instantanée",
-        text: "Stage ou candidature spontanée : envoie ton dossier directement à l'entreprise de ton choix, sans attendre une offre.",
-      },
-      {
-        title: "IA Premium",
-        text: "Score de compatibilité sur chaque offre, et un CV adapté + certifié ATS généré pour maximiser tes chances.",
-      },
-      {
-        title: "Bilan intelligent",
-        text: "L'IA scanne les offres de ton domaine et postule automatiquement pour toi, avec un rapport clair de chaque envoi.",
-      },
-      {
-        title: "Suivi & notifications",
-        text: "Historique de tes candidatures et notifications à chaque étape — tu sais toujours où tu en es.",
-      },
-    ],
-  },
-  pricing: {
-    eyebrow: "TARIFS",
-    title: "Des prix pensés pour toi",
-    subtitle:
-      "Postuler est 100 % gratuit, pour toujours. Les pass Premium ajoutent l'optimisation intelligente quand tu veux passer à la vitesse supérieure.",
-    perPeriod: "FCFA",
-    cta: "Commencer",
-    highlight: "LE PLUS COMPLET",
-    plans: [
-      {
-        name: "Pass 72h",
-        price: "1550",
-        period: "3 jours",
-        features: [
-          "Optimisation intelligente : CV et lettre réécrits pour chaque offre",
-          "Score de compatibilité sur chaque offre, avec tes points forts et tes lacunes",
-          "Dans la limite d'un usage équitable",
-        ],
-      },
-      {
-        name: "Premium Hebdo — Le Sprint",
-        price: "2500",
-        period: "7 jours",
-        features: [
-          "Tout le Pass 72h, pendant une semaine complète",
-          "CV et lettre réécrits automatiquement, adaptés à chaque offre",
-          "Score détaillé, points forts et lacunes sur chaque offre",
-          "Dans la limite d'un usage équitable",
-        ],
-      },
-      {
-        name: "Premium Mensuel — Recherche complète",
-        price: "7 699",
-        period: "30 jours",
-        features: [
-          "Tout le Sprint : candidatures optimisées pendant 30 jours",
-          "Bilan intelligent chaque semaine : on trouve les offres de ton domaine et on postule pour toi",
-          "Un CV optimisé et certifié ATS pour chaque offre retenue",
-          "Profil mis en avant",
-          "Dans la limite d'un usage équitable",
-        ],
-      },
-      {
-        name: "Premium Pro — Recherche intensive",
-        price: "16 999",
-        period: "30 jours",
-        features: [
-          "Tout le Premium Mensuel, en volume étendu",
-          "Bilan intelligent chaque jour, sans que tu aies à ouvrir l'application",
-          "Un CV optimisé et certifié ATS pour chaque offre retenue",
-          "Profil mis en avant + support prioritaire",
-          "Dans la limite d'un usage équitable",
-        ],
-      },
-    ],
-    freeNote:
-      "Paiement unique par MTN MoMo ou Orange Money — aucun renouvellement automatique.",
   },
   testimonials: {
     eyebrow: "TÉMOIGNAGES",
@@ -232,88 +84,313 @@ const fr = {
       },
     ],
   },
+  problem: {
+    eyebrow: "LE PROBLÈME",
+    title: "Chercher un emploi ici, c'est un deuxième emploi.",
+    subtitle:
+      "Vous connaissez ce parcours. Il use avant même le premier entretien.",
+    items: [
+      {
+        title: "Les offres sont partout, et nulle part.",
+        text: "Des affiches transférées de groupe WhatsApp en groupe WhatsApp, sans date, souvent déjà expirées. On passe plus de temps à chercher qu'à postuler.",
+      },
+      {
+        title: "Chaque candidature coûte une soirée.",
+        text: "Trouver l'adresse, rédiger le mail, joindre le CV et la lettre, relire. Puis tout recommencer pour l'offre suivante.",
+      },
+      {
+        title: "Puis le silence.",
+        text: "Aucune nouvelle. Impossible de savoir si le dossier a été ouvert, ni s'il faut relancer.",
+      },
+      {
+        title: "Et le jour où ils appellent, rien n'est préparé.",
+        text: "« Présentez-vous. » C'est la première question, et l'entretien commence déjà à vous échapper.",
+      },
+    ],
+    costLabel: "LE VRAI COÛT",
+    cost: "Des semaines d'efforts pour une poignée de candidatures — et des entretiens perdus dès la première question.",
+  },
+  tour: {
+    eyebrow: "LA SOLUTION",
+    title: "Tout le parcours, dans une seule app.",
+    subtitle:
+      "De l'offre à l'entretien, KamJob fait le travail ingrat. Vous gardez la main sur chaque décision.",
+    items: [
+      {
+        kicker: "Découvrir",
+        title: "Les offres comme elles circulent — triées pour vous.",
+        text: "Chaque offre garde son affiche d'origine, avec le contrat, la ville, le niveau et un score de match calculé sur votre profil. Celles qui vous correspondent passent en premier.",
+        points: [
+          "Un score de match sur chaque offre",
+          "Filtres par domaine, ville et niveau",
+          "L'affiche complète, comme sur WhatsApp",
+        ],
+        alt: "Une offre dans le fil KamJob : affiche de l'employeur, 27 % de match, CDI, présentiel, Douala, Bac+5",
+      },
+      {
+        kicker: "Postuler",
+        title: "Glissez à droite. C'est envoyé.",
+        text: "Votre CV et votre lettre partent directement à l'adresse de recrutement de l'entreprise. Pas pour vous ? Glissez à gauche. Glissé trop vite ? Un bouton vous ramène en arrière.",
+        points: [
+          "CV + lettre envoyés automatiquement",
+          "Ignorer d'un geste, annuler d'un tap",
+          "Une confirmation à chaque envoi",
+        ],
+        alt: "Une offre glissée vers la gauche, marquée « Ignorer », dans le fil KamJob",
+      },
+      {
+        kicker: "Suivre",
+        title: "Sachez toujours où en est votre candidature.",
+        text: "Envoyée, vue par l'entreprise, présélectionnée, entretien, décision : chaque étape s'affiche. Vous retrouvez aussi le CV et la lettre exacts qui sont partis.",
+        points: [
+          "Le suivi en cinq étapes",
+          "Une notification à chaque changement",
+          "Les documents envoyés, gardés au même endroit",
+        ],
+        alt: "Le détail d'une candidature KamJob : envoyée le 3 novembre, le coach d'entretien, puis les étapes à venir",
+      },
+      {
+        kicker: "Profil",
+        title: "Votre profil, une seule fois.",
+        text: "Expériences, formations, certifications, compétences : remplissez votre identité professionnelle une fois. Elle accompagne chaque candidature et affine les offres qu'on vous propose.",
+        points: [
+          "Un profil pour toutes vos candidatures",
+          "Des recommandations plus justes à chaque ajout",
+          "Premium : un CV réécrit pour chaque offre",
+        ],
+        alt: "Le profil KamJob : niveau de complétion, passage à Premium, expériences, formations, certifications et compétences",
+      },
+    ],
+    moreTitle: "Et aussi",
+    more: [
+      {
+        title: "Candidature instantanée",
+        text: "Envoyez votre dossier à l'entreprise de votre choix, même sans offre publiée — idéal pour un stage.",
+      },
+      {
+        title: "Un CV réécrit pour chaque offre",
+        text: "Avec Premium, votre CV et votre lettre sont adaptés à chaque offre et optimisés pour les logiciels de tri (ATS).",
+      },
+      {
+        title: "Bilan intelligent",
+        text: "Avec Premium, l'IA repère les offres de votre domaine et postule pour vous, avec un rapport de chaque envoi.",
+      },
+    ],
+  },
+  coach: {
+    eyebrow: "NOUVEAU · COACH D'ENTRETIEN",
+    title: "Ils appellent ? Vous avez déjà répété.",
+    subtitle:
+      "Pour chaque offre où vous postulez, le coach construit des entretiens blancs écrits pour ce poste précis — à partir de l'offre, de votre profil et de ce qui est public sur la façon de recruter de l'entreprise.",
+    steps: [
+      {
+        title: "Choisissez l'entretien",
+        text: "RH, métier ou technique : trois simulations, chacune écrite pour ce poste. Faites-les dans l'ordre que vous voulez.",
+        alt: "Choix de l'entretien à simuler pour un poste chez Globulus : RH, métier ou technique",
+      },
+      {
+        title: "Le coach se renseigne",
+        text: "Il lit l'offre et votre profil, cherche ce qui est public sur l'employeur, choisit les questions classiques et écrit celles qui portent sur votre parcours. Environ une minute.",
+        alt: "Le coach prépare l'entretien RH : offre lue, profil lu, recherche sur l'employeur, onze questions classiques choisies",
+      },
+      {
+        title: "Entraînez-vous comme en vrai",
+        text: "Le coach joue le recruteur : quinze questions, une à la fois. Répondez comme vous le diriez face à lui.",
+        alt: "Simulation d'entretien RH : « Pouvez-vous vous présenter ? », question 1 sur 15",
+      },
+    ],
+    note: "Rien d'inventé : s'il n'existe rien de public sur un employeur, le coach le dit et travaille à partir de l'offre et de ce que demandent des employeurs semblables.",
+    cta: "Essayer le coach",
+  },
+  how: {
+    eyebrow: "EN 3 ÉTAPES",
+    title: "Comment ça marche ?",
+    subtitle:
+      "De l'inscription à votre première candidature, il faut moins de cinq minutes.",
+    steps: [
+      {
+        title: "Créez votre profil",
+        text: "Ajoutez votre CV, votre lettre et votre parcours une seule fois. Ils accompagnent chaque candidature.",
+      },
+      {
+        title: "Glissez les offres",
+        text: "Un fil filtré selon votre domaine, votre ville et votre niveau. À droite pour postuler, à gauche pour passer.",
+      },
+      {
+        title: "Préparez l'entretien",
+        text: "Suivez chaque candidature et, dès qu'une entreprise s'intéresse à vous, répétez avec le coach.",
+      },
+    ],
+  },
+  pricing: {
+    eyebrow: "TARIFS",
+    title: "Des prix pensés pour vous",
+    subtitle:
+      "Postuler est 100 % gratuit, pour toujours. Les pass Premium ajoutent l'optimisation intelligente quand vous voulez accélérer.",
+    perPeriod: "FCFA",
+    cta: "Commencer",
+    highlight: "LE PLUS COMPLET",
+    plans: [
+      {
+        name: "Pass 72h",
+        price: "1550",
+        period: "3 jours",
+        features: [
+          "Optimisation intelligente : CV et lettre réécrits pour chaque offre",
+          "Score de compatibilité sur chaque offre, avec vos points forts et vos lacunes",
+          "Dans la limite d'un usage équitable",
+        ],
+      },
+      {
+        name: "Premium Hebdo — Le Sprint",
+        price: "2500",
+        period: "7 jours",
+        features: [
+          "Tout le Pass 72h, pendant une semaine complète",
+          "CV et lettre réécrits automatiquement, adaptés à chaque offre",
+          "Score détaillé, points forts et lacunes sur chaque offre",
+          "Dans la limite d'un usage équitable",
+        ],
+      },
+      {
+        name: "Premium Mensuel — Recherche complète",
+        price: "7 699",
+        period: "30 jours",
+        features: [
+          "Tout le Sprint : candidatures optimisées pendant 30 jours",
+          "Bilan intelligent chaque semaine : on trouve les offres de votre domaine et on postule pour vous",
+          "Un CV optimisé et certifié ATS pour chaque offre retenue",
+          "Profil mis en avant",
+          "Dans la limite d'un usage équitable",
+        ],
+      },
+      {
+        name: "Premium Pro — Recherche intensive",
+        price: "16 999",
+        period: "30 jours",
+        features: [
+          "Tout le Premium Mensuel, en volume étendu",
+          "Bilan intelligent chaque jour, sans que vous ayez à ouvrir l'application",
+          "Un CV optimisé et certifié ATS pour chaque offre retenue",
+          "Profil mis en avant + support prioritaire",
+          "Dans la limite d'un usage équitable",
+        ],
+      },
+    ],
+    freeNote:
+      "Paiement unique par MTN MoMo ou Orange Money — aucun renouvellement automatique.",
+  },
+  trust: {
+    title: "Pourquoi vous pouvez y aller les yeux fermés",
+    items: [
+      {
+        title: "Postuler ne coûte rien",
+        text: "Créer un compte, glisser les offres et envoyer vos candidatures est gratuit et illimité. Pour toujours.",
+      },
+      {
+        title: "Vos documents restent à vous",
+        text: "CV et lettre stockés de façon sécurisée, transmis uniquement aux offres que vous choisissez.",
+      },
+      {
+        title: "Paiement local, sans surprise",
+        text: "MTN MoMo et Orange Money, en paiement unique. Aucun renouvellement automatique.",
+      },
+    ],
+  },
   faq: {
     eyebrow: "FAQ",
     title: "Questions fréquentes",
-    subtitle: "Tout ce que tu dois savoir avant de commencer.",
+    subtitle: "Tout ce qu'il faut savoir avant de commencer.",
     items: [
       {
         q: "KamJob est-il vraiment gratuit ?",
-        a: "Oui. Créer un compte, swiper et postuler est 100 % gratuit et illimité. Les pass Premium sont optionnels : ils ajoutent l'analyse IA, le CV adapté et le Bilan intelligent. Et souviens-toi : aucun employeur sérieux ne te demandera de payer pour postuler.",
+        a: "Oui. Créer un compte, glisser les offres et postuler est 100 % gratuit et illimité. Les pass Premium sont optionnels : ils ajoutent le CV réécrit pour chaque offre, l'analyse détaillée et le Bilan intelligent. Et souvenez-vous : aucun employeur sérieux ne vous demandera de payer pour postuler.",
       },
       {
         q: "Comment ma candidature est-elle envoyée ?",
-        a: "Quand tu swipes une offre à droite, ton CV et ta lettre de motivation partent par email à l'adresse de recrutement de l'entreprise. Tu reçois une confirmation et tu retrouves chaque candidature dans ton historique.",
+        a: "Quand vous glissez une offre à droite, votre CV et votre lettre de motivation partent par email à l'adresse de recrutement de l'entreprise. Vous recevez une confirmation, puis vous suivez chaque étape depuis l'application.",
+      },
+      {
+        q: "C'est quoi le coach d'entretien ?",
+        a: "Pour une offre où vous avez postulé, le coach prépare trois entretiens blancs — RH, métier et technique — écrits à partir de l'offre, de votre profil et de ce qui est public sur la façon de recruter de l'entreprise. Il joue ensuite le recruteur et vous pose les questions une à une.",
+      },
+      {
+        q: "Le coach invente-t-il des informations sur l'employeur ?",
+        a: "Non. Il s'appuie sur des sources publiques et vous montre ce qu'il a trouvé. S'il n'existe rien de public sur un employeur, il le dit et travaille à partir de l'offre et de ce que demandent des employeurs semblables.",
+      },
+      {
+        q: "Que veut dire le score de match ?",
+        a: "C'est la correspondance entre une offre et votre profil. Plus votre profil est complet, plus le score est juste — et plus les offres proposées vous ressemblent. Avec un pass Premium, vous voyez aussi le détail : vos points forts et vos lacunes pour chaque offre.",
       },
       {
         q: "Dois-je refaire mon CV pour chaque offre ?",
-        a: "Non. Tu ajoutes ton CV et ta lettre une seule fois dans ton profil. Avec un pass Premium, l'IA les adapte automatiquement à chaque offre et génère une version optimisée ATS avant l'envoi.",
+        a: "Non. Vous ajoutez votre CV et votre lettre une seule fois dans votre profil. Avec un pass Premium, ils sont réécrits automatiquement pour chaque offre et optimisés pour les logiciels de tri (ATS) avant l'envoi.",
       },
       {
         q: "C'est quoi le Bilan intelligent ?",
-        a: "C'est la fonctionnalité phare du Premium Mensuel : l'IA scanne les offres de ton domaine et postule automatiquement pour toi, avec un CV optimisé pour chaque offre retenue. Tu reçois un rapport clair qui récapitule chaque envoi.",
+        a: "C'est la fonctionnalité phare du Premium Mensuel : l'IA repère les offres de votre domaine et postule automatiquement pour vous, avec un CV optimisé pour chaque offre retenue. Vous recevez un rapport clair qui récapitule chaque envoi.",
       },
       {
-        q: "Comment payer un pass Premium ?",
-        a: "Par Mobile Money : MTN MoMo et Orange Money sont acceptés. Tu saisis ton numéro, tu confirmes sur ton téléphone, c'est tout.",
-      },
-      {
-        q: "Le pass se renouvelle-t-il automatiquement ?",
-        a: "Non, jamais. Chaque pass a une durée fixe (72h, 7 jours ou 30 jours) et s'arrête tout seul. Pas de prélèvement surprise.",
+        q: "Comment payer, et le pass se renouvelle-t-il ?",
+        a: "Par Mobile Money : MTN MoMo et Orange Money sont acceptés. Vous saisissez votre numéro et confirmez sur votre téléphone. Chaque pass a une durée fixe (72 h, 7 jours ou 30 jours) et s'arrête tout seul : jamais de prélèvement surprise.",
       },
       {
         q: "Mes documents sont-ils en sécurité ?",
-        a: "Oui. Tes documents sont stockés de manière sécurisée et ne sont transmis qu'aux recruteurs des offres auxquelles tu choisis de postuler. Ils ne sont jamais revendus ni partagés ailleurs.",
+        a: "Oui. Vos documents sont stockés de manière sécurisée et ne sont transmis qu'aux recruteurs des offres auxquelles vous choisissez de postuler. Ils ne sont jamais revendus ni partagés ailleurs.",
       },
       {
         q: "Je suis recruteur — comment publier mes offres ?",
-        a: "KamJob dispose d'un portail employeur dédié : tu publies tes offres avec leur affiche, tu fixes une date d'expiration, et tu reçois les candidatures (CV + lettre) directement par email. L'accès employeur se demande depuis l'application.",
+        a: "KamJob dispose d'un portail employeur dédié : vous publiez vos offres avec leur affiche, vous fixez une date d'expiration, et vous recevez les candidatures (CV + lettre) directement par email. L'accès employeur se demande depuis l'application.",
       },
     ],
   },
   employers: {
+    label: "JE RECRUTE",
     title: "Vous recrutez ?",
     text: "Publiez vos offres avec leur affiche, fixez une date d'expiration et recevez les candidatures — CV et lettre — directement par email. Les meilleurs profils du Cameroun sont déjà sur KamJob.",
+    cta: "Publier mes offres",
   },
   contact: {
     eyebrow: "CONTACT",
-    title: "Une suggestion ? Écris-nous.",
+    title: "Une suggestion ? Écrivez-nous.",
     subtitle:
-      "Une idée pour améliorer KamJob, un bug à signaler, une question sur ton compte ? Ton message part directement dans la boîte de l'équipe.",
-    nameLabel: "Ton nom",
-    namePlaceholder: "Comment on t'appelle",
-    emailLabel: "Ton email",
-    emailPlaceholder: "ton@email.com",
+      "Une idée pour améliorer KamJob, un bug à signaler, une question sur votre compte ? Votre message part directement dans la boîte de l'équipe.",
+    nameLabel: "Votre nom",
+    namePlaceholder: "Comment vous appeler",
+    emailLabel: "Votre email",
+    emailPlaceholder: "vous@email.com",
     subjectLabel: "Sujet",
     subjectPlaceholder: "Une suggestion, un bug, une question…",
-    messageLabel: "Ton message",
+    messageLabel: "Votre message",
     messagePlaceholder:
-      "Dis-nous tout — plus c'est précis, plus on peut t'aider vite.",
+      "Dites-nous tout — plus c'est précis, plus on peut vous aider vite.",
     send: "Envoyer le message",
     sending: "Envoi en cours…",
     successTitle: "Message envoyé, merci !",
     successText:
-      "On te répond à l'adresse que tu viens de donner, généralement sous 48 heures ouvrées.",
+      "On vous répond à l'adresse que vous venez de donner, généralement sous 48 heures ouvrées.",
     again: "Écrire un autre message",
-    directLabel: "Ou écris directement à",
+    directLabel: "Ou écrivez directement à",
     privacyNote:
-      "Ton nom, ton email et ton message servent uniquement à te répondre.",
+      "Votre nom, votre email et votre message servent uniquement à vous répondre.",
     privacyLink: "Politique de confidentialité",
-    honeypotLabel: "Laisse ce champ vide",
+    honeypotLabel: "Laissez ce champ vide",
     errors: {
       invalid:
-        "Vérifie tes informations : un nom, un email valide, un sujet et un message d'au moins 10 caractères sont nécessaires.",
+        "Vérifiez vos informations : un nom, un email valide, un sujet et un message d'au moins 10 caractères sont nécessaires.",
       rateLimited:
-        "Tu as déjà envoyé plusieurs messages. Réessaie dans quelques minutes — on a bien reçu les précédents.",
+        "Vous avez déjà envoyé plusieurs messages. Réessayez dans quelques minutes — on a bien reçu les précédents.",
       unavailable:
-        "L'envoi automatique ne fonctionne pas pour le moment. Écris-nous directement :",
+        "L'envoi automatique ne fonctionne pas pour le moment. Écrivez-nous directement :",
     },
   },
   finalCta: {
-    title: "Ton prochain poste est à un swipe.",
+    title: "Votre prochain poste est à un geste.",
     subtitle:
-      "Crée ton profil aujourd'hui et envoie ta première candidature en moins de cinq minutes.",
+      "Créez votre profil aujourd'hui : première candidature en moins de cinq minutes, et un coach prêt pour le jour où ils appellent.",
     button: "Commencer maintenant",
+    phoneAlt:
+      "L'écran d'accueil de KamJob : « Créez votre profil une fois. Glissez pour postuler. »",
   },
   stickyCta: {
     label: "Postuler est gratuit",
@@ -322,7 +399,7 @@ const fr = {
   footer: {
     company: "Ressources",
     employerLink: "Espace employeur",
-    tagline: "Ton emploi au Cameroun",
+    tagline: "Votre emploi au Cameroun",
     disclaimer:
       "Candidature 100 % gratuite — aucun employeur sérieux ne vous demandera de payer pour postuler.",
     product: "Produit",
@@ -336,6 +413,7 @@ const fr = {
 const en: typeof fr = {
   nav: {
     features: "Features",
+    coach: "Interview coach",
     pricing: "Pricing",
     faq: "FAQ",
     login: "Log in",
@@ -349,12 +427,12 @@ const en: typeof fr = {
     langLabel: "Change language",
   },
   hero: {
-    badge: "Job hunting in Cameroon, reinvented",
-    title: "Find your dream job",
-    titleAccent: "with one swipe",
+    badge: "Jobs in Cameroon",
+    title: "Swipe to apply.",
+    titleAccent: "Land the interview.",
     subtitle:
-      "Swipe through job offers in your field like a dating app: one swipe right and your application — CV and cover letter — goes straight to the recruiter.",
-    ctaPrimary: "Create my free account",
+      "Offers sorted for your profile, all over Cameroon. Swipe right and your CV goes straight to the recruiter — no email to write, no CV to redo. And if the company calls, the interview coach drills you on the questions they'll ask.",
+    ctaPrimary: "Create my free profile",
     ctaSecondary: "I already have an account",
     note: "Free to apply · No commitment · Mobile Money payment",
     stats: [
@@ -365,30 +443,12 @@ const en: typeof fr = {
     ],
   },
   mockup: {
-    stamp: "APPLY",
-    hiringTop: "WE ARE",
-    hiringMain: "HIRING",
-    hiringSub: "Apply before July 31",
+    feedAlt:
+      "The KamJob offer feed: an HR Manager offer in Douala, with its poster, match score and the Skip and Apply buttons",
+    trackAlt:
+      "Tracking an application in KamJob: sent, then seen, shortlisted, interview and decision",
     toast: "Application sent",
-    toastSub: "CV + letter received by ST Digital",
-    alt: "Preview of the KamJob app: a job offer ready to swipe",
-  },
-  trust: {
-    title: "Why you can go in with your eyes closed",
-    items: [
-      {
-        title: "Applying costs nothing",
-        text: "Creating an account, swiping and sending your application is free and unlimited. Forever.",
-      },
-      {
-        title: "Your documents stay yours",
-        text: "CV and cover letter stored securely, shared only with the offers you choose.",
-      },
-      {
-        title: "Local payment, no surprises",
-        text: "MTN MoMo and Orange Money, as a one-time payment. No automatic renewal.",
-      },
-    ],
+    toastSub: "CV + letter with the recruiter",
   },
   ticker: {
     label: "Offers across every industry, all over Cameroon",
@@ -405,31 +465,146 @@ const en: typeof fr = {
       "Workshop Manager — Limbé · Permanent",
     ],
   },
-  spaces: {
-    candidateLabel: "I'M LOOKING FOR WORK",
-    candidateTitle: "Candidate Space",
-    candidateText:
-      "Create your profile, add your CV and cover letter once. Swipe right and your application goes out automatically.",
-    candidateChecks: [
-      "Complete profile: info, CV and cover letter",
-      "Swipe right → CV + letter sent automatically",
-      "Instant application straight to the company",
-      "Notifications and tracking for every application",
+  testimonials: {
+    eyebrow: "TESTIMONIALS",
+    title: "They found their job with KamJob",
+    items: [
+      {
+        quote:
+          "I applied to 15 offers during my lunch break. Two interviews landed the same week.",
+        name: "Aïcha N.",
+        role: "Web developer · Douala",
+      },
+      {
+        quote:
+          "The AI-tailored CV made the difference: the recruiter told me my profile matched the offer perfectly.",
+        name: "Steve M.",
+        role: "Accountant · Yaoundé",
+      },
+      {
+        quote:
+          "The Smart Report applies while I'm in class. I get the report and prepare for my interviews.",
+        name: "Vanessa T.",
+        role: "Marketing student · Bafoussam",
+      },
     ],
-    candidateCta: "Create my free profile",
-    employerLabel: "I'M HIRING",
-    employerTitle: "Employer Space",
-    employerText:
-      "Post your offers with their poster and your company email. Candidates apply and their CVs land straight in your inbox.",
-    employerChecks: [
-      "Offers posted with poster and expiry date",
-      "Applications received by email: CV + letter",
-      "Dashboard to manage and edit your offers",
-      "Verified company badge",
+  },
+  problem: {
+    eyebrow: "THE PROBLEM",
+    title: "Job hunting here is a second job.",
+    subtitle: "You know the routine. It wears you down before the first interview.",
+    items: [
+      {
+        title: "Offers are everywhere, and nowhere.",
+        text: "Posters forwarded from WhatsApp group to WhatsApp group, undated, often already expired. You spend more time searching than applying.",
+      },
+      {
+        title: "Every application costs an evening.",
+        text: "Find the address, write the email, attach the CV and letter, proofread. Then start all over for the next offer.",
+      },
+      {
+        title: "Then, silence.",
+        text: "No news. No way to know whether your file was even opened, or whether to follow up.",
+      },
+      {
+        title: "And when they finally call, nothing's prepared.",
+        text: "“Tell us about yourself.” It's the very first question, and the interview is already slipping away.",
+      },
     ],
-    employerCta: "Post my offers",
-    eyebrow: "TWO SPACES",
-    title: "Looking for work, or hiring?",
+    costLabel: "THE REAL COST",
+    cost: "Weeks of effort for a handful of applications — and interviews lost on the very first question.",
+  },
+  tour: {
+    eyebrow: "THE SOLUTION",
+    title: "The whole journey, in one app.",
+    subtitle:
+      "From the offer to the interview, KamJob does the grunt work. You stay in charge of every decision.",
+    items: [
+      {
+        kicker: "Discover",
+        title: "Offers the way they circulate — sorted for you.",
+        text: "Every offer keeps its original poster, with the contract, city, level and a match score computed from your profile. The ones that fit you come first.",
+        points: [
+          "A match score on every offer",
+          "Filters by field, city and level",
+          "The full poster, just like on WhatsApp",
+        ],
+        alt: "An offer in the KamJob feed: the employer's poster, 27% match, permanent contract, on-site, Douala, Master's level",
+      },
+      {
+        kicker: "Apply",
+        title: "Swipe right. It's sent.",
+        text: "Your CV and cover letter go straight to the company's recruitment address. Not for you? Swipe left. Swiped too fast? One button takes you back.",
+        points: [
+          "CV + letter sent automatically",
+          "Skip with a swipe, undo with a tap",
+          "A confirmation for every application",
+        ],
+        alt: "An offer swiped left, marked “Skip”, in the KamJob feed",
+      },
+      {
+        kicker: "Track",
+        title: "Always know where your application stands.",
+        text: "Sent, seen by the company, shortlisted, interview, decision: every step shows up. You can also find the exact CV and letter that went out.",
+        points: [
+          "Five-step tracking",
+          "A notification at every change",
+          "The documents you sent, kept in one place",
+        ],
+        alt: "An application's detail in KamJob: sent on 3 November, the interview coach, then the steps to come",
+      },
+      {
+        kicker: "Profile",
+        title: "Your profile, once.",
+        text: "Experience, education, certifications, skills: fill in your professional identity once. It goes out with every application and sharpens the offers you're shown.",
+        points: [
+          "One profile for every application",
+          "Sharper recommendations with every addition",
+          "Premium: a CV rewritten for every offer",
+        ],
+        alt: "The KamJob profile: completion level, Premium upgrade, experience, education, certifications and skills",
+      },
+    ],
+    moreTitle: "And also",
+    more: [
+      {
+        title: "Instant application",
+        text: "Send your file to the company of your choice, even with no offer posted — ideal for an internship.",
+      },
+      {
+        title: "A CV rewritten for every offer",
+        text: "With Premium, your CV and cover letter are tailored to each offer and optimised for applicant tracking systems (ATS).",
+      },
+      {
+        title: "Smart Report",
+        text: "With Premium, the AI spots offers in your field and applies for you, with a report of every application.",
+      },
+    ],
+  },
+  coach: {
+    eyebrow: "NEW · INTERVIEW COACH",
+    title: "They're calling? You've already rehearsed.",
+    subtitle:
+      "For every offer you apply to, the coach builds mock interviews written for that exact role — from the offer, your profile and whatever is public about how the company hires.",
+    steps: [
+      {
+        title: "Pick the interview",
+        text: "HR, hiring manager or technical: three simulations, each written for this role. Do them in any order.",
+        alt: "Choosing which interview to simulate for a role at Globulus: HR, hiring manager or technical",
+      },
+      {
+        title: "The coach does its homework",
+        text: "It reads the offer and your profile, looks up what's public about the employer, picks the classic questions and writes the ones about your background. About a minute.",
+        alt: "The coach preparing the HR interview: offer read, profile read, employer researched, eleven classic questions picked",
+      },
+      {
+        title: "Practise like it's real",
+        text: "The coach plays the recruiter: fifteen questions, one at a time. Answer the way you'd say it face to face.",
+        alt: "HR interview simulation: “Can you introduce yourself?”, question 1 of 15",
+      },
+    ],
+    note: "Nothing made up: if there's nothing public about an employer, the coach says so and works from the offer and from what similar employers ask.",
+    cta: "Try the coach",
   },
   how: {
     eyebrow: "IN 3 STEPS",
@@ -439,47 +614,15 @@ const en: typeof fr = {
     steps: [
       {
         title: "Create your profile",
-        text: "Add your CV and cover letter once — they go out with every application.",
+        text: "Add your CV, cover letter and background once. They go out with every application.",
       },
       {
         title: "Swipe the offers",
-        text: "A feed filtered by your field, city and education level — with each job's full poster.",
+        text: "A feed filtered by your field, city and level. Right to apply, left to pass.",
       },
       {
-        title: "We apply for you",
-        text: "One swipe right and your application is emailed to the recruiter. Track everything from the app.",
-      },
-    ],
-  },
-  features: {
-    eyebrow: "FEATURES",
-    title: "Everything you need to land the job",
-    subtitle:
-      "Built for the Cameroonian market: job posters as you know them, one-gesture applications, and AI working for you.",
-    items: [
-      {
-        title: "Apply with one swipe",
-        text: "CV + cover letter sent automatically to the recruiter, with email confirmation.",
-      },
-      {
-        title: "Offers the way you know them",
-        text: "Every offer shows its full poster, just like on WhatsApp groups — but filtered for your profile.",
-      },
-      {
-        title: "Instant application",
-        text: "Internship or spontaneous application: send your file directly to the company of your choice, no offer needed.",
-      },
-      {
-        title: "Premium AI",
-        text: "A compatibility score on every offer, plus an ATS-certified tailored CV to maximise your chances.",
-      },
-      {
-        title: "Smart Report",
-        text: "The AI scans offers in your field and applies for you automatically, with a clear report of every application.",
-      },
-      {
-        title: "Tracking & notifications",
-        text: "A history of your applications and notifications at every step — you always know where you stand.",
+        title: "Prepare the interview",
+        text: "Track every application and, as soon as a company is interested, rehearse with the coach.",
       },
     ],
   },
@@ -541,27 +684,20 @@ const en: typeof fr = {
     freeNote:
       "One-time payment via MTN MoMo or Orange Money — no automatic renewal.",
   },
-  testimonials: {
-    eyebrow: "TESTIMONIALS",
-    title: "They found their job with KamJob",
+  trust: {
+    title: "Why you can go in with your eyes closed",
     items: [
       {
-        quote:
-          "I applied to 15 offers during my lunch break. Two interviews landed the same week.",
-        name: "Aïcha N.",
-        role: "Web developer · Douala",
+        title: "Applying costs nothing",
+        text: "Creating an account, swiping offers and sending your applications is free and unlimited. Forever.",
       },
       {
-        quote:
-          "The AI-tailored CV made the difference: the recruiter told me my profile matched the offer perfectly.",
-        name: "Steve M.",
-        role: "Accountant · Yaoundé",
+        title: "Your documents stay yours",
+        text: "CV and cover letter stored securely, shared only with the offers you choose.",
       },
       {
-        quote:
-          "The Smart Report applies while I'm in class. I get the report and prepare for my interviews.",
-        name: "Vanessa T.",
-        role: "Marketing student · Bafoussam",
+        title: "Local payment, no surprises",
+        text: "MTN MoMo and Orange Money, as a one-time payment. No automatic renewal.",
       },
     ],
   },
@@ -572,27 +708,35 @@ const en: typeof fr = {
     items: [
       {
         q: "Is KamJob really free?",
-        a: "Yes. Creating an account, swiping and applying is 100% free and unlimited. Premium passes are optional: they add AI analysis, tailored CVs and the Smart Report. And remember: no serious employer will ever ask you to pay to apply.",
+        a: "Yes. Creating an account, swiping offers and applying is 100% free and unlimited. Premium passes are optional: they add a CV rewritten for every offer, detailed analysis and the Smart Report. And remember: no serious employer will ever ask you to pay to apply.",
       },
       {
         q: "How is my application sent?",
-        a: "When you swipe right on an offer, your CV and cover letter are emailed to the company's recruitment address. You get a confirmation and every application appears in your history.",
+        a: "When you swipe right on an offer, your CV and cover letter are emailed to the company's recruitment address. You get a confirmation, then follow every step from the app.",
+      },
+      {
+        q: "What is the interview coach?",
+        a: "For an offer you've applied to, the coach prepares three mock interviews — HR, hiring manager and technical — written from the offer, your profile and whatever is public about how the company hires. It then plays the recruiter and asks you the questions one by one.",
+      },
+      {
+        q: "Does the coach make things up about the employer?",
+        a: "No. It relies on public sources and shows you what it found. If there's nothing public about an employer, it says so and works from the offer and from what similar employers ask.",
+      },
+      {
+        q: "What does the match score mean?",
+        a: "It's how well an offer fits your profile. The more complete your profile, the more accurate the score — and the more the offers you're shown look like you. With a Premium pass you also see the detail: your strengths and gaps for every offer.",
       },
       {
         q: "Do I need to redo my CV for every offer?",
-        a: "No. You add your CV and cover letter once in your profile. With a Premium pass, the AI adapts them automatically to each offer and generates an ATS-optimised version before sending.",
+        a: "No. You add your CV and cover letter once in your profile. With a Premium pass, they are rewritten automatically for every offer and optimised for applicant tracking systems (ATS) before sending.",
       },
       {
         q: "What is the Smart Report?",
-        a: "It's the flagship feature of Monthly Premium: the AI scans offers in your field and applies for you automatically, with an optimised CV for every selected offer. You receive a clear report summarising each application.",
+        a: "It's the flagship feature of Monthly Premium: the AI spots offers in your field and applies for you automatically, with an optimised CV for every selected offer. You receive a clear report summarising each application.",
       },
       {
-        q: "How do I pay for a Premium pass?",
-        a: "Via Mobile Money: MTN MoMo and Orange Money are accepted. Enter your number, confirm on your phone, done.",
-      },
-      {
-        q: "Does the pass renew automatically?",
-        a: "No, never. Every pass has a fixed duration (72h, 7 days or 30 days) and simply expires. No surprise charges.",
+        q: "How do I pay, and does the pass renew?",
+        a: "Via Mobile Money: MTN MoMo and Orange Money are accepted. Enter your number and confirm on your phone. Every pass has a fixed duration (72h, 7 days or 30 days) and simply expires: no surprise charges, ever.",
       },
       {
         q: "Are my documents safe?",
@@ -605,8 +749,10 @@ const en: typeof fr = {
     ],
   },
   employers: {
+    label: "I'M HIRING",
     title: "Hiring?",
     text: "Post your offers with their poster, set an expiry date and receive applications — CV and cover letter — directly by email. Cameroon's best profiles are already on KamJob.",
+    cta: "Post my offers",
   },
   contact: {
     eyebrow: "CONTACT",
@@ -645,8 +791,10 @@ const en: typeof fr = {
   finalCta: {
     title: "Your next job is one swipe away.",
     subtitle:
-      "Create your profile today and send your first application in under five minutes.",
+      "Create your profile today: first application in under five minutes, and a coach ready for the day they call.",
     button: "Start now",
+    phoneAlt:
+      "The KamJob welcome screen: “Create your profile once. Swipe to apply.”",
   },
   stickyCta: {
     label: "Applying is free",

@@ -90,6 +90,9 @@
   --shadow-lift: 0 2px 4px rgba(28, 34, 24, 0.07), 0 18px 34px -14px rgba(28, 34, 24, 0.2);
   --shadow-brand: 0 3px 0 0 var(--brand-hover);
   --shadow-ink: 0 3px 0 0 #000000;
+  /* The one deep shadow on the page: devices are the only objects that
+     genuinely float above it. */
+  --shadow-phone: 0 2px 6px rgba(16, 26, 20, 0.12), 0 34px 60px -24px rgba(16, 26, 20, 0.45);
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -139,6 +142,7 @@
     --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.45), 0 18px 34px -14px rgba(0, 0, 0, 0.65);
     --shadow-brand: 0 3px 0 0 #0B4B25;
     --shadow-ink: 0 3px 0 0 #000000;
+    --shadow-phone: 0 2px 6px rgba(0, 0, 0, 0.5), 0 34px 60px -24px rgba(0, 0, 0, 0.85);
   }
 }
 
@@ -307,26 +311,23 @@ html {
   font-variant-numeric: tabular-nums;
 }
 
-/* Headline swash: a skewed wash under the accent phrase, so the emphasis is
-   a drawn mark rather than yet another coloured span. */
+/* Headline swash: a wash under the accent phrase, so the emphasis is a drawn
+   mark rather than yet another coloured span. Painted as an inline
+   background with `box-decoration-break: clone` so it follows the phrase
+   onto every line it wraps to — the accent is a full sentence now, and an
+   inline-block underline would only have marked its last line. */
 .marker {
-  position: relative;
-  display: inline-block;
   color: var(--brand-text);
-  isolation: isolate;
-}
-
-.marker::after {
-  content: '';
-  position: absolute;
-  left: -0.05em;
-  right: -0.05em;
-  bottom: 0.06em;
-  height: 0.2em;
-  background-color: var(--brand-solid);
-  opacity: 0.24;
-  transform: skewX(-14deg);
-  z-index: -1;
+  background-image: linear-gradient(
+    to top,
+    transparent 0.2em,
+    color-mix(in srgb, var(--brand-solid) 24%, transparent) 0.2em,
+    color-mix(in srgb, var(--brand-solid) 24%, transparent) 0.4em,
+    transparent 0.4em
+  );
+  padding-inline: 0.03em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* ── Motion ────────────────────────────────────────────────────────────────
@@ -579,6 +580,149 @@ html {
   background-size: 72px 72px;
 }
 
+/* ── Device frame ──────────────────────────────────────────────────────────
+   `.phone` is only the size query container; `.phone-body` draws the device.
+   (A container cannot resolve `cqw` against itself, so the frame has to sit
+   one level inside it.) Every dimension below is a share of the phone's own
+   width, so a phone at any size keeps the same bezel, radius and island. */
+.phone {
+  container-type: inline-size;
+}
+
+.phone-body {
+  position: relative;
+  padding: 2.4cqw;
+  border-radius: 15cqw;
+  background-color: #0d110f;
+  box-shadow:
+    inset 0 0 0 0.5cqw #29302c,
+    0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent),
+    var(--shadow-phone);
+}
+
+/* On an ink slab the near-black body would melt into the background. */
+.slab .phone-body {
+  box-shadow:
+    inset 0 0 0 0.5cqw #34403a,
+    0 0 0 1px rgba(255, 255, 255, 0.14),
+    var(--shadow-phone);
+}
+
+.phone-screen {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 591 / 1280;
+  border-radius: 12.8cqw;
+  background-color: #ffffff;
+  isolation: isolate;
+}
+
+.phone-layer {
+  object-fit: cover;
+}
+
+.phone-island {
+  position: absolute;
+  z-index: 3;
+  top: 2.4cqw;
+  left: 50%;
+  width: 27cqw;
+  height: 7.6cqw;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background-color: #000000;
+}
+
+/* A neutral 9:41 bar drawn over the cleaned screenshots. iOS chrome is the
+   one place the system face is the authentic choice. */
+.phone-status {
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 auto;
+  height: 12cqw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7.5cqw 0 10.5cqw;
+  color: #0b0f0d;
+  font: 600 3.9cqw/1 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.phone[data-tone='light'] .phone-status {
+  color: #ffffff;
+}
+
+.phone-status-icons {
+  width: 17cqw;
+  height: auto;
+}
+
+/* Hero loop: the resting feed card, then the same card swiped to "Postuler",
+   with the confirmation toast landing while the swipe is on screen. Both run
+   on one 7s clock so they can never drift apart. */
+@keyframes screen-swap {
+  0%,
+  36% {
+    opacity: 0;
+  }
+  44%,
+  86% {
+    opacity: 1;
+  }
+  94%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.swap-loop {
+  animation: screen-swap 7s ease-in-out 1.4s infinite both;
+}
+
+@keyframes toast-cycle {
+  0%,
+  42% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  48%,
+  84% {
+    opacity: 1;
+    transform: none;
+  }
+  90%,
+  100% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+}
+
+.toast-loop {
+  animation: toast-cycle 7s var(--ease) 1.4s infinite both;
+}
+
+/* Feature tour: the sticky phone cross-fades between screens. */
+.tour-layer {
+  transition: opacity 0.55s var(--ease);
+}
+
+/* Horizontal swipe row for the coach phones on small screens. */
+.snap-row {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.snap-row::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-row > * {
+  scroll-snap-align: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -588,6 +732,16 @@ html {
   .rise-in,
   .line-clip > span {
     animation: none;
+  }
+  /* Hold the loop on its most informative frame: the swipe, plus its toast. */
+  .swap-loop,
+  .toast-loop {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .tour-layer {
+    transition: none;
   }
   .js-reveal .reveal {
     opacity: 1;

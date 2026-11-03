@@ -38,10 +38,15 @@ export const LEGAL_ROUTES = {
 // Section anchors are absolute (`/#how`, not `#how`) so the same list works in
 // the footer, which is rendered on the legal pages too. On the home page the
 // browser still treats them as same-document fragment navigation.
+//
+// `header` marks the subset shown in the desktop header bar; the mobile menu
+// and the footer list every entry. Six mono labels do not fit beside the
+// logo and the CTA cluster at `lg`, four do.
 export const NAV_LINKS = [
-  { href: '/#how', key: 'howItWorks' },
-  { href: '/#features', key: 'features' },
-  { href: '/#pricing', key: 'pricing' },
-  { href: '/#faq', key: 'faq' },
-  { href: CONTACT_ANCHOR, key: 'contact' },
+  { href: '/#features', key: 'features', header: true },
+  { href: '/#coach', key: 'coach', header: true },
+  { href: '/#how', key: 'howItWorks', header: false },
+  { href: '/#pricing', key: 'pricing', header: true },
+  { href: '/#faq', key: 'faq', header: true },
+  { href: CONTACT_ANCHOR, key: 'contact', header: false },
 ] as const

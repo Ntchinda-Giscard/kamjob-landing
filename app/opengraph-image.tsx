@@ -5,7 +5,7 @@ import { ImageResponse } from "next/og";
 // which is how most of this traffic will arrive.
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "KamJob — Ton emploi au Cameroun, en un swipe";
+export const alt = "KamJob — Glissez pour postuler. Décrochez l'entretien.";
 
 const GREEN = "#34A853";
 const RED = "#EA4335";
@@ -81,7 +81,7 @@ export default function OpengraphImage() {
             letterSpacing: -2,
           }}
         >
-          Ton emploi au Cameroun,
+          Glissez pour postuler.
         </div>
         <div
           style={{
@@ -93,7 +93,7 @@ export default function OpengraphImage() {
             letterSpacing: -2,
           }}
         >
-          en un swipe.
+          Décrochez l&apos;entretien.
         </div>
         <div
           style={{
@@ -103,7 +103,7 @@ export default function OpengraphImage() {
             color: "#5F6368",
           }}
         >
-          Swipe à droite — ton CV et ta lettre partent chez le recruteur.
+          Votre CV part chez le recruteur. Le coach vous prépare à l&apos;entretien.
         </div>
       </div>
 

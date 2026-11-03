@@ -31,9 +31,9 @@ const jetbrains = JetBrains_Mono({
   weight: ["500", "700"],
 });
 
-const TITLE = "KamJob — Ton emploi au Cameroun, en un swipe";
+const TITLE = "KamJob — Emploi au Cameroun : glissez pour postuler";
 const DESCRIPTION =
-  "Swipe les offres d'emploi de ton domaine et postule en un geste : ton CV et ta lettre partent directement chez le recruteur. Gratuit pour postuler. | Find your job in Cameroon with one swipe.";
+  "Des offres d'emploi au Cameroun triées pour votre profil. Glissez pour postuler : votre CV et votre lettre partent chez le recruteur, puis un coach d'entretien vous prépare. Gratuit pour postuler. | Jobs in Cameroon: swipe to apply, then rehearse with an interview coach.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

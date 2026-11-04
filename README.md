@@ -48,6 +48,18 @@ chaque modification du français.
 Modifier la date et la version en une seule fois : `UPDATED_FR`, `UPDATED_EN`
 et `VERSION` en haut de `lib/legal.ts`.
 
+## Captures de l'application
+
+La landing montre l'app réelle : les captures vivent dans **`assets/screens/`**
+(WebP 591×1280) et sont affichées dans un cadre de téléphone CSS
+(`components/phone.tsx`), qui dessine sa propre barre d'état « 9:41 ».
+
+Les captures fournies ont été nettoyées : barre d'état d'origine et bouton de
+débogage flottant (l'engrenage bleu de la build de dev) retirés. Pour en
+ajouter ou en remplacer, le plus simple est de capturer depuis une build
+**sans** ce bouton, au même format portrait, puis de les importer dans
+`app/page.tsx` (`TOUR_SHOTS`, `COACH_SHOTS` ou le hero).
+
 ## Formulaire de contact
 
 La section `#contact` de la landing (`components/contact-section.tsx`) poste sur

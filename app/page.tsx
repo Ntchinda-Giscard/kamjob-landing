@@ -149,10 +149,11 @@ function HeroPhones() {
         </Phone>
       </div>
 
-      {/* The result of the swipe, timed to the swipe frame. */}
+      {/* The result of the swipe, timed to the swipe frame. Parked low over
+          the tab bar so it never hides the app's own "Postuler" button. */}
       <div
         aria-hidden
-        className="toast-loop slab absolute bottom-[14%] right-0 w-[13rem] rounded-xl p-3 shadow-[var(--shadow-lift)]"
+        className="toast-loop slab absolute bottom-0 right-0 w-[13rem] rounded-xl p-3 shadow-[var(--shadow-lift)]"
       >
         <span
           aria-hidden

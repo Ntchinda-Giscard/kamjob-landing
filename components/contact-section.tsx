@@ -105,7 +105,7 @@ export function ContactSection() {
         {/* One of only two centred axes on the page: a single form column has
             no second element to be asymmetric against. */}
         <SectionHeading
-          index="07"
+          index="08"
           align="center"
           eyebrow={c.eyebrow}
           title={c.title}

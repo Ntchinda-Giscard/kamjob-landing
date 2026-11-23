@@ -125,23 +125,19 @@ function prefersReducedMotion() {
 function Initials({
   name,
   size = "md",
-  ring = false,
 }: {
   name: string;
   size?: "sm" | "md";
-  /** Separates overlapping avatars in a stack. */
-  ring?: boolean;
 }) {
   return (
     <span
       aria-hidden
-      className={`mono flex shrink-0 items-center justify-center rounded-[5px] font-bold ${
-        size === "sm" ? "h-8 w-8 text-[11px]" : "h-9 w-9 text-[11px]"
+      className={`mono flex shrink-0 items-center justify-center rounded-[5px] text-[11px] font-bold ${
+        size === "sm" ? "h-8 w-8" : "h-9 w-9"
       }`}
       style={{
         backgroundColor: "var(--slab)",
         color: "var(--slab-fg)",
-        boxShadow: ring ? "0 0 0 2px var(--paper)" : undefined,
       }}
     >
       {initialsOf(name)}
@@ -482,7 +478,7 @@ function FeatureTour() {
                 className="flex flex-col justify-center py-10 first:pt-0 lg:min-h-[80vh] lg:py-0 lg:first:pt-0"
               >
                 <Reveal>
-                  <div className="mx-auto mb-10 w-[14rem] sm:w-[15rem] lg:hidden">
+                  <div className="mx-auto mb-8 w-[12.5rem] sm:mb-10 sm:w-[15rem] lg:hidden">
                     <Phone>
                       <Screen
                         src={TOUR_SHOTS[i]}
@@ -1043,11 +1039,9 @@ export default function LandingPage() {
                   animationDelay: "860ms",
                 }}
               >
-                <span className="flex shrink-0 pl-2" aria-hidden>
+                <span className="flex shrink-0 gap-1" aria-hidden>
                   {t.testimonials.items.map((tm) => (
-                    <span key={tm.name} className="-ml-2">
-                      <Initials name={tm.name} size="sm" ring />
-                    </span>
+                    <Initials key={tm.name} name={tm.name} size="sm" />
                   ))}
                 </span>
                 <div className="min-w-0">
@@ -1502,7 +1496,7 @@ export default function LandingPage() {
                     </p>
                     <a
                       href={SIGNUP_URL}
-                      className="btn btn-on-brand group mt-9 w-full px-9 py-[1.125rem] text-lg sm:w-auto"
+                      className="btn btn-on-brand group mt-9 w-full whitespace-nowrap px-6 py-4 text-base sm:w-auto sm:px-9 sm:py-[1.125rem] sm:text-lg"
                     >
                       {t.finalCta.button}
                       <ArrowRight

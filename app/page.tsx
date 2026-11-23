@@ -626,13 +626,15 @@ function Pricing() {
           subtitle={p.subtitle}
         />
 
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,2fr)]">
-          <Reveal className="h-full">
-            <div className="slab flex h-full flex-col rounded-2xl p-7 sm:p-8">
+        {/* The free plan: a full-width ink band, price · what's included ·
+            the sign-up button, read left to right. */}
+        <Reveal>
+          <div className="slab grid items-center gap-7 rounded-2xl p-7 sm:p-9 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-12">
+            <div>
               <h3 className="eyebrow" style={{ color: "var(--slab-muted)" }}>
                 {p.free.name}
               </h3>
-              <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
+              <p className="mt-3 flex flex-wrap items-baseline gap-x-2">
                 <span className="display text-6xl font-extrabold leading-none">
                   0
                 </span>
@@ -643,35 +645,55 @@ function Pricing() {
                   {p.currency} · {p.free.period}
                 </span>
               </p>
-              <ul className="mt-7 flex-1 space-y-3">
-                {p.free.features.map((f) => (
-                  <li key={f} className="flex gap-2.5 text-sm leading-snug">
-                    <Check
-                      className="mt-0.5 h-4 w-4 shrink-0"
-                      strokeWidth={3}
-                      style={{ color: "var(--brand-on-ink)" }}
-                      aria-hidden
-                    />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={SIGNUP_URL}
-                className="btn btn-brand group mt-8 w-full px-6 py-3.5"
-              >
-                {p.free.cta}
-                <ArrowRight
-                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                  aria-hidden
-                />
-              </a>
             </div>
-          </Reveal>
+            <ul
+              className="grid gap-3 sm:grid-cols-3 sm:gap-6 lg:border-l lg:pl-12"
+              style={{ borderColor: "var(--slab-border)" }}
+            >
+              {p.free.features.map((f) => (
+                <li key={f} className="flex gap-2.5 text-sm leading-snug">
+                  <Check
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                    strokeWidth={3}
+                    style={{ color: "var(--brand-on-ink)" }}
+                    aria-hidden
+                  />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <a
+              href={SIGNUP_URL}
+              className="btn btn-brand group w-full whitespace-nowrap px-7 py-4 lg:w-auto"
+            >
+              {p.free.cta}
+              <ArrowRight
+                className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                aria-hidden
+              />
+            </a>
+          </div>
+        </Reveal>
 
+        <Reveal className="mb-1 mt-12 flex items-center gap-3">
+          <span
+            aria-hidden
+            className="h-[3px] w-8 shrink-0 rounded-full"
+            style={{ backgroundColor: "var(--brand-solid)" }}
+          />
+          <h3
+            id="passes-title"
+            className="eyebrow"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            {p.passesTitle}
+          </h3>
+        </Reveal>
+
+        <div>
           <ul
-            aria-label={p.passesTitle}
-            className="snap-row -mx-5 flex gap-4 overflow-x-auto px-5 pb-2 pt-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0"
+            aria-labelledby="passes-title"
+            className="snap-row -mx-5 flex gap-4 overflow-x-auto px-5 pb-2 pt-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-y-7 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4"
           >
             {p.plans.map((plan, i) => {
               const [main, sub] = splitPlanName(plan.name);
@@ -714,12 +736,14 @@ function Pricing() {
                         {sub}
                       </p>
 
-                      <p className="mt-5 flex flex-wrap items-baseline gap-x-2">
-                        <span className="display text-4xl font-extrabold leading-none tracking-tight">
+                      {/* The unit always sits on its own line, so the four
+                          prices share one baseline whatever their width. */}
+                      <p className="mt-5">
+                        <span className="display block text-4xl font-extrabold leading-none tracking-tight">
                           {formatPrice(plan.price, lang)}
                         </span>
                         <span
-                          className="mono text-[11px] uppercase tracking-wider"
+                          className="mono mt-2 block text-[11px] uppercase tracking-wider"
                           style={{ color: "var(--muted-foreground)" }}
                         >
                           {p.currency} · {plan.period}
@@ -1302,7 +1326,7 @@ export default function LandingPage() {
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
             <Reveal as="figure" className="h-full">
               <div
-                className="relative flex h-full flex-col justify-between rounded-2xl border p-7 sm:p-10"
+                className="relative flex h-full flex-col rounded-2xl border p-7 sm:p-10"
                 style={{
                   borderColor: "var(--border)",
                   backgroundColor: "var(--paper-raised)",
@@ -1315,11 +1339,11 @@ export default function LandingPage() {
                 >
                   &ldquo;
                 </span>
-                <blockquote className="display t-h3 mt-6 text-pretty font-bold">
+                <blockquote className="display t-h3 mb-10 mt-6 text-pretty font-bold">
                   {featured.quote}
                 </blockquote>
                 <figcaption
-                  className="mt-10 flex items-center gap-3 border-t pt-6"
+                  className="mt-auto flex items-center gap-3 border-t pt-6"
                   style={{ borderColor: "var(--border)" }}
                 >
                   <Initials name={featured.name} />

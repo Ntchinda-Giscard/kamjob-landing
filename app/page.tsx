@@ -509,8 +509,11 @@ function FeatureTour() {
                   >
                     {item.text}
                   </p>
+                  {/* The three-point recap restates the paragraph; on a phone
+                      it costs a screen across the four steps, so it starts
+                      at sm. */}
                   <ul
-                    className="mt-7 max-w-lg border-t"
+                    className="mt-7 hidden max-w-lg border-t sm:block"
                     style={{ borderColor: "var(--border)" }}
                   >
                     {item.points.map((point) => (

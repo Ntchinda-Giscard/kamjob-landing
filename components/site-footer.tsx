@@ -91,8 +91,10 @@ export function SiteFooter({
           </a>
         </section>
 
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="lg:col-span-2">
+        {/* Two link columns side by side even on a phone: one column per
+            row made the footer three screens long. */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-5">
+          <div className="col-span-2">
             <KamJobLogo size="default" tagline={t.footer.tagline} onDark />
             <p
               className="mt-6 flex max-w-xs items-start gap-2.5 text-sm leading-relaxed"

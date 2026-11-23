@@ -71,5 +71,19 @@ None. The product and the primary CTA are clear on the first screen at both widt
 - **A real system underneath.** Warm token palette with light/dark ramps, AA contrast on body and muted text (5.58:1 on paper, 7.32:1 on ink), a visible `:focus-visible` ring, a skip link, and every animation stops under `prefers-reduced-motion`.
 - **Mobile basics are right.** No horizontal scroll, full-width primary CTA, a sticky "Créer mon compte" bar after the hero, and the coach section already uses a swipe row.
 
-## Next step
-The rebuild (landing-page-guide-v2) applies fixes 1–8 in the existing Ink & Paper system: same tokens and screenshots, with the sections re-ordered and cut.
+## Status after the rebuild (2026-11-23)
+
+Rebuilt in the existing Ink & Paper system (same tokens, fonts and screenshots), with the sections re-ordered and cut. `tsc` and `next build` both pass.
+
+| # | Finding | Status |
+|---|---------|--------|
+| 1 | Red on "Postuler", tricolour everywhere | **Fixed.** `FLAG` cycling removed. Items use brand green, red appears only in the problem section, and the tricolour is kept to the masthead rule, the wordmark and the footer bar. No gold on paper. |
+| 2 | Proof far from decisions | **Fixed.** Initials + an exact quote excerpt sit under the hero CTA, testimonials sit directly before pricing, and the stats bar became a quiet coverage band with the ticker. **Still open:** a real traction number (e.g. applications sent) would beat a quote, and the testimonials still need confirming as real users. |
+| 3 | Pricing | **Fixed.** The free plan is a full-width ink band with the green CTA. The four passes share one baseline (unit on its own line), CTAs are pinned to the bottom, and the monthly pass is "Recommandé" with one brand border. Prices go through `Intl.NumberFormat` (7 699 / 7,699), and "usage équitable" is one footnote. |
+| 4 | Contact form in the close | **Fixed.** Moved to `/contact` (in the sitemap; the submit button is ink). The FAQ links to it, and the employer pitch moved into the footer. |
+| 5 | Mobile length | **Improved, short of target.** 19,205 → 13,884px at 390px (22.8 → 16.4 screens; the target was ≤ 14). How it works and the trust section are gone; extras, testimonials and passes are swipe rows; the footer links sit two-up. The four-step tour is still the longest stretch: making it a swipe row would get under 14 screens, but at the cost of the main "how it works" story. |
+| 6 | Type scale | **Fixed.** `t-hero` / `t-h2` / `t-h3` tokens for every heading, section numbers removed, and the 9/10/13/15px one-offs snapped to 11/14/16px. |
+| 7 | Four-line hero headline | **Fixed.** Two lines at 1280px (one sentence per line). The subtitle is shortened, and the secondary action is a text link ("Voir comment ça marche"). |
+| 8 | Over-styled cards | **Fixed.** No coloured spines; the quote mark is a single green glyph on the featured quote only. |
+
+Also fixed along the way: French no-break spaces before `? ! : ;` and inside `« »` (57 strings), the 🇨🇲 emoji that rendered as "CM" on Windows, and the hero CTA plus final CTA button wrapping on phones.

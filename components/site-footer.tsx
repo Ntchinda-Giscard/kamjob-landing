@@ -1,6 +1,6 @@
 'use client'
 
-import { Shield } from 'lucide-react'
+import { ArrowUpRight, Shield } from 'lucide-react'
 import { KamJobLogo } from '@/components/logo'
 import { useLanguage } from '@/lib/i18n'
 import {
@@ -47,8 +47,47 @@ export function SiteFooter({
 
   return (
     <footer className="slab relative">
-      <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
-      <div className="mx-auto max-w-6xl px-5 py-16">
+      <div className="mx-auto max-w-6xl px-5 pb-16 pt-14">
+        {/* Employers are a second audience: one row here, rather than a
+            full-bleed section competing with the candidate close. */}
+        <section
+          aria-labelledby="footer-employers"
+          className="mb-14 grid items-end gap-6 border-b pb-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12"
+          style={{ borderColor: 'var(--slab-border)' }}
+        >
+          <div>
+            <p className="eyebrow" style={{ color: 'var(--gold-on-ink)' }}>
+              {t.employers.label}
+            </p>
+            <h2
+              id="footer-employers"
+              className="display t-h3 mt-3 font-extrabold"
+            >
+              {t.employers.title}
+            </h2>
+            <p
+              className="mt-3 max-w-2xl text-sm leading-relaxed"
+              style={{ color: 'var(--slab-muted)' }}
+            >
+              {t.employers.text}
+            </p>
+          </div>
+          <a
+            href={EMPLOYER_URL}
+            className="btn group w-full px-6 py-3.5 sm:w-auto"
+            style={{
+              backgroundColor: 'var(--slab-fg)',
+              color: 'var(--slab)',
+            }}
+          >
+            {t.employers.cta}
+            <ArrowUpRight
+              className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </a>
+        </section>
+
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <KamJobLogo size="default" tagline={t.footer.tagline} onDark />

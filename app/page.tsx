@@ -1,47 +1,59 @@
 "use client";
 
 /**
- * KamJob landing page — "Ink & Paper", built around the real app.
+ * KamJob landing page — "Ink & Paper", rebuilt after `landing-page-audit.md`.
  *
  * Narrative (the order is the argument, top to bottom):
  *
- *   Hero        The end result (land the interview) without the thing people
- *               dread (writing emails, redoing CVs), shown on the actual app.
- *   Proof       Stats bar, live-offer ticker, testimonials.
- *   Problem     Ink slab: what job hunting here costs today.
- *   Solution    Scroll tour — one sticky phone, four real screens, each a
- *               feature + its benefit. Then three extras.
+ *   Hero        The result (land the interview) without the dread, shown on
+ *               the real app — with proof right beside the CTA.
+ *   Coverage    Two coverage numbers + the live offer ticker, one quiet band.
+ *   Problem     Ink slab, red leads: what job hunting here costs today.
+ *   Solution    Scroll tour — one sticky phone, four real screens — then three
+ *               extras (a swipe row on phones).
  *   Coach       Ink slab: the interview coach, three screens, three steps.
- *   How         Three steps, nothing more.
- *   Pricing · Trust · FAQ · Employers · Contact
- *   Close       Benefit headline + CTA, with the app's first screen rising
- *               out of the bottom edge.
+ *   Proof       Testimonials, placed directly before the price.
+ *   Pricing     The free plan first, as a real plan; four passes, one
+ *               recommended; the reassurances underneath.
+ *   FAQ
+ *   Close       A deep-green card straddling the paper and the ink footer,
+ *               the app's first screen rising out of its bottom edge.
+ *   Footer      Employer row, links, legal (components/site-footer).
  *
- * Design decisions this file assumes (tokens and utilities live in
- * `app/globals.css`):
+ * Design system (tokens and utilities in `app/globals.css`):
  *
  *   Type        Bricolage Grotesque (display) / Public Sans (body) /
- *               JetBrains Mono (eyebrows, data, tickers).
- *   Colour      Cameroon tricolour used structurally — rules, spines,
- *               markers, outlined numerals. Red leads only in the problem
- *               section, where it means what it means in the app: reject.
- *   Imagery     Real screenshots in a CSS device frame (`components/phone`),
- *               never illustrations of the product.
+ *               JetBrains Mono (labels). One token per heading level:
+ *               t-hero (h1 + close), t-h2 (every section), t-h3.
+ *   Colour      Green means positive and sign-up — it is the only solid
+ *               button colour that signs people up. Red means reject / problem
+ *               and appears only in the problem section, as in the app.
+ *               The tricolour is the signature: masthead rule, wordmark,
+ *               footer. Never cycled through content.
+ *   Imagery     Real screenshots in a CSS device frame (`components/phone`).
  *   Motion      One orchestrated hero entrance, a 7s swipe loop on the hero
  *               phone, scroll reveals with a stagger. All of it stops under
  *               prefers-reduced-motion.
+ *   Mobile      Rows of 3+ peers become swipe rows (`snap-row`), never long
+ *               single-column stacks.
+ *
+ * Landingfolio references this build adapts (not copies):
+ *   ProIntro (phone hero; the free plan as a full card), Lindy / Heyo (one
+ *   recommended plan, one signal), beehiiv / Lexboost (proof under the hero
+ *   CTA), Surge (a featured quote plus smaller ones), Narrative / Nightwatch
+ *   (a CTA card across the footer edge).
  */
 
 import { useEffect, useRef, useState } from "react";
 import { KamJobLogo } from "@/components/logo";
 import { LangSwitcher } from "@/components/lang-switcher";
-import { ContactSection } from "@/components/contact-section";
 import { Phone, Screen } from "@/components/phone";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/lib/i18n";
-import { EMPLOYER_URL, LOGIN_URL, NAV_LINKS, SIGNUP_URL } from "@/lib/site";
+import { CONTACT_ROUTE, LOGIN_URL, NAV_LINKS, SIGNUP_URL } from "@/lib/site";
+import type { Lang } from "@/lib/translations";
 import shotFeed from "@/assets/screens/feed.webp";
 import shotFeedApply from "@/assets/screens/feed-apply.webp";
 import shotFeedSkip from "@/assets/screens/feed-skip.webp";
@@ -52,8 +64,9 @@ import shotCoachPrep from "@/assets/screens/coach-prep.webp";
 import shotCoachChat from "@/assets/screens/coach-chat.webp";
 import shotOnboarding from "@/assets/screens/onboarding.webp";
 import {
+  ArrowDown,
   ArrowRight,
-  ArrowUpRight,
+  CalendarX,
   Check,
   FileText,
   Menu,
@@ -63,7 +76,6 @@ import {
   Send,
   ShieldCheck,
   Smartphone,
-  Wallet,
   X,
   Zap,
 } from "lucide-react";
@@ -74,28 +86,206 @@ const TOUR_SHOTS = [shotFeed, shotFeedSkip, shotApplication, shotProfile];
 const COACH_SHOTS = [shotCoachChoose, shotCoachPrep, shotCoachChat];
 
 const MORE_ICONS = [Zap, FileText, Radar];
-const TRUST_ICONS = [Wallet, ShieldCheck, Smartphone];
-
-/** Flag order. Cycled for rules and outlined numerals so the palette reads
- *  as one rotating system instead of several unrelated accent colours.
- *  `-solid` fills shapes; `-text` / `-on-ink` are the AA-safe text variants. */
-const FLAG = ["var(--brand-solid)", "var(--red-solid)", "var(--gold-solid)"];
-const FLAG_TEXT = ["var(--brand-text)", "var(--red-text)", "var(--gold-text)"];
-const FLAG_ON_INK = [
-  "var(--brand-on-ink)",
-  "var(--red-on-ink)",
-  "var(--gold-on-ink)",
-];
-const flagAt = (i: number) => FLAG[i % 3];
+const ASSURANCE_ICONS = [Smartphone, CalendarX, ShieldCheck];
 
 const cssVars = (vars: Record<string, string>) => vars as React.CSSProperties;
 
 const pad = (i: number) => String(i + 1).padStart(2, "0");
 
+/** 7 699 in French (narrow no-break space), 7,699 in English. */
+const formatPrice = (n: number, lang: Lang) =>
+  new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-US").format(n);
+
+/** "Premium Mensuel — Recherche complète" → ["Premium Mensuel", "Recherche complète"]. */
+const splitPlanName = (name: string) => {
+  const [main, ...rest] = name.split(" — ");
+  return [main, rest.join(" — ")] as const;
+};
+
+function initialsOf(name: string) {
+  return name
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 function prefersReducedMotion() {
   return (
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+// ── Small building blocks ────────────────────────────────────────────────────
+
+/** Squared initials, in the mono voice. Not a stock headshot of someone who
+ *  does not exist. */
+function Initials({
+  name,
+  size = "md",
+  ring = false,
+}: {
+  name: string;
+  size?: "sm" | "md";
+  /** Separates overlapping avatars in a stack. */
+  ring?: boolean;
+}) {
+  return (
+    <span
+      aria-hidden
+      className={`mono flex shrink-0 items-center justify-center rounded-[5px] font-bold ${
+        size === "sm" ? "h-8 w-8 text-[11px]" : "h-9 w-9 text-[11px]"
+      }`}
+      style={{
+        backgroundColor: "var(--slab)",
+        color: "var(--slab-fg)",
+        boxShadow: ring ? "0 0 0 2px var(--paper)" : undefined,
+      }}
+    >
+      {initialsOf(name)}
+    </span>
+  );
+}
+
+/** The reassurance line, split so it cannot be skimmed past. */
+function ClaimList({
+  note,
+  tone = "paper",
+  className = "",
+}: {
+  note: string;
+  tone?: "paper" | "brand";
+  className?: string;
+}) {
+  const onBrand = tone === "brand";
+  return (
+    <ul className={`mono flex flex-wrap gap-x-6 gap-y-2.5 ${className}`}>
+      {note.split("·").map((claim) => (
+        <li
+          key={claim}
+          className="flex items-center gap-2 text-[11px] uppercase tracking-wider"
+          style={{
+            color: onBrand ? "var(--on-brand-muted)" : "var(--muted-foreground)",
+          }}
+        >
+          <Check
+            className="h-3 w-3"
+            strokeWidth={3}
+            style={{
+              color: onBrand ? "var(--on-brand)" : "var(--brand-solid)",
+            }}
+            aria-hidden
+          />
+          {claim.trim()}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** FAQ row. Hairline-separated rather than boxed, with a rotating plus. */
+function FaqItem({
+  q,
+  a,
+  open,
+  onToggle,
+  id,
+}: {
+  q: string;
+  a: string;
+  open: boolean;
+  onToggle: () => void;
+  id: string;
+}) {
+  return (
+    <div className="border-b" style={{ borderColor: "var(--border)" }}>
+      <h3>
+        <button
+          onClick={onToggle}
+          className="group flex w-full items-start justify-between gap-6 py-5 text-left"
+          aria-expanded={open}
+          aria-controls={`${id}-panel`}
+          id={`${id}-button`}
+        >
+          <span
+            className="display text-lg font-bold leading-snug transition-colors group-hover:text-[var(--brand-text)]"
+            style={open ? { color: "var(--brand-text)" } : undefined}
+          >
+            {q}
+          </span>
+          <span
+            aria-hidden
+            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-transform duration-300"
+            style={{
+              borderColor: open ? "var(--brand-solid)" : "var(--border-strong)",
+              color: open ? "var(--brand-text)" : "var(--muted-foreground)",
+              transform: open ? "rotate(135deg)" : undefined,
+            }}
+          >
+            <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+          </span>
+        </button>
+      </h3>
+      {/* 0fr → 1fr grid trick: animates height without measuring it. */}
+      <div
+        className="collapse-grid"
+        data-open={open}
+        id={`${id}-panel`}
+        role="region"
+        aria-labelledby={`${id}-button`}
+      >
+        <div>
+          <p
+            className="max-w-2xl pb-6 pr-10 text-sm leading-relaxed"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            {a}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Bottom bar once the hero CTA has scrolled away. Mobile is the dominant
+ *  surface here, and a CTA off-screen is a CTA that does not convert. */
+function StickyMobileCta() {
+  const { t } = useLanguage();
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShown(window.scrollY > 700);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div
+      className="slab fixed inset-x-0 bottom-0 z-50 flex items-center justify-between gap-3 border-t px-4 py-3 transition-transform duration-300 md:hidden"
+      style={{
+        borderColor: "var(--slab-border)",
+        transform: shown ? "none" : "translateY(110%)",
+        paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))",
+      }}
+      aria-hidden={!shown}
+    >
+      <p
+        className="mono text-[11px] uppercase tracking-widest"
+        style={{ color: "var(--slab-muted)" }}
+      >
+        {t.stickyCta.label}
+      </p>
+      <a
+        href={SIGNUP_URL}
+        tabIndex={shown ? undefined : -1}
+        className="btn btn-brand whitespace-nowrap px-5 py-2.5 text-sm"
+      >
+        {t.stickyCta.button}
+      </a>
+    </div>
   );
 }
 
@@ -111,7 +301,7 @@ function HeroPhones() {
   const { t } = useLanguage();
 
   return (
-    <div className="relative mx-auto w-full max-w-[23rem] pb-4 sm:max-w-[27rem]">
+    <div className="relative mx-auto w-full max-w-[23rem] pb-4 sm:max-w-[26rem]">
       <div
         aria-hidden
         className="absolute right-[3%] top-14 w-[54%]"
@@ -122,7 +312,7 @@ function HeroPhones() {
             src={shotApplication}
             alt=""
             hidden
-            sizes="(min-width: 1024px) 230px, 50vw"
+            sizes="(min-width: 1024px) 220px, 50vw"
           />
         </Phone>
       </div>
@@ -136,7 +326,7 @@ function HeroPhones() {
             src={shotFeed}
             alt={t.mockup.feedAlt}
             priority
-            sizes="(min-width: 1024px) 290px, 62vw"
+            sizes="(min-width: 1024px) 270px, 62vw"
           />
           <Screen
             src={shotFeedApply}
@@ -144,7 +334,7 @@ function HeroPhones() {
             hidden
             priority
             className="swap-loop"
-            sizes="(min-width: 1024px) 290px, 62vw"
+            sizes="(min-width: 1024px) 270px, 62vw"
           />
         </Phone>
       </div>
@@ -155,10 +345,6 @@ function HeroPhones() {
         aria-hidden
         className="toast-loop slab absolute bottom-0 right-0 w-[13rem] rounded-xl p-3 shadow-[var(--shadow-lift)]"
       >
-        <span
-          aria-hidden
-          className="tricolor absolute inset-x-3 top-0 h-[3px] rounded-b-full"
-        />
         <div className="flex items-start gap-2.5">
           <span
             className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
@@ -169,7 +355,7 @@ function HeroPhones() {
           <div className="min-w-0">
             <p className="text-xs font-bold leading-tight">{t.mockup.toast}</p>
             <p
-              className="mt-0.5 text-[10px] leading-snug"
+              className="mt-0.5 text-[11px] leading-snug"
               style={{ color: "var(--slab-muted)" }}
             >
               {t.mockup.toastSub}
@@ -222,7 +408,6 @@ function FeatureTour() {
     <section id="features" className="scroll-mt-24">
       <div className="mx-auto max-w-6xl px-5 pt-20 sm:pt-24">
         <SectionHeading
-          index="03"
           eyebrow={t.tour.eyebrow}
           title={t.tour.title}
           subtitle={t.tour.subtitle}
@@ -241,7 +426,7 @@ function FeatureTour() {
                         type="button"
                         onClick={() => goTo(i)}
                         aria-current={on ? "step" : undefined}
-                        className="mono flex items-center gap-3 py-1.5 text-left text-[10px] font-bold uppercase tracking-[0.16em] transition-colors"
+                        className="mono flex items-center gap-3 py-1.5 text-left text-[11px] font-bold uppercase tracking-[0.16em] transition-colors hover:text-foreground"
                         style={{
                           color: on
                             ? "var(--foreground)"
@@ -253,7 +438,7 @@ function FeatureTour() {
                           className="h-8 w-[3px] rounded-full transition-colors duration-300"
                           style={{
                             backgroundColor: on
-                              ? flagAt(i)
+                              ? "var(--brand-solid)"
                               : "var(--border-strong)",
                           }}
                         />
@@ -309,17 +494,17 @@ function FeatureTour() {
 
                   <p
                     className="mono flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.18em]"
-                    style={{ color: FLAG_TEXT[i % 3] }}
+                    style={{ color: "var(--brand-text)" }}
                   >
                     <span>{pad(i)}</span>
                     <span
                       aria-hidden
                       className="h-[3px] w-8 rounded-full"
-                      style={{ backgroundColor: flagAt(i) }}
+                      style={{ backgroundColor: "var(--brand-solid)" }}
                     />
                     <span>{item.kicker}</span>
                   </p>
-                  <h3 className="display mt-5 text-balance text-[clamp(1.85rem,3.4vw,2.75rem)] font-extrabold">
+                  <h3 className="display t-h3 mt-5 text-balance font-extrabold">
                     {item.title}
                   </h3>
                   <p
@@ -354,198 +539,261 @@ function FeatureTour() {
           </div>
         </div>
 
-        {/* Three extras that have no screen of their own. */}
+        {/* Three extras that have no screen of their own. A swipe row on
+            phones instead of three stacked cards. */}
         <div className="pb-20 pt-10 sm:pb-24 lg:pt-6">
           <Reveal className="mb-6 flex items-center gap-3">
             <span
               aria-hidden
-              className="tricolor h-[3px] w-9 shrink-0 rounded-full"
+              className="h-[3px] w-8 shrink-0 rounded-full"
+              style={{ backgroundColor: "var(--brand-solid)" }}
             />
             <h3 className="eyebrow" style={{ color: "var(--muted-foreground)" }}>
               {t.tour.moreTitle}
             </h3>
           </Reveal>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <ul className="snap-row -mx-5 flex gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
             {t.tour.more.map((m, i) => {
               const Icon = MORE_ICONS[i];
               return (
-                <Reveal key={m.title} delay={i * 90}>
-                  <div
-                    className="card-lift relative h-full overflow-hidden rounded-2xl border p-6"
-                    style={{
-                      borderColor: "var(--border)",
-                      backgroundColor: "var(--paper-raised)",
-                    }}
-                  >
-                    <span
-                      aria-hidden
-                      className="absolute inset-x-0 top-0 h-[3px]"
-                      style={{ backgroundColor: flagAt(i) }}
-                    />
-                    <Icon
-                      className="h-5 w-5"
-                      strokeWidth={1.5}
-                      style={{ color: FLAG_TEXT[i % 3] }}
-                      aria-hidden
-                    />
-                    <h4 className="display mt-5 text-lg font-bold">
-                      {m.title}
-                    </h4>
-                    <p
-                      className="mt-2.5 text-sm leading-relaxed"
-                      style={{ color: "var(--muted-foreground)" }}
+                <li key={m.title} className="w-[78%] shrink-0 sm:w-auto">
+                  <Reveal delay={i * 90} className="h-full">
+                    <div
+                      className="card-lift h-full rounded-2xl border p-6"
+                      style={{
+                        borderColor: "var(--border)",
+                        backgroundColor: "var(--paper-raised)",
+                      }}
                     >
-                      {m.text}
-                    </p>
-                  </div>
-                </Reveal>
+                      <span
+                        className="flex h-10 w-10 items-center justify-center rounded-xl"
+                        style={{ backgroundColor: "var(--brand-pale)" }}
+                      >
+                        <Icon
+                          className="h-5 w-5"
+                          strokeWidth={1.75}
+                          style={{ color: "var(--brand-text)" }}
+                          aria-hidden
+                        />
+                      </span>
+                      <h4 className="display mt-5 text-xl font-bold">
+                        {m.title}
+                      </h4>
+                      <p
+                        className="mt-2.5 text-sm leading-relaxed"
+                        style={{ color: "var(--muted-foreground)" }}
+                      >
+                        {m.text}
+                      </p>
+                    </div>
+                  </Reveal>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       </div>
     </section>
   );
 }
 
-// ── Small building blocks ────────────────────────────────────────────────────
+// ── Pricing ──────────────────────────────────────────────────────────────────
 
-/** FAQ row. Hairline-separated rather than boxed, with a rotating plus. */
-function FaqItem({
-  q,
-  a,
-  open,
-  onToggle,
-  id,
-}: {
-  q: string;
-  a: string;
-  open: boolean;
-  onToggle: () => void;
-  id: string;
-}) {
+/**
+ * The free plan is the product's main offer, so it is a full card — first,
+ * on ink, with the page's green sign-up button. The four passes sit beside it
+ * on equal-height cards with their CTAs pinned to the bottom; only the
+ * recommended pass is lifted, by one signal (a brand border carrying its
+ * label).
+ */
+function Pricing() {
+  const { t, lang } = useLanguage();
+  const p = t.pricing;
+
   return (
-    <div className="border-b" style={{ borderColor: "var(--border)" }}>
-      <h3>
-        <button
-          onClick={onToggle}
-          className="flex w-full items-start justify-between gap-6 py-5 text-left"
-          aria-expanded={open}
-          aria-controls={`${id}-panel`}
-          id={`${id}-button`}
-        >
-          <span
-            className="display text-lg font-bold leading-snug transition-colors"
-            style={open ? { color: "var(--brand-text)" } : undefined}
+    <section
+      id="pricing"
+      className="scroll-mt-24 border-y"
+      style={{
+        borderColor: "var(--border)",
+        backgroundColor: "var(--paper-sunk)",
+      }}
+    >
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+        <SectionHeading
+          eyebrow={p.eyebrow}
+          title={p.title}
+          subtitle={p.subtitle}
+        />
+
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,2fr)]">
+          <Reveal className="h-full">
+            <div className="slab flex h-full flex-col rounded-2xl p-7 sm:p-8">
+              <h3 className="eyebrow" style={{ color: "var(--slab-muted)" }}>
+                {p.free.name}
+              </h3>
+              <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
+                <span className="display text-6xl font-extrabold leading-none">
+                  0
+                </span>
+                <span
+                  className="mono text-[11px] uppercase tracking-wider"
+                  style={{ color: "var(--slab-muted)" }}
+                >
+                  {p.currency} · {p.free.period}
+                </span>
+              </p>
+              <ul className="mt-7 flex-1 space-y-3">
+                {p.free.features.map((f) => (
+                  <li key={f} className="flex gap-2.5 text-sm leading-snug">
+                    <Check
+                      className="mt-0.5 h-4 w-4 shrink-0"
+                      strokeWidth={3}
+                      style={{ color: "var(--brand-on-ink)" }}
+                      aria-hidden
+                    />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={SIGNUP_URL}
+                className="btn btn-brand group mt-8 w-full px-6 py-3.5"
+              >
+                {p.free.cta}
+                <ArrowRight
+                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  aria-hidden
+                />
+              </a>
+            </div>
+          </Reveal>
+
+          <ul
+            aria-label={p.passesTitle}
+            className="snap-row -mx-5 flex gap-4 overflow-x-auto px-5 pb-2 pt-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0"
           >
-            {q}
-          </span>
-          <span
-            aria-hidden
-            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-transform duration-300"
-            style={{
-              borderColor: open ? "var(--brand-solid)" : "var(--border-strong)",
-              color: open ? "var(--brand-text)" : "var(--muted-foreground)",
-              transform: open ? "rotate(135deg)" : undefined,
-            }}
+            {p.plans.map((plan, i) => {
+              const [main, sub] = splitPlanName(plan.name);
+              const rec = plan.recommended;
+              return (
+                <li key={plan.name} className="w-[82%] shrink-0 sm:w-auto">
+                  <Reveal delay={i * 80} className="h-full">
+                    <div
+                      className={`relative flex h-full flex-col rounded-2xl p-6 ${
+                        rec ? "border-2" : "card-lift border"
+                      }`}
+                      style={{
+                        borderColor: rec
+                          ? "var(--brand-solid)"
+                          : "var(--border)",
+                        backgroundColor: "var(--paper-raised)",
+                      }}
+                    >
+                      {rec && (
+                        <span
+                          className="mono absolute -top-3 left-5 rounded-[4px] px-2 py-1 text-[11px] font-bold tracking-widest"
+                          style={{
+                            backgroundColor: "var(--brand-solid)",
+                            color: "#ffffff",
+                          }}
+                        >
+                          {p.recommended}
+                        </span>
+                      )}
+
+                      {/* Name on one line, the nickname (or an empty line)
+                          under it, so every price starts at the same height. */}
+                      <h3 className="display text-xl font-bold leading-tight">
+                        {main}
+                      </h3>
+                      <p
+                        className="mt-1 min-h-[1.25rem] text-sm"
+                        style={{ color: "var(--muted-foreground)" }}
+                      >
+                        {sub}
+                      </p>
+
+                      <p className="mt-5 flex flex-wrap items-baseline gap-x-2">
+                        <span className="display text-4xl font-extrabold leading-none tracking-tight">
+                          {formatPrice(plan.price, lang)}
+                        </span>
+                        <span
+                          className="mono text-[11px] uppercase tracking-wider"
+                          style={{ color: "var(--muted-foreground)" }}
+                        >
+                          {p.currency} · {plan.period}
+                        </span>
+                      </p>
+
+                      <ul
+                        className="mt-5 flex-1 space-y-2.5 border-t pt-5"
+                        style={{ borderColor: "var(--border)" }}
+                      >
+                        {plan.features.map((f) => (
+                          <li
+                            key={f}
+                            className="flex gap-2.5 text-sm leading-snug"
+                            style={{ color: "var(--muted-foreground)" }}
+                          >
+                            <Check
+                              className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                              strokeWidth={3}
+                              style={{ color: "var(--brand-solid)" }}
+                              aria-hidden
+                            />
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <a
+                        href={SIGNUP_URL}
+                        className={`btn mt-6 py-3 text-sm ${
+                          rec ? "btn-ink" : "btn-paper"
+                        }`}
+                        aria-label={`${p.cta} — ${plan.name}`}
+                      >
+                        {p.cta}
+                      </a>
+                    </div>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <Reveal>
+          <ul
+            className="mt-10 grid gap-x-8 gap-y-4 border-t pt-7 sm:grid-cols-3"
+            style={{ borderColor: "var(--border-strong)" }}
           >
-            <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-          </span>
-        </button>
-      </h3>
-      {/* 0fr → 1fr grid trick: animates height without measuring it. */}
-      <div
-        className="collapse-grid"
-        data-open={open}
-        id={`${id}-panel`}
-        role="region"
-        aria-labelledby={`${id}-button`}
-      >
-        <div>
+            {p.assurances.map((a, i) => {
+              const Icon = ASSURANCE_ICONS[i];
+              return (
+                <li key={a} className="flex items-start gap-3 text-sm">
+                  <Icon
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                    strokeWidth={1.75}
+                    style={{ color: "var(--brand-text)" }}
+                    aria-hidden
+                  />
+                  {a}
+                </li>
+              );
+            })}
+          </ul>
           <p
-            className="max-w-2xl pb-6 pr-10 text-sm leading-relaxed"
+            className="mono mt-5 text-[11px] uppercase tracking-wider"
             style={{ color: "var(--muted-foreground)" }}
           >
-            {a}
+            {p.fairUse}
           </p>
-        </div>
+        </Reveal>
       </div>
-    </div>
+    </section>
   );
-}
-
-/** Bottom bar once the hero CTA has scrolled away. Mobile is the dominant
- *  surface here, and a CTA off-screen is a CTA that does not convert. */
-function StickyMobileCta() {
-  const { t } = useLanguage();
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setShown(window.scrollY > 700);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <div
-      className="slab fixed inset-x-0 bottom-0 z-50 flex items-center justify-between gap-3 px-4 py-3 transition-transform duration-300 md:hidden"
-      style={{
-        transform: shown ? "none" : "translateY(110%)",
-        paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))",
-      }}
-      aria-hidden={!shown}
-    >
-      <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-[3px]" />
-      <p className="mono text-[11px] uppercase tracking-widest">
-        {t.stickyCta.label}
-      </p>
-      <a
-        href={SIGNUP_URL}
-        tabIndex={shown ? undefined : -1}
-        className="btn btn-brand whitespace-nowrap px-5 py-2.5 text-sm"
-      >
-        {t.stickyCta.button}
-      </a>
-    </div>
-  );
-}
-
-/** The reassurance line, split so it cannot be skimmed past. */
-function ClaimList({
-  note,
-  className = "",
-}: {
-  note: string;
-  className?: string;
-}) {
-  return (
-    <ul className={`mono flex flex-wrap gap-x-6 gap-y-2.5 ${className}`}>
-      {note.split("·").map((claim, i) => (
-        <li
-          key={claim}
-          className="flex items-center gap-2 text-[11px] uppercase tracking-wider"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          <span
-            aria-hidden
-            className="h-1.5 w-1.5 rounded-full"
-            style={{ backgroundColor: flagAt(i) }}
-          />
-          {claim.trim()}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function initialsOf(name: string) {
-  return name
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 }
 
 // ── Page ─────────────────────────────────────────────────────────────────────
@@ -563,6 +811,8 @@ export default function LandingPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
+  const [featured, ...quotes] = t.testimonials.items;
+
   return (
     <div className="min-h-screen overflow-x-clip bg-background">
       <a
@@ -572,7 +822,8 @@ export default function LandingPage() {
         {t.nav.skipToContent}
       </a>
 
-      {/* Sticky header. The tricolour caps the page like a masthead rule. */}
+      {/* Sticky header. The tricolour caps the page like a masthead rule —
+          one of the three places the signature appears. */}
       <header className="sticky top-0 z-50 backdrop-blur-md">
         <span aria-hidden className="tricolor block h-[3px] w-full" />
         <div
@@ -604,16 +855,6 @@ export default function LandingPage() {
             </nav>
 
             <div className="flex items-center gap-2">
-              <span
-                className="mono hidden items-center gap-1.5 text-[11px] uppercase tracking-widest xl:inline-flex"
-                style={{ color: "var(--muted-foreground)" }}
-              >
-                <span
-                  aria-hidden
-                  className="tricolor h-2.5 w-2.5 rounded-[2px]"
-                />
-                {t.nav.country}
-              </span>
               <LangSwitcher />
               <a
                 href={LOGIN_URL}
@@ -650,20 +891,13 @@ export default function LandingPage() {
           >
             <div>
               <ul className="px-5 py-3">
-                {NAV_LINKS.map((l, i) => (
-                  <li key={l.href} className="flex items-center gap-3 py-2.5">
-                    <span
-                      aria-hidden
-                      className="mono text-[10px]"
-                      style={{ color: FLAG_TEXT[i % 3] }}
-                    >
-                      {pad(i)}
-                    </span>
+                {NAV_LINKS.map((l) => (
+                  <li key={l.href}>
                     <a
                       href={l.href}
                       onClick={() => setMenuOpen(false)}
                       tabIndex={menuOpen ? undefined : -1}
-                      className="display text-lg font-bold"
+                      className="display block py-2.5 text-lg font-bold"
                     >
                       {t.nav[l.key]}
                     </a>
@@ -698,7 +932,7 @@ export default function LandingPage() {
             style={{ backgroundColor: "var(--brand-glow)" }}
           />
 
-          <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-16 pt-12 lg:grid-cols-[1.12fr_minmax(0,0.88fr)] lg:pb-20 lg:pt-16">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-14 pt-10 sm:pt-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-10 lg:pb-20 lg:pt-16">
             <div>
               <div
                 className="rise-in flex items-center gap-3"
@@ -706,7 +940,8 @@ export default function LandingPage() {
               >
                 <span
                   aria-hidden
-                  className="tricolor h-[3px] w-9 shrink-0 rounded-full"
+                  className="h-[3px] w-8 shrink-0 rounded-full"
+                  style={{ backgroundColor: "var(--brand-solid)" }}
                 />
                 <span
                   className="eyebrow"
@@ -716,9 +951,9 @@ export default function LandingPage() {
                 </span>
               </div>
 
-              {/* Each line wipes up from its own clip box. Both halves are
-                  whole translation strings, so the effect is language-safe. */}
-              <h1 className="display mt-6 text-[clamp(2.6rem,6.8vw,4.75rem)] font-extrabold">
+              {/* Each sentence wipes up from its own clip box and, from lg up,
+                  sits on one line: two lines in all. */}
+              <h1 className="display t-hero mt-6 font-extrabold">
                 <span
                   className="line-clip"
                   style={cssVars({ "--line-delay": "120ms" })}
@@ -736,7 +971,7 @@ export default function LandingPage() {
               </h1>
 
               <p
-                className="rise-in mt-7 max-w-xl text-pretty text-[1.0625rem] leading-relaxed"
+                className="rise-in mt-7 max-w-xl text-pretty text-lg leading-relaxed"
                 style={{
                   color: "var(--muted-foreground)",
                   animationDelay: "520ms",
@@ -745,25 +980,64 @@ export default function LandingPage() {
                 {t.hero.subtitle}
               </p>
 
+              {/* One primary button; the secondary action is a text link. */}
               <div
-                className="rise-in mt-9 flex flex-col gap-3 sm:flex-row"
+                className="rise-in mt-9 flex flex-col items-start gap-x-7 gap-y-4 sm:flex-row sm:items-center"
                 style={{ animationDelay: "660ms" }}
               >
-                <a href={SIGNUP_URL} className="btn btn-brand group px-7 py-4">
+                <a
+                  href={SIGNUP_URL}
+                  className="btn btn-brand group w-full px-7 py-4 sm:w-auto"
+                >
                   {t.hero.ctaPrimary}
                   <ArrowRight
                     className="h-5 w-5 transition-transform group-hover:translate-x-1"
                     aria-hidden
                   />
                 </a>
-                <a href={LOGIN_URL} className="btn btn-paper px-7 py-4">
+                <a
+                  href="#features"
+                  className="link-rule group inline-flex items-center gap-2 py-2 text-sm font-semibold"
+                >
                   {t.hero.ctaSecondary}
+                  <ArrowDown
+                    className="h-4 w-4 transition-transform group-hover:translate-y-0.5"
+                    aria-hidden
+                  />
                 </a>
               </div>
 
-              <div className="rise-in" style={{ animationDelay: "780ms" }}>
-                <ClaimList note={t.hero.note} className="mt-8" />
+              <div className="rise-in" style={{ animationDelay: "760ms" }}>
+                <ClaimList note={t.hero.note} className="mt-7" />
               </div>
+
+              {/* Proof at the decision point, not in a block further down. */}
+              <figure
+                className="rise-in mt-8 flex max-w-lg items-center gap-4 border-t pt-6"
+                style={{
+                  borderColor: "var(--border)",
+                  animationDelay: "860ms",
+                }}
+              >
+                <span className="flex shrink-0 pl-2" aria-hidden>
+                  {t.testimonials.items.map((tm) => (
+                    <span key={tm.name} className="-ml-2">
+                      <Initials name={tm.name} size="sm" ring />
+                    </span>
+                  ))}
+                </span>
+                <div className="min-w-0">
+                  <blockquote className="text-sm font-semibold leading-snug">
+                    «&nbsp;{t.hero.proof.quote}&nbsp;»
+                  </blockquote>
+                  <figcaption
+                    className="mt-1 text-xs"
+                    style={{ color: "var(--muted-foreground)" }}
+                  >
+                    {t.hero.proof.author}
+                  </figcaption>
+                </div>
+              </figure>
             </div>
 
             <Reveal delay={140}>
@@ -772,142 +1046,64 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── Proof · full-bleed ink data bar ─────────────────────────────── */}
-        <section className="slab bleed relative">
-          <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
-          <div className="mx-auto max-w-6xl">
-            <div
-              className="grid grid-cols-2 gap-px sm:grid-cols-4"
-              style={{ backgroundColor: "var(--slab-border)" }}
-            >
-              {t.hero.stats.map((s, i) => (
-                <Reveal key={s.label} delay={i * 80}>
-                  <div className="slab h-full px-5 py-9 sm:px-6 sm:py-12">
-                    <p className="display text-[clamp(2.25rem,5.5vw,3.5rem)] font-extrabold leading-none">
-                      {s.value}
-                    </p>
-                    <p
-                      className="mono mt-3 text-[10px] uppercase leading-snug tracking-[0.14em]"
-                      style={{ color: "var(--slab-muted)" }}
-                    >
-                      {s.label}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Proof · offers ticker ──────────────────────────────────────── */}
+        {/* ── Coverage · two numbers + the live offer ticker ──────────────── */}
         <section
-          className="border-b"
+          className="border-y"
           style={{
             borderColor: "var(--border)",
             backgroundColor: "var(--paper-sunk)",
           }}
           aria-label={t.ticker.label}
         >
-          <div className="py-5">
-            <p
-              className="eyebrow mb-4 px-5 text-center"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              {t.ticker.label}
-            </p>
-            <div className="marquee-viewport">
-              <div className="marquee-track">
-                {[0, 1].map((copy) => (
-                  <div
-                    key={copy}
-                    className="flex shrink-0"
-                    aria-hidden={copy === 1}
+          <div className="mx-auto grid max-w-6xl items-center gap-y-5 py-6 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-x-10">
+            <ul className="flex gap-8 px-5 lg:pr-0">
+              {t.ticker.stats.map((s) => (
+                <li key={s.label} className="flex items-center gap-3">
+                  <span className="display text-4xl font-extrabold leading-none">
+                    {s.value}
+                  </span>
+                  <span
+                    className="mono max-w-[7rem] text-[11px] uppercase leading-snug tracking-wider"
+                    style={{ color: "var(--muted-foreground)" }}
                   >
-                    {t.ticker.items.map((item, i) => (
-                      <span
-                        key={`${copy}-${item}`}
-                        className="mono flex items-center gap-3 whitespace-nowrap px-6 text-[13px] font-medium"
-                      >
+                    {s.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="min-w-0">
+              <p
+                className="eyebrow mb-3 px-5 lg:px-6"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                {t.ticker.label}
+              </p>
+              <div className="marquee-viewport">
+                <div className="marquee-track">
+                  {[0, 1].map((copy) => (
+                    <div
+                      key={copy}
+                      className="flex shrink-0"
+                      aria-hidden={copy === 1}
+                    >
+                      {t.ticker.items.map((item) => (
                         <span
-                          aria-hidden
-                          className="h-1.5 w-1.5 rotate-45"
-                          style={{ backgroundColor: flagAt(i) }}
-                        />
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                ))}
+                          key={`${copy}-${item}`}
+                          className="mono flex items-center gap-3 whitespace-nowrap px-6 text-sm font-medium"
+                        >
+                          <span
+                            aria-hidden
+                            className="h-1.5 w-1.5 rotate-45"
+                            style={{ backgroundColor: "var(--brand-solid)" }}
+                          />
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* ── Proof · testimonials, staggered ─────────────────────────────── */}
-        <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-          <SectionHeading
-            index="01"
-            eyebrow={t.testimonials.eyebrow}
-            title={t.testimonials.title}
-          />
-          <div className="grid gap-5 sm:grid-cols-3">
-            {t.testimonials.items.map((tm, i) => (
-              <Reveal
-                as="figure"
-                key={tm.name}
-                delay={i * 110}
-                // Vertical offsets break the row into a composition rather
-                // than three identical boxes sitting on one baseline.
-                className={i === 1 ? "sm:mt-10" : i === 2 ? "sm:mt-4" : ""}
-              >
-                <div
-                  className="card-lift relative flex h-full flex-col rounded-2xl border p-7"
-                  style={{
-                    borderColor: "var(--border)",
-                    backgroundColor: "var(--paper-raised)",
-                  }}
-                >
-                  <span
-                    aria-hidden
-                    className="display absolute right-5 top-1 select-none text-6xl font-extrabold leading-none"
-                    style={{ color: flagAt(i), opacity: 0.16 }}
-                  >
-                    &rdquo;
-                  </span>
-                  <blockquote className="relative flex-1 text-[15px] leading-relaxed">
-                    {tm.quote}
-                  </blockquote>
-                  <figcaption
-                    className="mt-7 flex items-center gap-3 border-t pt-5"
-                    style={{ borderColor: "var(--border)" }}
-                  >
-                    {/* Initials, not a stock headshot of a person who does
-                        not exist. Squared to match the mono voice. */}
-                    <span
-                      className="mono flex h-9 w-9 shrink-0 items-center justify-center rounded-[5px] text-[11px] font-bold"
-                      style={{
-                        backgroundColor: "var(--slab)",
-                        color: "var(--slab-fg)",
-                      }}
-                      aria-hidden
-                    >
-                      {initialsOf(tm.name)}
-                    </span>
-                    <span>
-                      <span className="block text-sm font-semibold">
-                        {tm.name}
-                      </span>
-                      <span
-                        className="mono block text-[10px] uppercase tracking-wider"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
-                        {tm.role}
-                      </span>
-                    </span>
-                  </figcaption>
-                </div>
-              </Reveal>
-            ))}
           </div>
         </section>
 
@@ -927,14 +1123,8 @@ export default function LandingPage() {
               <Reveal className="lg:sticky lg:top-28 lg:self-start">
                 <div className="flex items-center gap-3">
                   <span
-                    className="mono text-xs font-bold"
-                    style={{ color: "var(--red-on-ink)" }}
-                  >
-                    02
-                  </span>
-                  <span
                     aria-hidden
-                    className="h-[3px] w-9 shrink-0 rounded-full"
+                    className="h-[3px] w-8 shrink-0 rounded-full"
                     style={{ backgroundColor: "var(--red-solid)" }}
                   />
                   <span
@@ -944,7 +1134,7 @@ export default function LandingPage() {
                     {t.problem.eyebrow}
                   </span>
                 </div>
-                <h2 className="display mt-5 text-balance text-[clamp(2.25rem,5vw,3.5rem)] font-extrabold">
+                <h2 className="display t-h2 mt-5 text-balance font-extrabold">
                   {t.problem.title}
                 </h2>
                 <p
@@ -974,11 +1164,11 @@ export default function LandingPage() {
                         {pad(i)}
                       </span>
                       <div>
-                        <h3 className="display text-xl font-bold sm:text-[1.375rem]">
+                        <h3 className="display text-xl font-bold">
                           {item.title}
                         </h3>
                         <p
-                          className="mt-2 max-w-xl text-sm leading-relaxed sm:text-[15px]"
+                          className="mt-2 max-w-xl text-sm leading-relaxed sm:text-base"
                           style={{ color: "var(--slab-muted)" }}
                         >
                           {item.text}
@@ -998,7 +1188,7 @@ export default function LandingPage() {
                 <p className="eyebrow" style={{ color: "var(--red-on-ink)" }}>
                   {t.problem.costLabel}
                 </p>
-                <p className="display mt-4 max-w-4xl text-balance text-[clamp(1.6rem,3.6vw,2.6rem)] font-extrabold">
+                <p className="display t-h3 mt-4 max-w-4xl text-balance font-extrabold">
                   {t.problem.cost}
                 </p>
               </div>
@@ -1015,7 +1205,6 @@ export default function LandingPage() {
           className="slab bleed relative scroll-mt-16 overflow-hidden"
         >
           <span aria-hidden className="grid-paper-ink absolute inset-0 opacity-60" />
-          <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
           <div
             aria-hidden
             className="pointer-events-none absolute -left-32 top-1/3 h-[28rem] w-[28rem] rounded-full blur-3xl"
@@ -1023,7 +1212,6 @@ export default function LandingPage() {
           />
           <div className="relative mx-auto max-w-6xl px-5 py-20 sm:py-28">
             <SectionHeading
-              index="04"
               tone="ink"
               eyebrow={t.coach.eyebrow}
               title={t.coach.title}
@@ -1049,7 +1237,7 @@ export default function LandingPage() {
                         className="display text-[2.75rem] font-extrabold leading-[0.8]"
                         style={{
                           color: "transparent",
-                          WebkitTextStroke: `1.5px ${FLAG_ON_INK[i % 3]}`,
+                          WebkitTextStroke: "1.5px var(--brand-on-ink)",
                         }}
                       >
                         {pad(i)}
@@ -1103,250 +1291,104 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── How it works · outlined numerals ────────────────────────────── */}
-        <section
-          id="how"
-          className="mx-auto max-w-6xl scroll-mt-24 px-5 py-20 sm:py-24"
-        >
-          <SectionHeading
-            index="05"
-            eyebrow={t.how.eyebrow}
-            title={t.how.title}
-            subtitle={t.how.subtitle}
-          />
-          <ol
-            className="grid gap-px sm:grid-cols-3"
-            style={{ backgroundColor: "var(--border)" }}
-          >
-            {t.how.steps.map((s, i) => (
-              <Reveal as="li" key={s.title} delay={i * 120}>
-                <div className="h-full bg-background pb-2 pt-8 sm:px-7 sm:pt-9">
-                  <span
-                    aria-hidden
-                    className="display block text-[4.5rem] font-extrabold leading-[0.8]"
-                    style={{
-                      color: "transparent",
-                      WebkitTextStroke: `1.5px ${flagAt(i)}`,
-                    }}
-                  >
-                    {pad(i)}
-                  </span>
-                  <h3 className="display mt-6 text-xl font-bold">{s.title}</h3>
-                  <p
-                    className="mt-3 max-w-sm text-sm leading-relaxed"
-                    style={{ color: "var(--muted-foreground)" }}
-                  >
-                    {s.text}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </ol>
-        </section>
-
-        {/* ── Pricing · tickets ──────────────────────────────────────────── */}
-        <section
-          id="pricing"
-          className="scroll-mt-24 border-y"
-          style={{
-            borderColor: "var(--border)",
-            backgroundColor: "var(--paper-sunk)",
-          }}
-        >
-          <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-            <SectionHeading
-              index="06"
-              eyebrow={t.pricing.eyebrow}
-              title={t.pricing.title}
-              subtitle={t.pricing.subtitle}
-            />
-            <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {t.pricing.plans.map((p, i) => {
-                // "Le plus complet" always rides the highest tier.
-                const highlight = i === t.pricing.plans.length - 1;
-                return (
-                  <Reveal key={p.name} delay={i * 90}>
-                    <div
-                      className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 ${
-                        highlight ? "slab lg:-mt-4 lg:pb-9" : "card-lift"
-                      }`}
-                      style={
-                        highlight
-                          ? { borderColor: "var(--slab-border)" }
-                          : {
-                              borderColor: "var(--border)",
-                              backgroundColor: "var(--paper-raised)",
-                            }
-                      }
-                    >
-                      <span
-                        aria-hidden
-                        className={
-                          highlight
-                            ? "tricolor absolute inset-x-0 top-0 h-1"
-                            : "absolute inset-x-0 top-0 h-[3px]"
-                        }
-                        style={
-                          highlight
-                            ? undefined
-                            : { backgroundColor: "var(--border-strong)" }
-                        }
-                      />
-
-                      {highlight && (
-                        <span
-                          className="mono mb-4 self-start rounded-[3px] px-2 py-1 text-[9px] font-bold uppercase tracking-widest"
-                          style={{
-                            backgroundColor: "var(--gold-solid)",
-                            color: "var(--on-gold)",
-                          }}
-                        >
-                          {t.pricing.highlight}
-                        </span>
-                      )}
-
-                      {/* Two lines reserved: plan names wrap unevenly across
-                          both locales, and a ragged price baseline across the
-                          row is the first thing the eye catches. */}
-                      <h3
-                        className="eyebrow leading-relaxed sm:min-h-[2.6em]"
-                        style={{
-                          color: highlight
-                            ? "var(--slab-muted)"
-                            : "var(--muted-foreground)",
-                        }}
-                      >
-                        {p.name}
-                      </h3>
-
-                      <p className="mb-6 mt-3 flex flex-wrap items-baseline gap-x-1.5">
-                        <span className="display text-[2.75rem] font-extrabold leading-none tracking-tight">
-                          {p.price}
-                        </span>
-                        <span
-                          className="mono text-[11px] uppercase tracking-wider"
-                          style={{
-                            color: highlight
-                              ? "var(--slab-muted)"
-                              : "var(--muted-foreground)",
-                          }}
-                        >
-                          {t.pricing.perPeriod} · {p.period}
-                        </span>
-                      </p>
-
-                      <ul className="mb-8 flex-1 space-y-2.5">
-                        {p.features.map((f) => (
-                          <li
-                            key={f}
-                            className="flex gap-2.5 text-sm leading-snug"
-                            style={{
-                              color: highlight
-                                ? "var(--slab-muted)"
-                                : "var(--muted-foreground)",
-                            }}
-                          >
-                            <Check
-                              className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                              strokeWidth={3}
-                              style={{
-                                color: highlight
-                                  ? "var(--brand-on-ink)"
-                                  : "var(--brand-solid)",
-                              }}
-                              aria-hidden
-                            />
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <a
-                        href={SIGNUP_URL}
-                        className={`btn py-3 text-sm ${
-                          highlight ? "btn-brand" : "btn-paper"
-                        }`}
-                        aria-label={`${t.pricing.cta} — ${p.name}`}
-                      >
-                        {t.pricing.cta}
-                      </a>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-            <p
-              className="mono mt-10 text-center text-[11px] uppercase tracking-wider"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              {t.pricing.freeNote}
-            </p>
-          </div>
-        </section>
-
-        {/* ── Trust · hairline row, no cards ──────────────────────────────── */}
+        {/* ── Proof · testimonials, directly before the price ─────────────
+            One featured quote at display size, two smaller beside it (a
+            swipe row on phones). */}
         <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-          <Reveal className="mb-12 flex items-center gap-3">
-            <span
-              aria-hidden
-              className="tricolor h-[3px] w-9 shrink-0 rounded-full"
-            />
-            <h2 className="display text-balance text-[clamp(1.75rem,4vw,2.75rem)] font-extrabold">
-              {t.trust.title}
-            </h2>
-          </Reveal>
-          <div
-            className="grid gap-px sm:grid-cols-3"
-            style={{ backgroundColor: "var(--border)" }}
-          >
-            {t.trust.items.map((item, i) => {
-              const Icon = TRUST_ICONS[i];
-              return (
-                <Reveal key={item.title} delay={i * 100}>
-                  <div className="h-full bg-background pb-6 pt-7 sm:px-7">
-                    <Icon
-                      className="h-6 w-6"
-                      strokeWidth={1.5}
-                      style={{ color: flagAt(i) }}
-                      aria-hidden
-                    />
-                    <h3 className="display mt-5 text-lg font-bold">
-                      {item.title}
-                    </h3>
-                    <p
-                      className="mt-2.5 text-sm leading-relaxed"
+          <SectionHeading
+            eyebrow={t.testimonials.eyebrow}
+            title={t.testimonials.title}
+          />
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+            <Reveal as="figure" className="h-full">
+              <div
+                className="relative flex h-full flex-col justify-between rounded-2xl border p-7 sm:p-10"
+                style={{
+                  borderColor: "var(--border)",
+                  backgroundColor: "var(--paper-raised)",
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="display block text-7xl font-extrabold leading-[0.6]"
+                  style={{ color: "var(--brand-solid)" }}
+                >
+                  &ldquo;
+                </span>
+                <blockquote className="display t-h3 mt-6 text-pretty font-bold">
+                  {featured.quote}
+                </blockquote>
+                <figcaption
+                  className="mt-10 flex items-center gap-3 border-t pt-6"
+                  style={{ borderColor: "var(--border)" }}
+                >
+                  <Initials name={featured.name} />
+                  <span>
+                    <span className="block text-sm font-semibold">
+                      {featured.name}
+                    </span>
+                    <span
+                      className="mono block text-[11px] uppercase tracking-wider"
                       style={{ color: "var(--muted-foreground)" }}
                     >
-                      {item.text}
-                    </p>
-                  </div>
-                </Reveal>
-              );
-            })}
+                      {featured.role}
+                    </span>
+                  </span>
+                </figcaption>
+              </div>
+            </Reveal>
+
+            <ul className="snap-row -mx-5 flex gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-1 lg:gap-5">
+              {quotes.map((tm, i) => (
+                <li key={tm.name} className="w-[85%] shrink-0 sm:w-auto">
+                  <Reveal as="figure" delay={(i + 1) * 110} className="h-full">
+                    <div
+                      className="card-lift flex h-full flex-col rounded-2xl border p-6 sm:p-7"
+                      style={{
+                        borderColor: "var(--border)",
+                        backgroundColor: "var(--paper-raised)",
+                      }}
+                    >
+                      <blockquote className="flex-1 text-base leading-relaxed">
+                        {tm.quote}
+                      </blockquote>
+                      <figcaption
+                        className="mt-6 flex items-center gap-3 border-t pt-5"
+                        style={{ borderColor: "var(--border)" }}
+                      >
+                        <Initials name={tm.name} />
+                        <span>
+                          <span className="block text-sm font-semibold">
+                            {tm.name}
+                          </span>
+                          <span
+                            className="mono block text-[11px] uppercase tracking-wider"
+                            style={{ color: "var(--muted-foreground)" }}
+                          >
+                            {tm.role}
+                          </span>
+                        </span>
+                      </figcaption>
+                    </div>
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
+        {/* ── Pricing ─────────────────────────────────────────────────────── */}
+        <Pricing />
+
         {/* ── FAQ · two-column, heading sticky ────────────────────────────── */}
-        <section
-          id="faq"
-          className="scroll-mt-24 border-t"
-          style={{
-            borderColor: "var(--border)",
-            backgroundColor: "var(--paper-sunk)",
-          }}
-        >
+        <section id="faq" className="scroll-mt-24">
           <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 sm:py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
             <Reveal className="lg:sticky lg:top-28 lg:self-start">
               <div className="flex items-center gap-3">
                 <span
-                  className="mono text-xs font-bold"
-                  style={{ color: "var(--brand-text)" }}
-                >
-                  07
-                </span>
-                <span
                   aria-hidden
-                  className="tricolor h-[3px] w-9 shrink-0 rounded-full"
+                  className="h-[3px] w-8 shrink-0 rounded-full"
+                  style={{ backgroundColor: "var(--brand-solid)" }}
                 />
                 <span
                   className="eyebrow"
@@ -1355,7 +1397,7 @@ export default function LandingPage() {
                   {t.faq.eyebrow}
                 </span>
               </div>
-              <h2 className="display mt-5 text-balance text-[clamp(2rem,4.5vw,3rem)] font-extrabold">
+              <h2 className="display t-h2 mt-5 text-balance font-extrabold">
                 {t.faq.title}
               </h2>
               <p
@@ -1363,6 +1405,17 @@ export default function LandingPage() {
                 style={{ color: "var(--muted-foreground)" }}
               >
                 {t.faq.subtitle}
+              </p>
+              <p className="mt-6 text-sm">
+                <span style={{ color: "var(--muted-foreground)" }}>
+                  {t.faq.more}
+                </span>{" "}
+                <a
+                  href={CONTACT_ROUTE}
+                  className="font-semibold underline decoration-[1.5px] underline-offset-4 transition-colors hover:text-[var(--brand-text)]"
+                >
+                  {t.faq.moreLink}
+                </a>
               </p>
             </Reveal>
 
@@ -1381,106 +1434,74 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── Employers · full-bleed ink ──────────────────────────────────── */}
-        <section className="slab bleed relative overflow-hidden py-20 sm:py-24">
-          <span aria-hidden className="grid-paper-ink absolute inset-0" />
-          <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full blur-3xl"
-            style={{ backgroundColor: "var(--brand-glow)" }}
-          />
-          <Reveal className="relative mx-auto max-w-6xl px-5">
-            <div className="grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
-              <div>
+        {/* ── The close ───────────────────────────────────────────────────────
+            One deep-green card, straddling the paper and the ink footer: the
+            page's only large green surface, so the last ask is the sign-up
+            colour itself. The app's first screen rises out of its bottom
+            edge — the last thing on the page is the first thing in the app. */}
+        <section
+          className="relative"
+          style={{
+            background:
+              "linear-gradient(to bottom, var(--paper) 0 55%, var(--slab) 55% 100%)",
+          }}
+        >
+          <div className="mx-auto max-w-6xl px-5 pt-8 sm:pt-12">
+            <Reveal>
+              <div
+                className="relative overflow-hidden rounded-[1.75rem] px-6 pt-12 sm:px-12 sm:pt-14 lg:px-16"
+                style={{
+                  backgroundColor: "var(--brand-deep)",
+                  color: "var(--on-brand)",
+                }}
+              >
                 <span
-                  className="eyebrow"
-                  style={{ color: "var(--gold-on-ink)" }}
-                >
-                  {t.employers.label}
-                </span>
-                <h2 className="display mt-5 text-balance text-[clamp(2.25rem,6vw,4rem)] font-extrabold">
-                  {t.employers.title}
-                </h2>
-                <p
-                  className="mt-5 max-w-2xl text-pretty leading-relaxed"
-                  style={{ color: "var(--slab-muted)" }}
-                >
-                  {t.employers.text}
-                </p>
-              </div>
-              <div className="lg:pb-2">
-                <a
-                  href={EMPLOYER_URL}
-                  className="btn group w-full px-7 py-4 sm:w-auto"
-                  style={{
-                    backgroundColor: "var(--slab-fg)",
-                    color: "var(--slab)",
-                  }}
-                >
-                  {t.employers.cta}
-                  <ArrowUpRight
-                    className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                    aria-hidden
-                  />
-                </a>
-              </div>
-            </div>
-          </Reveal>
-        </section>
-
-        {/* ── Contact ────────────────────────────────────────────────────── */}
-        <ContactSection />
-
-        {/* ── Final CTA · the close ───────────────────────────────────────────
-            The app's own first screen rises out of the section's bottom edge:
-            the last thing on the page is the first thing in the app. */}
-        <section className="relative overflow-hidden">
-          <span
-            aria-hidden
-            className="grid-paper pointer-events-none absolute inset-0"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-40 right-[-8rem] h-[32rem] w-[32rem] rounded-full blur-3xl"
-            style={{ backgroundColor: "var(--brand-glow)" }}
-          />
-          <div className="relative mx-auto grid max-w-6xl items-end gap-14 px-5 pt-24 sm:pt-28 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-            <Reveal className="lg:pb-28">
-              <span
-                aria-hidden
-                className="tricolor mb-8 block h-1 w-16 rounded-full"
-              />
-              <h2 className="display text-balance text-[clamp(2.4rem,6.4vw,4.5rem)] font-extrabold">
-                {t.finalCta.title}
-              </h2>
-              <p
-                className="mt-6 max-w-xl text-pretty leading-relaxed"
-                style={{ color: "var(--muted-foreground)" }}
-              >
-                {t.finalCta.subtitle}
-              </p>
-              <a
-                href={SIGNUP_URL}
-                className="btn btn-brand group mt-10 px-10 py-5 text-lg"
-              >
-                {t.finalCta.button}
-                <ArrowRight
-                  className="h-5 w-5 transition-transform group-hover:translate-x-1"
                   aria-hidden
+                  className="grid-paper-ink pointer-events-none absolute inset-0 opacity-70"
                 />
-              </a>
-              <ClaimList note={t.hero.note} className="mt-8" />
-            </Reveal>
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full blur-3xl"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                />
 
-            <Reveal delay={140} className="-mb-40 sm:-mb-48">
-              <Phone tone="light" className="mx-auto w-[15rem] sm:w-[17rem]">
-                <Screen
-                  src={shotOnboarding}
-                  alt={t.finalCta.phoneAlt}
-                  sizes="272px"
-                />
-              </Phone>
+                <div className="relative grid items-end gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+                  <div className="pb-12 sm:pb-14">
+                    <h2 className="display t-hero text-balance font-extrabold">
+                      {t.finalCta.title}
+                    </h2>
+                    <p
+                      className="mt-6 max-w-lg text-pretty text-lg leading-relaxed"
+                      style={{ color: "var(--on-brand-muted)" }}
+                    >
+                      {t.finalCta.subtitle}
+                    </p>
+                    <a
+                      href={SIGNUP_URL}
+                      className="btn btn-on-brand group mt-9 w-full px-9 py-[1.125rem] text-lg sm:w-auto"
+                    >
+                      {t.finalCta.button}
+                      <ArrowRight
+                        className="h-5 w-5 transition-transform group-hover:translate-x-1"
+                        aria-hidden
+                      />
+                    </a>
+                    <ClaimList note={t.hero.note} tone="brand" className="mt-7" />
+                  </div>
+
+                  {/* Clipped by its own box, so the phone rises out of the
+                      card's bottom edge. */}
+                  <div className="mx-auto h-[17rem] w-[15rem] overflow-hidden sm:h-[20rem] sm:w-[17rem] lg:mr-0">
+                    <Phone tone="light">
+                      <Screen
+                        src={shotOnboarding}
+                        alt={t.finalCta.phoneAlt}
+                        sizes="272px"
+                      />
+                    </Phone>
+                  </div>
+                </div>
+              </div>
             </Reveal>
           </div>
         </section>

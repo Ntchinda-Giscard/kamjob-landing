@@ -15,9 +15,12 @@ import {
  * Shared footer — rendered on the landing page and on the legal pages, so the
  * terms and the privacy policy stay one click away from anywhere on the site.
  *
- * Set on the ink slab: it closes the page the way the stats bar opened it, and
- * gives the paper body a hard bottom edge instead of fading out into another
- * tinted card. Column headers are mono, links get the growing rule.
+ * Set on the ink slab, which gives the paper body a hard bottom edge (on the
+ * home page the green closing card straddles that edge). It opens with the
+ * employer row, a second audience kept out of the candidate flow; then the
+ * link columns. The tricolour appears here only as the wordmark rule and the
+ * short bar beside the copyright. Column headers are mono, links get the
+ * growing rule.
  */
 export function SiteFooter({
   /** The landing page floats a sticky CTA bar on mobile; this clears it. */

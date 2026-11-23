@@ -2,8 +2,11 @@
 //
 // Voice: « vous », to match the app itself and the legal pages. The section
 // order follows the conversion arc the page is built on — hero (result +
-// without the fear) → proof → problem → solution → how it works → FAQ →
-// final CTA.
+// without the fear, proof beside the CTA) → coverage → problem → solution →
+// coach → testimonials → pricing → FAQ → final CTA.
+//
+// French strings use a no-break space ( ) before ? ! : ; and inside « »,
+// so the punctuation never wraps onto a line of its own.
 
 const fr = {
   nav: {

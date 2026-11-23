@@ -75,6 +75,15 @@
   --red-on-ink: #FF9482;
   --red-pale: #F7E4DF;
 
+  /* ── The close ──────────────────────────────────────────────────────────
+     One deep-green surface, used once: the final CTA card. Green is the
+     sign-up colour everywhere else, so the last ask *is* that colour.
+     Paper on it is 6.0:1, the tint 5.0:1 — both AA, in both schemes. */
+  --brand-deep: #136B36;
+  --on-brand: #F7F4EC;
+  --on-brand-muted: #CFE6D5;
+  --brand-deep-edge: #0B4B25;
+
   /* Aliases kept so legal-document.tsx and the contact form keep resolving. */
   --amber-solid: var(--gold-solid);
   --amber-text: var(--gold-text);
@@ -255,9 +264,11 @@ html {
 }
 
 /* ── The tricolour rule ────────────────────────────────────────────────────
-   Green · red · gold, in flag order. Used as a section marker, a card spine
-   and a slab edge. It is the page's signature and appears nowhere else, so
-   it never degrades into decoration. */
+   Green · red · gold, in flag order. The page's signature, so it is kept to
+   a few fixed places — the masthead rule, the wordmark underline and the
+   footer — and never cycled through content. Item-level colour is green for
+   anything positive and red only for "reject / problem", which is what red
+   means inside the app. */
 .tricolor {
   background-image: linear-gradient(
     90deg,
@@ -296,6 +307,24 @@ html {
   font-optical-sizing: auto;
   letter-spacing: -0.035em;
   line-height: 0.95;
+}
+
+/* Type scale. One token per heading level so every section title on the
+   page renders at the same size (the previous build had ten different clamps).
+     t-hero  the h1 and the closing headline
+     t-h2    every section title
+     t-h3    feature titles, the featured quote, the cost statement */
+.t-hero {
+  font-size: clamp(2.6rem, 5.3vw, 4rem);
+}
+
+.t-h2 {
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+}
+
+.t-h3 {
+  font-size: clamp(1.6rem, 2.6vw, 2.25rem);
+  line-height: 1.02;
 }
 
 .eyebrow {
@@ -489,6 +518,15 @@ html {
   border: 1px solid var(--border-strong);
 }
 
+/* The sign-up button where the surface itself is green (the closing card):
+   a green button on a green card would disappear, so it inverts to paper
+   and keeps the same hard offset shadow, in the card's own deep green. */
+.btn-on-brand {
+  background-color: var(--on-brand);
+  color: #101a14;
+  box-shadow: 0 3px 0 0 var(--brand-deep-edge);
+}
+
 @media (hover: hover) {
   .btn-brand:hover {
     background-color: var(--brand-hover);
@@ -498,6 +536,9 @@ html {
   }
   .btn-ink:hover {
     background-color: var(--slab-raised);
+  }
+  .btn-on-brand:hover {
+    background-color: #ffffff;
   }
 }
 

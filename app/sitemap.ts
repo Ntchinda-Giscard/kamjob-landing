@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { LEGAL_ROUTES, SITE_URL } from '@/lib/site'
+import { CONTACT_ROUTE, LEGAL_ROUTES, SITE_URL } from '@/lib/site'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date()
@@ -10,6 +10,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: 'weekly',
       priority: 1,
+    },
+    {
+      url: `${SITE_URL}${CONTACT_ROUTE}`,
+      lastModified,
+      changeFrequency: 'yearly',
+      priority: 0.4,
     },
     // Legal pages change rarely but must be indexable: a discoverable terms
     // page is part of identifying an e-commerce service.

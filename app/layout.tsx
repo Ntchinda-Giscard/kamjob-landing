@@ -143,14 +143,15 @@ function structuredData() {
         // Applying is free; the paid passes are the optional add-ons.
         {
           "@type": "Offer",
-          name: t.pricing.freeNote,
+          name: t.pricing.free.name,
           price: "0",
           priceCurrency: "XAF",
+          description: t.pricing.free.features.join(" · "),
         },
         ...t.pricing.plans.map((p) => ({
           "@type": "Offer",
           name: p.name,
-          price: p.price.replace(/\s/g, ""),
+          price: String(p.price),
           priceCurrency: "XAF",
           description: p.features.join(" · "),
         })),

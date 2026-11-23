@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, ChevronDown, Printer, Scale } from "lucide-react";
-import { KamJobLogo } from "@/components/logo";
-import { LangSwitcher } from "@/components/lang-switcher";
+import { ChevronDown, Printer, Scale } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
+import { SubpageHeader } from "@/components/subpage-header";
 import { useLanguage } from "@/lib/i18n";
 import { legal, type LegalBlock, type LegalDocKey } from "@/lib/legal";
 import { LEGAL_ROUTES } from "@/lib/site";
@@ -169,32 +168,7 @@ export function LegalDocument({ doc }: { doc: LegalDocKey }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Reduced header: the legal pages are a reading context, not a funnel. */}
-      <header className="sticky top-0 z-50 backdrop-blur-md">
-        <span aria-hidden className="tricolor block h-[3px] w-full" />
-        <div
-          className="border-b border-border"
-          style={{
-            backgroundColor: "color-mix(in srgb, var(--paper) 88%, transparent)",
-          }}
-        >
-        <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
-          <a href="/" aria-label="KamJob">
-            <KamJobLogo size="small" />
-          </a>
-          <div className="flex items-center gap-3">
-            <a
-              href="/"
-              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" aria-hidden />
-              {ui.backHome}
-            </a>
-            <LangSwitcher />
-          </div>
-        </div>
-        </div>
-      </header>
+      <SubpageHeader backLabel={ui.backHome} />
 
       <main className="max-w-6xl mx-auto px-5 py-12 sm:py-16">
         <div className="max-w-3xl">

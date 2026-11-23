@@ -26,8 +26,9 @@ export const EMPLOYER_URL = process.env.NEXT_PUBLIC_EMPLOYER_URL || '/#faq'
  */
 export const CONTACT_EMAIL = 'support@kamjob.com'
 
-/** Anchor of the contact section, absolute so the shared footer works off-home. */
-export const CONTACT_ANCHOR = '/#contact'
+/** The contact form lives on its own page: a support form inside the landing
+ *  page's closing sequence competed with the sign-up CTA. */
+export const CONTACT_ROUTE = '/contact'
 
 /** Legal pages. French slugs: French is the default locale of the site. */
 export const LEGAL_ROUTES = {
@@ -35,18 +36,16 @@ export const LEGAL_ROUTES = {
   privacy: '/confidentialite',
 } as const
 
-// Section anchors are absolute (`/#how`, not `#how`) so the same list works in
-// the footer, which is rendered on the legal pages too. On the home page the
-// browser still treats them as same-document fragment navigation.
+// Section anchors are absolute (`/#faq`, not `#faq`) so the same list works in
+// the footer, which is rendered on the legal and contact pages too. On the
+// home page the browser still treats them as same-document fragment navigation.
 //
 // `header` marks the subset shown in the desktop header bar; the mobile menu
-// and the footer list every entry. Six mono labels do not fit beside the
-// logo and the CTA cluster at `lg`, four do.
+// and the footer list every entry.
 export const NAV_LINKS = [
   { href: '/#features', key: 'features', header: true },
   { href: '/#coach', key: 'coach', header: true },
-  { href: '/#how', key: 'howItWorks', header: false },
   { href: '/#pricing', key: 'pricing', header: true },
   { href: '/#faq', key: 'faq', header: true },
-  { href: CONTACT_ANCHOR, key: 'contact', header: false },
+  { href: CONTACT_ROUTE, key: 'contact', header: false },
 ] as const

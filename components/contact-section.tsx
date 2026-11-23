@@ -93,20 +93,13 @@ export function ContactSection() {
   };
 
   return (
-    <section
-      id="contact"
-      className="scroll-mt-24 border-t"
-      style={{
-        borderColor: "var(--border)",
-        backgroundColor: "var(--paper-sunk)",
-      }}
-    >
-      <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
-        {/* One of only two centred axes on the page: a single form column has
-            no second element to be asymmetric against. */}
+    <section id="contact" className="scroll-mt-24">
+      <div className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
+        {/* Centred: a single form column has no second element to be
+            asymmetric against. This is the page's h1 on /contact. */}
         <SectionHeading
-          index="08"
           align="center"
+          level={1}
           eyebrow={c.eyebrow}
           title={c.title}
           subtitle={c.subtitle}
@@ -120,7 +113,6 @@ export function ContactSection() {
               backgroundColor: "var(--paper-raised)",
             }}
           >
-            <span aria-hidden className="tricolor absolute inset-x-0 top-0 h-1" />
             {status === "sent" ? (
               <div className="text-center py-6" role="status">
                 <div
@@ -287,7 +279,8 @@ export function ContactSection() {
                   type="submit"
                   disabled={status === "sending"}
                   aria-busy={status === "sending"}
-                  className="btn btn-brand w-full px-8 py-3.5 disabled:opacity-70 sm:w-auto"
+                  // Ink, not green: green is reserved for "create my profile".
+                  className="btn btn-ink w-full px-8 py-3.5 disabled:opacity-70 sm:w-auto"
                 >
                   {status === "sending" ? (
                     c.sending
